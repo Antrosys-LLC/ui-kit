@@ -1,3 +1,21 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* ── Map design tokens → Tailwind v4 theme variables ──────────────────── */
+@theme {
+  /* Colors */
+  --color-brand:          var(--ant-color-brand-primary);
+  --color-brand-light:    var(--ant-color-brand-primary-lt);
+  --color-brand-dark:     var(--ant-color-brand-primary-dk);
+  --color-brand-accent:   var(--ant-color-brand-accent);
+  --color-success:        var(--ant-color-semantic-success);
+  --color-warning:        var(--ant-color-semantic-warning);
+  --color-error:          var(--ant-color-semantic-error);
+  --color-info:           var(--ant-color-semantic-info);
+  --color-surface-border: var(--ant-color-surface-border);
+  --color-surface-text:   var(--ant-color-surface-text);
+  --color-neutral-100:    var(--ant-color-neutral-100);
+
+  /* Typography */
+  --font-sans: var(--ant-typography-fontfamily-sans);
+  --font-mono: var(--ant-typography-fontfamily-mono);
+}
