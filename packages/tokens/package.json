@@ -7,9 +7,9 @@
   "types": "./dist/js/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/js/index.d.ts",
       "import": "./dist/js/index.mjs",
-      "require": "./dist/js/index.js",
-      "types": "./dist/js/index.d.ts"
+      "require": "./dist/js/index.js"
     },
     "./css": "./dist/css/tokens.css",
     "./tailwind": "./dist/tailwind/tokens.js"
