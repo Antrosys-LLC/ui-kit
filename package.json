@@ -1,0 +1,27 @@
+{
+  "name": "antrosys-ui-kit",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "storybook": "pnpm --filter @antrosys/ui storybook",
+    "storybook:build": "turbo storybook:build",
+    "format": "prettier --write \"**/*.{ts,tsx,json,css,md}\"",
+    "changeset": "changeset",
+    "release": "turbo build && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.7",
+    "prettier": "^3.3.3",
+    "turbo": "^2.1.3",
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.9.0"
+}
