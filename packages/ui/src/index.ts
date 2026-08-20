@@ -18,6 +18,15 @@ export { Cluster } from "./primitives/Cluster";
 export { Button } from "./components/feedback/Button";
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/feedback/Button";
 
+// ── Data ─────────────────────────────────────────────────────────────────────
+export { AvatarUserCard } from "./components/data/AvatarUserCard";
+export type {
+  AvatarUserCardProps,
+  AvatarUserCardSize,
+  AvatarUserCardStatus,
+  SocialLink,
+} from "./components/data/AvatarUserCard";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Add new component exports here as they are built.
 // Convention: keep alphabetical within each category group.
