@@ -25,10 +25,19 @@ function flatten(obj, prefix = "") {
 
 const flat = flatten(tokens);
 
+/** Resolve design token references, e.g. "{color.neutral.50}" → "var(--ant-color-neutral-50)" */
+function resolveReference(val) {
+  if (typeof val === "string" && val.startsWith("{") && val.endsWith("}")) {
+    const refKey = val.slice(1, -1).replace(/\./g, "-");
+    return `var(--ant-${refKey})`;
+  }
+  return val;
+}
+
 // ── CSS custom properties ────────────────────────────────────────────────────
 mkdirSync(resolve(root, "dist/css"), { recursive: true });
 const cssVars = Object.entries(flat)
-  .map(([k, v]) => `  --ant-${k}: ${v};`)
+  .map(([k, v]) => `  --ant-${k}: ${resolveReference(v)};`)
   .join("\n");
 const css = `:root {\n${cssVars}\n}\n`;
 writeFileSync(resolve(root, "dist/css/tokens.css"), css);
@@ -36,8 +45,7 @@ writeFileSync(resolve(root, "dist/css/tokens.css"), css);
 // ── JS/TS constants ──────────────────────────────────────────────────────────
 mkdirSync(resolve(root, "dist/js"), { recursive: true });
 const jsEntries = Object.entries(flat)
-  .map(([k, v]) => `  "${k}": "${v}"`)
-  .join(",\n");
+  .map(([k, v]) => `  "${k}": "${resolveReference(v)}"`).join(",\n");
 const js = `export const tokens = {\n${jsEntries}\n};\n`;
 writeFileSync(resolve(root, "dist/js/index.mjs"), js);
 writeFileSync(resolve(root, "dist/js/index.js"), js.replace(/export const/g, "module.exports =").replace(" = {", " ({").replace(/\};\n$/, "});\n"));

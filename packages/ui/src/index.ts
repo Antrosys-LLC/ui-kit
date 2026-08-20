@@ -18,6 +18,10 @@ export { Cluster } from "./primitives/Cluster";
 export { Button } from "./components/feedback/Button";
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/feedback/Button";
 
+// ── Media ────────────────────────────────────────────────────────────────────
+export { Video } from "./components/media/Video";
+export type { VideoProps } from "./components/media/Video";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Add new component exports here as they are built.
 // Convention: keep alphabetical within each category group.
