@@ -8,7 +8,7 @@ const meta = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "rounded", "fullscreen"],
+      options: ["default", "rounded"],
     },
     size: {
       control: "select",
@@ -23,6 +23,10 @@ const meta = {
       control: "text",
       description: "Custom height (e.g., 250px)",
     },
+    embedType: {
+      control: "select",
+      options: ["html5", "youtube", "vimeo"],
+    },
   },
 } satisfies Meta<typeof Video>;
 
@@ -33,7 +37,7 @@ export const Default: Story = {
   args: {
     src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
     controls: true,
-    size: "full",
+    size: "lg",
   },
 };
 
@@ -51,14 +55,31 @@ export const WithPoster: Story = {
     src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
     poster: "https://media.w3.org/2010/05/sintel/poster.png",
     controls: true,
-    size: "xl",
+    size: "lg",
+  },
+};
+
+export const WithCaptions: Story = {
+  args: {
+    src: "https://vjs.zencdn.net/v/oceans.mp4",
+    poster: "https://vjs.zencdn.net/v/oceans.png",
+    controls: true,
+    size: "lg",
+    captions: [
+      {
+        src: "https://vjs.zencdn.net/v/oceans.vtt",
+        label: "English",
+        srcLang: "en",
+        default: true,
+      },
+    ],
   },
 };
 
 export const AutoplayMuted: Story = {
   args: {
     src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
-    autoPlay: true,
+    autoplay: true,
     muted: true,
     loop: true,
     controls: false,
@@ -66,25 +87,16 @@ export const AutoplayMuted: Story = {
   },
 };
 
-export const SmallSize: Story = {
+export const YouTubeEmbed: Story = {
   args: {
-    src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
-    controls: true,
-    size: "sm",
+    src: "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+    size: "lg",
   },
 };
 
-export const Fullscreen: Story = {
-  decorators: [
-    (Story) => (
-      <div style={{ position: "relative", width: "100%", height: "600px", overflow: "hidden" }}>
-        <Story />
-      </div>
-    ),
-  ],
+export const VimeoEmbed: Story = {
   args: {
-    src: "https://vjs.zencdn.net/v/oceans.mp4",
-    controls: true,
-    variant: "fullscreen",
+    src: "https://vimeo.com/76979871",
+    size: "lg",
   },
 };
