@@ -1,19 +1,63 @@
 @import "tailwindcss";
 
-/* ── Map design tokens → Tailwind v4 theme variables ──────────────────── */
+/* ── Global Design Tokens ───────────────────────────────────────────── */
+
+:root {
+  /* Lightbox base */
+  --lightbox-background: #111111;
+  --lightbox-foreground: #F5F1E8;
+
+  /* Glass UI */
+  --lightbox-glass: rgba(255, 255, 255, 0.12);
+  --lightbox-glass-hover: rgba(255, 255, 255, 0.2);
+  --lightbox-border: rgba(255, 255, 255, 0.22);
+  --lightbox-shadow: rgba(0, 0, 0, 0.3);
+
+  /* Background */
+  --lightbox-overlay: rgba(0, 0, 0, 0.12);
+  --lightbox-background-blur: 12px;
+  --lightbox-background-opacity: 0.50;
+
+  /* Accent */
+  --lightbox-accent: #3B82F6;
+  --lightbox-accent-hover: #60A5FA;
+  --lightbox-accent-active: #1D4ED8;
+
+  /* Navigation arrows */
+  --lightbox-arrow-bg: #000000;
+  --lightbox-arrow-color: #ffffff;
+
+  --lightbox-blue: #3B82F6;
+  --lightbox-blue-dark: #1D4ED8;
+  --lightbox-blue-glow: rgba(59, 130, 246, 0.55);
+}
+
+
+/* ── Tailwind v4 Theme ───────────────────────────────────────────────── */
+
 @theme {
-  /* Colors */
-  --color-brand:          var(--ant-color-brand-primary);
-  --color-brand-light:    var(--ant-color-brand-primary-lt);
-  --color-brand-dark:     var(--ant-color-brand-primary-dk);
-  --color-brand-accent:   var(--ant-color-brand-accent);
-  --color-success:        var(--ant-color-semantic-success);
-  --color-warning:        var(--ant-color-semantic-warning);
-  --color-error:          var(--ant-color-semantic-error);
-  --color-info:           var(--ant-color-semantic-info);
+  /* Brand */
+  --color-brand: var(--ant-color-brand-primary);
+  --color-brand-light: var(--ant-color-brand-primary-lt);
+  --color-brand-dark: var(--ant-color-brand-primary-dk);
+  --color-brand-accent: var(--ant-color-brand-accent);
+
+  /* Semantic */
+  --color-success: var(--ant-color-semantic-success);
+  --color-warning: var(--ant-color-semantic-warning);
+  --color-error: var(--ant-color-semantic-error);
+  --color-info: var(--ant-color-semantic-info);
+
+  /* Surface */
   --color-surface-border: var(--ant-color-surface-border);
-  --color-surface-text:   var(--ant-color-surface-text);
-  --color-neutral-100:    var(--ant-color-neutral-100);
+  --color-surface-text: var(--ant-color-surface-text);
+  --color-neutral-100: var(--ant-color-neutral-100);
+
+  /* Lightbox */
+  --color-lightbox-background: var(--lightbox-background);
+  --color-lightbox-foreground: var(--lightbox-foreground);
+  --color-lightbox-glass: var(--lightbox-glass);
+  --color-lightbox-accent: var(--lightbox-accent);
 
   /* Typography */
   --font-sans: var(--ant-typography-fontfamily-sans);
