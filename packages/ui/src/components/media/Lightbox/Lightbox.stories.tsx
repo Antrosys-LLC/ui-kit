@@ -11,6 +11,7 @@ const images = [
 const meta = {
   title: "Media/Lightbox",
   component: Lightbox,
+  tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },
@@ -54,8 +55,7 @@ export const Default: Story = {
                 height: "220px",
                 objectFit: "cover",
                 borderRadius: "1rem",
-                boxShadow:
-                  "0 20px 50px var(--lightbox-shadow)",
+                boxShadow: "0 20px 50px var(--lightbox-shadow)",
               }}
             />
 
@@ -65,12 +65,9 @@ export const Default: Story = {
               style={{
                 padding: "0.75rem 1.5rem",
                 borderRadius: "999px",
-                border:
-                  "1px solid var(--lightbox-border)",
-                background:
-                  "var(--lightbox-glass)",
-                color:
-                  "var(--lightbox-foreground)",
+                border: "1px solid var(--lightbox-border)",
+                background: "var(--lightbox-glass)",
+                color: "var(--lightbox-foreground)",
                 cursor: "pointer",
                 fontWeight: 600,
                 backdropFilter: "blur(10px)",
@@ -91,3 +88,5 @@ export const Default: Story = {
     );
   },
 };
+
+
