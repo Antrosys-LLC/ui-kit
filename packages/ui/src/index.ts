@@ -18,7 +18,12 @@ export { Cluster } from "./primitives/Cluster";
 export { Button } from "./components/feedback/Button";
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/feedback/Button";
 
+// ── Navigation ─────────────────────────────────────────────────────────────
+export { Breadcrumb } from "./components/navigation/Breadcrumb";
+export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Add new component exports here as they are built.
 // Convention: keep alphabetical within each category group.
 // ─────────────────────────────────────────────────────────────────────────────
+
