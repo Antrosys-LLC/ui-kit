@@ -141,7 +141,8 @@ export function ImageCarousel({
         "--swiper-pagination-bullet-inactive-color":
           "var(--ant-color-neutral-0)",
         "--swiper-pagination-bullet-inactive-opacity": "0.65",
-        "--swiper-pagination-bullet-size": "8px",
+        "--swiper-pagination-bullet-size":
+  "var(--ant-spacing-2)",
         "--swiper-pagination-bullet-horizontal-gap":
           "var(--ant-spacing-1)",
       }) as React.CSSProperties,
