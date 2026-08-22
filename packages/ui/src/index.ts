@@ -40,10 +40,19 @@ export { Lightbox } from "./components/media/Lightbox";
 
 export type { LightboxProps } from "./components/media/Lightbox";
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Data ─────────────────────────────────────────────────────────────────────
 
-// Add new component exports here as they are built.
+export { AvatarUserCard } from "./components/data/AvatarUserCard";
 
-// Convention: keep alphabetical within each category group.
+export type {
+  AvatarUserCardProps,
+  AvatarUserCardSize,
+  AvatarUserCardStatus,
+  SocialLink,
+} from "./components/data/AvatarUserCard";
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Navigation ───────────────────────────────────────────────────────────────
+
+export { Pagination } from "./components/navigation/Pagination";
+
+export type { PaginationProps } from "./components/navigation/Pagination";
