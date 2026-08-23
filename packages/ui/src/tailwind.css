@@ -64,6 +64,7 @@
   --z-toast: var(--ant-zIndex-toast);
   --z-tooltip: var(--ant-zIndex-tooltip);
 
+  /* Sidebar color tokens */
   --color-sidebar-bg: var(--ant-sidebar-bg);
   --color-sidebar-text: var(--ant-sidebar-text);
   --color-sidebar-text-secondary: var(--ant-sidebar-text-secondary);
@@ -75,6 +76,19 @@
   --color-sidebar-icon: var(--ant-sidebar-icon);
   --color-sidebar-icon-active-bg: var(--ant-sidebar-icon-active-bg);
   --color-sidebar-profile-bg: var(--ant-sidebar-profile-bg);
+
+  /* Sidebar dimension tokens */
+  --spacing-sidebar-width: var(--ant-sidebar-width);
+  --spacing-sidebar-header-height: var(--ant-sidebar-header-height);
+  --spacing-sidebar-item-height: var(--ant-sidebar-item-height);
+  --spacing-sidebar-child-height: var(--ant-sidebar-child-height);
+  --spacing-sidebar-icon-size: var(--ant-sidebar-icon-size);
+  --spacing-sidebar-collapse-button-offset: var(
+    --ant-sidebar-collapse-button-offset
+  );
+
+  /* Sidebar typography token */
+  --text-sidebar-section: var(--ant-sidebar-section-font-size);
 }
 
 :root.dark,

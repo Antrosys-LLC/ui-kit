@@ -36,42 +36,42 @@ function DeveloperAvatar() {
         cx="24"
         cy="24"
         r="24"
-        fill="var(--sidebar-icon-active-bg)"
+        fill="var(--ant-sidebar-icon-active-bg)"
       />
 
       <path
         d="M13 22C13 14.8 17.9 10 24 10C30.1 10 35 14.8 35 22V29H13V22Z"
-        fill="var(--sidebar-active-text)"
+        fill="var(--ant-sidebar-active-text)"
       />
 
       <path
         d="M17 21C17 16.6 20.1 14 24 14C27.9 14 31 16.6 31 21V26C31 30.4 27.9 34 24 34C20.1 34 17 30.4 17 26V21Z"
-        fill="var(--sidebar-bg)"
+        fill="var(--ant-sidebar-bg)"
       />
 
       <path
         d="M17 20C18 15.5 21 13.5 25 14C28 14.2 30 16 31 19C28 18 25 17 22 18C20 18.7 18.5 19.8 17 20Z"
-        fill="var(--sidebar-active-text)"
+        fill="var(--ant-sidebar-active-text)"
       />
 
-      <circle cx="21" cy="23" r="1" fill="var(--sidebar-text)" />
-      <circle cx="27" cy="23" r="1" fill="var(--sidebar-text)" />
+      <circle cx="21" cy="23" r="1" fill="var(--ant-sidebar-text)" />
+      <circle cx="27" cy="23" r="1" fill="var(--ant-sidebar-text)" />
 
       <path
         d="M21 27C22.5 28.5 25.5 28.5 27 27"
-        stroke="var(--sidebar-active-text)"
+        stroke="var(--ant-sidebar-active-text)"
         strokeWidth="1.4"
         strokeLinecap="round"
       />
 
       <path
         d="M11 44C11.8 37.5 16.8 33 24 33C31.2 33 36.2 37.5 37 44"
-        fill="var(--sidebar-active-text)"
+        fill="var(--ant-sidebar-active-text)"
       />
 
       <path
         d="M20 35L24 39L28 35"
-        stroke="var(--sidebar-bg)"
+        stroke="var(--ant-sidebar-bg)"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -85,9 +85,10 @@ function ChevronIcon({ open }: { open: boolean }) {
     <svg
       viewBox="0 0 20 20"
       fill="none"
-      className={`h-4 w-4 transition-transform duration-200 ${
-        open ? "rotate-180" : ""
-      }`}
+      className={clsx(
+        "h-4 w-4 transition-transform",
+        open && "rotate-180"
+      )}
       aria-hidden="true"
     >
       <path
@@ -123,15 +124,10 @@ export function Sidebar({
   const isActive = (item: SidebarItem): boolean => {
     if (activeRoute === item.route) return true;
 
-    return Boolean(
-      item.children?.some((child) => isActive(child))
-    );
+    return Boolean(item.children?.some((child) => isActive(child)));
   };
 
-  const renderItems = (
-    navigationItems: SidebarItem[],
-    level = 0
-  ) => {
+  const renderItems = (navigationItems: SidebarItem[], level = 0) => {
     return navigationItems.map((item) => {
       const active = isActive(item);
 
@@ -144,13 +140,14 @@ export function Sidebar({
       return (
         <li key={item.route} className="w-full">
           <div
-            className={`relative flex w-full items-center rounded-xl transition-all duration-200 ${
-              level > 0 && !collapsed ? "ml-4" : ""
-            }`}
+            className={clsx(
+              "relative flex w-full items-center rounded-xl transition-all",
+              level > 0 && !collapsed && "ml-4"
+            )}
           >
             {active && !collapsed && (
               <span
-                className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-full bg-[var(--sidebar-active-text)]"
+                className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-full bg-sidebar-active-text"
                 aria-hidden="true"
               />
             )}
@@ -169,23 +166,25 @@ export function Sidebar({
               }
               aria-label={collapsed ? item.label : undefined}
               title={collapsed ? item.label : undefined}
-              className={`group flex min-h-[44px] w-full min-w-0 items-center rounded-xl px-3 py-2.5 text-left text-sm font-medium cursor-pointer transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sidebar-active-text)] ${
+              className={clsx(
+                "group flex min-h-sidebar-item-height w-full min-w-0 cursor-pointer items-center rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-active-text",
                 active
-                  ? "bg-[var(--sidebar-active-bg)] text-[var(--sidebar-active-text)] shadow-sm"
-                  : "text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)]"
-              } ${
+                  ? "bg-sidebar-active-bg text-sidebar-active-text shadow-sm"
+                  : "text-sidebar-text hover:bg-sidebar-hover",
                 collapsed
                   ? "justify-center px-2.5"
                   : "gap-3"
-              }`}
+              )}
             >
               {item.icon && (
                 <span
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all duration-200 ${
+                  className={clsx(
+                    "flex h-sidebar-icon-size w-sidebar-icon-size shrink-0 items-center justify-center rounded-lg transition-all",
                     active
-                      ? "bg-[var(--sidebar-icon-active-bg)] text-[var(--sidebar-active-text)]"
-                      : "text-[var(--sidebar-icon)] group-hover:text-[var(--sidebar-active-text)]"
-                  } ${collapsed ? "h-10 w-10" : ""}`}
+                      ? "bg-sidebar-icon-active-bg text-sidebar-active-text"
+                      : "text-sidebar-icon group-hover:text-sidebar-active-text",
+                    collapsed && "h-10 w-10"
+                  )}
                   aria-hidden="true"
                 >
                   {item.icon}
@@ -199,16 +198,14 @@ export function Sidebar({
                   </span>
 
                   {item.badge !== undefined && (
-                    <span
-                      className="min-w-5 shrink-0 rounded-full bg-[var(--sidebar-badge)] px-2 py-0.5 text-center text-[11px] font-semibold text-white"
-                    >
+                    <span className="min-w-5 shrink-0 rounded-full bg-sidebar-badge px-2 py-0.5 text-xs font-semibold text-neutral-0">
                       {item.badge}
                     </span>
                   )}
 
                   {hasChildren && (
                     <span
-                      className="shrink-0 text-[var(--sidebar-text-secondary)]"
+                      className="shrink-0 text-sidebar-text-secondary"
                       aria-hidden="true"
                     >
                       <ChevronIcon open={isOpen} />
@@ -222,7 +219,7 @@ export function Sidebar({
           {hasChildren && isOpen && !collapsed && (
             <ul className="relative ml-7 mt-1 space-y-1 pl-5">
               <span
-                className="absolute bottom-1 left-1 top-1 w-px bg-[var(--sidebar-border)]"
+                className="absolute bottom-1 left-1 top-1 w-px bg-sidebar-border"
                 aria-hidden="true"
               />
 
@@ -234,15 +231,16 @@ export function Sidebar({
                     <button
                       type="button"
                       onClick={() => onNavigate?.(child.route)}
-                      className={`relative flex min-h-[38px] w-full items-center rounded-lg px-3 py-2 text-sm cursor-pointer transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sidebar-active-text)] ${
+                      className={clsx(
+                        "relative flex min-h-sidebar-child-height w-full cursor-pointer items-center rounded-lg px-3 py-2 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-active-text",
                         childActive
-                          ? "bg-[var(--sidebar-active-bg)] font-medium text-[var(--sidebar-active-text)]"
-                          : "text-[var(--sidebar-text-secondary)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text)]"
-                      }`}
+                          ? "bg-sidebar-active-bg font-medium text-sidebar-active-text"
+                          : "text-sidebar-text-secondary hover:bg-sidebar-hover hover:text-sidebar-text"
+                      )}
                     >
                       {childActive && (
                         <span
-                          className="absolute -left-5 h-1.5 w-1.5 rounded-full bg-[var(--sidebar-active-text)]"
+                          className="absolute -left-5 h-1.5 w-1.5 rounded-full bg-sidebar-active-text"
                           aria-hidden="true"
                         />
                       )}
@@ -269,35 +267,39 @@ export function Sidebar({
 
   return (
     <aside
-      className={`flex h-full min-h-screen flex-col border-r border-[var(--sidebar-border)] bg-[var(--sidebar-bg)] ${
-        collapsed ? "w-20" : "w-[260px]"
-      } transition-[width] duration-300 ease-in-out ${className ?? ""}`}
+      className={clsx(
+        "flex h-full min-h-screen flex-col border-r border-sidebar-border bg-sidebar-bg transition-[width] duration-300 ease-in-out",
+        collapsed ? "w-20" : "w-sidebar-width",
+        className
+      )}
       {...props}
     >
       {/* BRAND */}
       <div
-        className={`flex h-[76px] shrink-0 items-center border-b border-[var(--sidebar-border)] ${
+        className={clsx(
+          "flex h-sidebar-header-height shrink-0 items-center border-b border-sidebar-border",
           collapsed
             ? "justify-center px-3"
             : "justify-between px-4"
-        }`}
+        )}
       >
         <div
-          className={`flex min-w-0 items-center ${
+          className={clsx(
+            "flex min-w-0 items-center",
             collapsed ? "justify-center" : "gap-3"
-          }`}
+          )}
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--sidebar-active-bg)] text-lg font-bold text-[var(--sidebar-active-text)]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sidebar-active-bg text-lg font-bold text-sidebar-active-text">
             ✦
           </div>
 
           {!collapsed && (
             <div className="min-w-0">
-              <p className="truncate text-sm font-bold text-[var(--sidebar-text)]">
+              <p className="truncate text-sm font-bold text-sidebar-text">
                 AntroSys
               </p>
 
-              <p className="truncate text-xs text-[var(--sidebar-text-secondary)]">
+              <p className="truncate text-xs text-sidebar-text-secondary">
                 Workspace
               </p>
             </div>
@@ -318,11 +320,11 @@ export function Sidebar({
                 ? "Expand sidebar"
                 : "Collapse sidebar"
             }
-            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--sidebar-border)] bg-[var(--sidebar-bg)] text-[var(--sidebar-text-secondary)] shadow-sm transition-all duration-200 hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-active-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sidebar-active-text)] ${
-              collapsed
-                ? "absolute left-[68px] top-5 z-10"
-                : ""
-            }`}
+            className={clsx(
+              "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-sidebar-border bg-sidebar-bg text-sidebar-text-secondary shadow-sm transition-all hover:bg-sidebar-hover hover:text-sidebar-active-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-active-text",
+              collapsed &&
+                "absolute left-sidebar-collapse-button-offset top-5 z-10"
+            )}
           >
             {collapsed ? "→" : "←"}
           </button>
@@ -335,7 +337,7 @@ export function Sidebar({
         className="flex-1 overflow-y-auto px-3 py-5"
       >
         {!collapsed && (
-          <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--sidebar-text-secondary)]">
+          <p className="mb-3 px-3 text-sidebar-section font-bold uppercase tracking-[0.14em] text-sidebar-text-secondary">
             Navigation
           </p>
         )}
@@ -347,16 +349,17 @@ export function Sidebar({
 
       {/* USER PROFILE */}
       {userProfile && (
-        <div className="shrink-0 border-t border-[var(--sidebar-border)] p-3">
+        <div className="shrink-0 border-t border-sidebar-border p-3">
           <div
-            className={`flex items-center rounded-xl bg-[var(--sidebar-profile-bg)] transition-all duration-200 hover:bg-[var(--sidebar-hover)] ${
+            className={clsx(
+              "flex items-center rounded-xl bg-sidebar-profile-bg transition-all hover:bg-sidebar-hover",
               collapsed
                 ? "justify-center p-1"
                 : "gap-3 p-2.5"
-            }`}
+            )}
           >
             <div className="relative shrink-0">
-              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[var(--sidebar-icon-active-bg)] text-sm font-bold text-[var(--sidebar-active-text)]">
+              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-sidebar-icon-active-bg text-sm font-bold text-sidebar-active-text">
                 {userProfile.avatar ? (
                   <img
                     src={userProfile.avatar}
@@ -369,19 +372,19 @@ export function Sidebar({
               </div>
 
               <span
-                className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-[var(--sidebar-profile-bg)] bg-[var(--sidebar-active-text)]"
+                className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-sidebar-profile-bg bg-sidebar-active-text"
                 aria-label="Online"
               />
             </div>
 
             {!collapsed && (
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-[var(--sidebar-text)]">
+                <p className="truncate text-sm font-semibold text-sidebar-text">
                   {userProfile.name}
                 </p>
 
                 {userProfile.role && (
-                  <p className="mt-0.5 truncate text-xs text-[var(--sidebar-text-secondary)]">
+                  <p className="mt-0.5 truncate text-xs text-sidebar-text-secondary">
                     {userProfile.role}
                   </p>
                 )}
