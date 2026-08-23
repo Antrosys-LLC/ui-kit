@@ -6,9 +6,13 @@ import {
   useState,
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
+  type MouseEvent as ReactMouseEvent,
 } from "react";
 
 export interface LightboxProps {
+  /** Determines if the lightbox is currently open and visible. */
+  isOpen?: boolean;
+
   /** Image URL displayed when the lightbox opens. */
   src: string;
 
@@ -79,17 +83,17 @@ function NavigationButton({ direction, pressed, onClick, onPressedChange }: Navi
       type="button"
       aria-label={isPrevious ? "Previous image" : "Next image"}
       aria-pressed={pressed}
-      onPointerDown={(event) => {
+      onPointerDown={(event: ReactPointerEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         onPressedChange(true);
       }}
-      onPointerUp={(event) => {
+      onPointerUp={(event: ReactPointerEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         onPressedChange(false);
       }}
       onPointerCancel={() => onPressedChange(false)}
       onPointerLeave={() => onPressedChange(false)}
-      onClick={(event) => {
+      onClick={(event: ReactMouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         onPressedChange(false);
         onClick();
@@ -97,8 +101,8 @@ function NavigationButton({ direction, pressed, onClick, onPressedChange }: Navi
       whileHover={{
         scale: 1.12,
         x: isPrevious ? -4 : 4,
-        backgroundColor: "var(--ant-lightbox-accent)",
-        borderColor: "var(--ant-lightbox-accent)",
+        backgroundColor: "var(--ant-lightbox-accentHover)",
+        borderColor: "var(--ant-lightbox-accentHover)",
         color: "var(--ant-lightbox-arrowColor)",
         boxShadow:
           "0 0 0 var(--ant-spacing-1) var(--ant-lightbox-accentGlow), var(--ant-shadow-lg)",
@@ -140,7 +144,7 @@ function NavigationButton({ direction, pressed, onClick, onPressedChange }: Navi
  * Plus or Equal zooms in.
  * Minus zooms out.
  */
-export function Lightbox({
+function LightboxBase({
   src,
   alt = "Image",
   thumbnails = [],
@@ -148,7 +152,7 @@ export function Lightbox({
   autoPlay = false,
   autoPlayInterval = 3000,
   onClose,
-}: LightboxProps) {
+}: Omit<LightboxProps, "isOpen">) {
   const images = thumbnails.length > 0 ? thumbnails : [src];
   const initialIndex = Math.max(images.indexOf(src), 0);
 
@@ -416,7 +420,7 @@ export function Lightbox({
             opacity: 1,
             y: 0,
           }}
-          onClick={(event) => event.stopPropagation()}
+          onClick={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
           style={{
             position: "absolute",
             top: "var(--ant-spacing-5)",
@@ -448,7 +452,7 @@ export function Lightbox({
             ref={closeButtonRef}
             type="button"
             aria-label="Close image viewer"
-            onClick={(event) => {
+            onClick={(event: ReactMouseEvent<HTMLButtonElement>) => {
               event.stopPropagation();
               onClose();
             }}
@@ -488,7 +492,7 @@ export function Lightbox({
             opacity: 1,
             scale: 1,
           }}
-          onClick={(event) => event.stopPropagation()}
+          onClick={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
           style={{
             position: "relative",
             zIndex: "var(--ant-zIndex-raised)",
@@ -581,7 +585,7 @@ export function Lightbox({
               opacity: 1,
               y: 0,
             }}
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
             style={{
               position: "relative",
               zIndex: "var(--ant-zIndex-raised)",
@@ -660,7 +664,7 @@ export function Lightbox({
                 y: 8,
                 scale: 0.9,
               }}
-              onClick={(event) => event.stopPropagation()}
+              onClick={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
               style={{
                 position: "absolute",
                 bottom: "var(--ant-spacing-4)",
@@ -683,3 +687,22 @@ export function Lightbox({
     </FocusTrap>
   );
 }
+
+/**
+ * Responsive image lightbox with navigation, thumbnails, zoom,
+ * autoplay, keyboard controls, focus trapping, and body scroll locking.
+ *
+ * Keyboard controls:
+ * Escape closes the lightbox.
+ * ArrowLeft and ArrowRight navigate between images.
+ * Plus or Equal zooms in.
+ * Minus zooms out.
+ */
+export function Lightbox({ isOpen = true, ...props }: LightboxProps) {
+  return (
+    <AnimatePresence>
+      {isOpen && <LightboxBase {...props} />}
+    </AnimatePresence>
+  );
+}
+

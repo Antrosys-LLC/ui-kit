@@ -92,15 +92,17 @@ export const Default: Story = {
   render: () => {
     const [open, setOpen] = useState(false);
 
-    return open ? (
-      <Lightbox
-        src={images[0]}
-        alt="Beautiful landscape"
-        thumbnails={images}
-        onClose={() => setOpen(false)}
-      />
-    ) : (
-      <Preview image={images[0]} label="Open Image" onOpen={() => setOpen(true)} />
+    return (
+      <>
+        <Preview image={images[0]} label="Open Image" onOpen={() => setOpen(true)} />
+        <Lightbox
+          isOpen={open}
+          src={images[0]}
+          alt="Beautiful landscape"
+          thumbnails={images}
+          onClose={() => setOpen(false)}
+        />
+      </>
     );
   },
 };
@@ -109,10 +111,11 @@ export const SingleImage: Story = {
   render: () => {
     const [open, setOpen] = useState(false);
 
-    return open ? (
-      <Lightbox src={images[0]} alt="Single landscape" onClose={() => setOpen(false)} />
-    ) : (
-      <Preview image={images[0]} label="Open Single Image" onOpen={() => setOpen(true)} />
+    return (
+      <>
+        <Preview image={images[0]} label="Open Single Image" onOpen={() => setOpen(true)} />
+        <Lightbox isOpen={open} src={images[0]} alt="Single landscape" onClose={() => setOpen(false)} />
+      </>
     );
   },
 };
@@ -121,16 +124,18 @@ export const NoZoom: Story = {
   render: () => {
     const [open, setOpen] = useState(false);
 
-    return open ? (
-      <Lightbox
-        src={images[0]}
-        alt="Landscape without zoom"
-        thumbnails={images}
-        zoomEnabled={false}
-        onClose={() => setOpen(false)}
-      />
-    ) : (
-      <Preview image={images[0]} label="Open Without Zoom" onOpen={() => setOpen(true)} />
+    return (
+      <>
+        <Preview image={images[0]} label="Open Without Zoom" onOpen={() => setOpen(true)} />
+        <Lightbox
+          isOpen={open}
+          src={images[0]}
+          alt="Landscape without zoom"
+          thumbnails={images}
+          zoomEnabled={false}
+          onClose={() => setOpen(false)}
+        />
+      </>
     );
   },
 };
@@ -139,16 +144,18 @@ export const AutoPlayOff: Story = {
   render: () => {
     const [open, setOpen] = useState(false);
 
-    return open ? (
-      <Lightbox
-        src={images[0]}
-        alt="AutoPlay disabled"
-        thumbnails={images}
-        autoPlay={false}
-        onClose={() => setOpen(false)}
-      />
-    ) : (
-      <Preview image={images[0]} label="Open AutoPlay Off" onOpen={() => setOpen(true)} />
+    return (
+      <>
+        <Preview image={images[0]} label="Open AutoPlay Off" onOpen={() => setOpen(true)} />
+        <Lightbox
+          isOpen={open}
+          src={images[0]}
+          alt="AutoPlay disabled"
+          thumbnails={images}
+          autoPlay={false}
+          onClose={() => setOpen(false)}
+        />
+      </>
     );
   },
 };
@@ -157,17 +164,19 @@ export const AutoPlayOn: Story = {
   render: () => {
     const [open, setOpen] = useState(false);
 
-    return open ? (
-      <Lightbox
-        src={images[0]}
-        alt="AutoPlay enabled"
-        thumbnails={images}
-        autoPlay
-        autoPlayInterval={3000}
-        onClose={() => setOpen(false)}
-      />
-    ) : (
-      <Preview image={images[0]} label="Open AutoPlay On" onOpen={() => setOpen(true)} />
+    return (
+      <>
+        <Preview image={images[0]} label="Open AutoPlay On" onOpen={() => setOpen(true)} />
+        <Lightbox
+          isOpen={open}
+          src={images[0]}
+          alt="AutoPlay enabled"
+          thumbnails={images}
+          autoPlay
+          autoPlayInterval={3000}
+          onClose={() => setOpen(false)}
+        />
+      </>
     );
   },
 };
@@ -176,16 +185,18 @@ export const Accessibility: Story = {
   render: () => {
     const [open, setOpen] = useState(false);
 
-    return open ? (
-      <Lightbox
-        src={images[0]}
-        alt="Accessible landscape viewer"
-        thumbnails={images}
-        autoPlay={false}
-        onClose={() => setOpen(false)}
-      />
-    ) : (
-      <Preview image={images[0]} label="Open Accessible Lightbox" onOpen={() => setOpen(true)} />
+    return (
+      <>
+        <Preview image={images[0]} label="Open Accessible Lightbox" onOpen={() => setOpen(true)} />
+        <Lightbox
+          isOpen={open}
+          src={images[0]}
+          alt="Accessible landscape viewer"
+          thumbnails={images}
+          autoPlay={false}
+          onClose={() => setOpen(false)}
+        />
+      </>
     );
   },
 };
