@@ -15,17 +15,27 @@ Antrosys design system monorepo — tokens, components, and Storybook.
 # Clone and install
 git clone https://github.com/antrosys/ui-kit.git
 cd ui-kit
+
+# If pnpm is not already available in your shell, enable it once:
+corepack enable
+# or, on systems without a global pnpm shim:
+# npx -y pnpm@9.9.0 install
+
 pnpm install
 
-# Build tokens first
+# Build design tokens
 pnpm --filter @antrosys/tokens build
 
 # Run Storybook
 pnpm storybook
+# If the shell still cannot find pnpm, use:
+# npx -y pnpm@9.9.0 --filter @antrosys/ui storybook --host 0.0.0.0
 
 # Type-check everything
 pnpm type-check
 ```
+
+> Note: On Windows, `pnpm` can fail in some terminals if the Corepack shim is not enabled. Running `corepack enable` once usually fixes that; otherwise use `npx -y pnpm@9.9.0 ...` for the same commands.
 
 ## Using in a project
 
