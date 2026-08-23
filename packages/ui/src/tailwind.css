@@ -1,106 +1,80 @@
-
 @import "tailwindcss";
 
-/* ── Global Design Tokens ───────────────────────────────────────────── */
-
-:root {
-  /* Lightbox base */
-  --lightbox-background: #111111;
-  --lightbox-foreground: #F5F1E8;
-
-  /* Glass UI */
-  --lightbox-glass: rgba(255, 255, 255, 0.12);
-  --lightbox-glass-hover: rgba(255, 255, 255, 0.2);
-  --lightbox-border: rgba(255, 255, 255, 0.22);
-  --lightbox-shadow: rgba(0, 0, 0, 0.3);
-
-  /* Background */
-  --lightbox-overlay: rgba(0, 0, 0, 0.12);
-  --lightbox-background-blur: 12px;
-  --lightbox-background-opacity: 0.50;
-
-  /* Accent */
-  --lightbox-accent: #3B82F6;
-  --lightbox-accent-hover: #60A5FA;
-  --lightbox-accent-active: #1D4ED8;
-
-  /* Navigation arrows */
-  --lightbox-arrow-bg: #000000;
-  --lightbox-arrow-color: #ffffff;
-  --lightbox-blue: #3B82F6;
-  --lightbox-blue-dark: #1D4ED8;
-  --lightbox-blue-glow: rgba(59, 130, 246, 0.55);
-}
-
-
-/* ── Tailwind v4 Theme ───────────────────────────────────────────────── */
-
 @theme {
-  /* Brand */
   --color-brand: var(--ant-color-brand-primary);
   --color-brand-light: var(--ant-color-brand-primary-lt);
   --color-brand-dark: var(--ant-color-brand-primary-dk);
   --color-brand-accent: var(--ant-color-brand-accent);
 
-  /* Semantic */
   --color-success: var(--ant-color-semantic-success);
   --color-warning: var(--ant-color-semantic-warning);
   --color-error: var(--ant-color-semantic-error);
   --color-info: var(--ant-color-semantic-info);
 
-  /* Surface */
+  --color-surface-bg: var(--ant-color-surface-bg);
+  --color-surface-card: var(--ant-color-surface-bg-card);
   --color-surface-border: var(--ant-color-surface-border);
   --color-surface-text: var(--ant-color-surface-text);
+  --color-surface-text-sub: var(--ant-color-surface-text-sub);
+
+  --color-neutral-0: var(--ant-color-neutral-0);
+  --color-neutral-50: var(--ant-color-neutral-50);
   --color-neutral-100: var(--ant-color-neutral-100);
+  --color-neutral-200: var(--ant-color-neutral-200);
+  --color-neutral-300: var(--ant-color-neutral-300);
+  --color-neutral-400: var(--ant-color-neutral-400);
+  --color-neutral-500: var(--ant-color-neutral-500);
+  --color-neutral-600: var(--ant-color-neutral-600);
+  --color-neutral-700: var(--ant-color-neutral-700);
+  --color-neutral-800: var(--ant-color-neutral-800);
+  --color-neutral-900: var(--ant-color-neutral-900);
 
-  /* Lightbox */
-  --color-lightbox-background: var(--lightbox-background);
-  --color-lightbox-foreground: var(--lightbox-foreground);
-  --color-lightbox-glass: var(--lightbox-glass);
-  --color-lightbox-accent: var(--lightbox-accent);
+  --font-sans: var(--ant-typography-fontFamily-sans);
+  --font-mono: var(--ant-typography-fontFamily-mono);
 
-  /* Typography */
-  --font-sans: var(--ant-typography-fontfamily-sans);
-  --font-mono: var(--ant-typography-fontfamily-mono);
-}
+  --text-xs: var(--ant-typography-fontSize-xs);
+  --text-sm: var(--ant-typography-fontSize-sm);
+  --text-base: var(--ant-typography-fontSize-base);
+  --text-md: var(--ant-typography-fontSize-md);
+  --text-lg: var(--ant-typography-fontSize-lg);
+  --text-xl: var(--ant-typography-fontSize-xl);
+  --text-2xl: var(--ant-typography-fontSize-2xl);
+  --text-3xl: var(--ant-typography-fontSize-3xl);
+  --text-4xl: var(--ant-typography-fontSize-4xl);
 
+  --radius-none: var(--ant-radius-none);
+  --radius-sm: var(--ant-radius-sm);
+  --radius-md: var(--ant-radius-md);
+  --radius-lg: var(--ant-radius-lg);
+  --radius-xl: var(--ant-radius-xl);
+  --radius-2xl: var(--ant-radius-2xl);
+  --radius-full: var(--ant-radius-full);
 
-/* ── Sidebar Design Tokens ───────────────────────────────────────────── */
+  --shadow-sm: var(--ant-shadow-sm);
+  --shadow-md: var(--ant-shadow-md);
+  --shadow-lg: var(--ant-shadow-lg);
+  --shadow-xl: var(--ant-shadow-xl);
 
-:root {
-  --sidebar-bg: #ffffff;
-  --sidebar-text: #111827;
-  --sidebar-text-secondary: #6b7280;
-  --sidebar-border: #e5e7eb;
-  --sidebar-active-bg: #f3e8ff;
-  --sidebar-active-text: #7c3aed;
-  --sidebar-hover: #f9fafb;
-  --sidebar-badge: #ef4444;
-  --sidebar-icon: #9ca3af;
-  --sidebar-icon-active-bg: #ede9fe;
-  --sidebar-profile-bg: #fafafa;
-}
-/* Sidebar design tokens */
+  --z-base: var(--ant-zIndex-base);
+  --z-raised: var(--ant-zIndex-raised);
+  --z-dropdown: var(--ant-zIndex-dropdown);
+  --z-sticky: var(--ant-zIndex-sticky);
+  --z-overlay: var(--ant-zIndex-overlay);
+  --z-modal: var(--ant-zIndex-modal);
+  --z-toast: var(--ant-zIndex-toast);
+  --z-tooltip: var(--ant-zIndex-tooltip);
 
-:root {
-  --ant-sidebar-bg: var(--ant-sidebar-bg);
-  --ant-sidebar-text: var(--ant-sidebar-text);
-  --ant-sidebar-text-secondary: var(--ant-sidebar-text-secondary);
-  --ant-sidebar-border: var(--ant-sidebar-border);
-  --ant-sidebar-active-bg: var(--ant-sidebar-active-bg);
-  --ant-sidebar-active-text: var(--ant-sidebar-active-text);
-  --ant-sidebar-hover: var(--ant-sidebar-hover);
-  --ant-sidebar-badge: var(--ant-sidebar-badge);
-  --ant-sidebar-icon: var(--ant-sidebar-icon);
-  --ant-sidebar-icon-active-bg: var(--ant-sidebar-icon-active-bg);
-  --ant-sidebar-profile-bg: var(--ant-sidebar-profile-bg);
-  --ant-sidebar-width: var(--ant-sidebar-width);
-  --ant-sidebar-header-height: var(--ant-sidebar-header-height);
-  --ant-sidebar-item-height: var(--ant-sidebar-item-height);
-  --ant-sidebar-child-height: var(--ant-sidebar-child-height);
-  --ant-sidebar-icon-size: var(--ant-sidebar-icon-size);
-  --ant-sidebar-collapse-button-offset: var(--ant-sidebar-collapse-button-offset);
-  --ant-sidebar-section-font-size: var(--ant-sidebar-section-font-size);
+  --color-sidebar-bg: var(--ant-sidebar-bg);
+  --color-sidebar-text: var(--ant-sidebar-text);
+  --color-sidebar-text-secondary: var(--ant-sidebar-text-secondary);
+  --color-sidebar-border: var(--ant-sidebar-border);
+  --color-sidebar-active-bg: var(--ant-sidebar-active-bg);
+  --color-sidebar-active-text: var(--ant-sidebar-active-text);
+  --color-sidebar-hover: var(--ant-sidebar-hover);
+  --color-sidebar-badge: var(--ant-sidebar-badge);
+  --color-sidebar-icon: var(--ant-sidebar-icon);
+  --color-sidebar-icon-active-bg: var(--ant-sidebar-icon-active-bg);
+  --color-sidebar-profile-bg: var(--ant-sidebar-profile-bg);
 }
 
 :root.dark,
@@ -117,18 +91,4 @@
   --ant-sidebar-icon: var(--ant-sidebar-dark-icon);
   --ant-sidebar-icon-active-bg: var(--ant-sidebar-dark-icon-active-bg);
   --ant-sidebar-profile-bg: var(--ant-sidebar-dark-profile-bg);
-}
-
-@theme {
-  --color-sidebar-bg: var(--ant-sidebar-bg);
-  --color-sidebar-text: var(--ant-sidebar-text);
-  --color-sidebar-text-secondary: var(--ant-sidebar-text-secondary);
-  --color-sidebar-border: var(--ant-sidebar-border);
-  --color-sidebar-active-bg: var(--ant-sidebar-active-bg);
-  --color-sidebar-active-text: var(--ant-sidebar-active-text);
-  --color-sidebar-hover: var(--ant-sidebar-hover);
-  --color-sidebar-badge: var(--ant-sidebar-badge);
-  --color-sidebar-icon: var(--ant-sidebar-icon);
-  --color-sidebar-icon-active-bg: var(--ant-sidebar-icon-active-bg);
-  --color-sidebar-profile-bg: var(--ant-sidebar-profile-bg);
 }
