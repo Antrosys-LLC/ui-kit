@@ -33,6 +33,15 @@ export type {
   ButtonVariant,
   ButtonSize,
 } from "./components/feedback/Button";
+<<<<<<< HEAD
+=======
+
+// ── Media ────────────────────────────────────────────────────────────────────
+
+export { Lightbox } from "./components/media/Lightbox";
+
+export type { LightboxProps } from "./components/media/Lightbox";
+>>>>>>> origin/main
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
@@ -46,6 +55,7 @@ export type {
 } from "./components/data/AvatarUserCard";
 
 // ── Media ────────────────────────────────────────────────────────────────────
+<<<<<<< HEAD
 
 export { ImageCarousel } from "./components/media/ImageCarousel";
 
@@ -64,10 +74,19 @@ export type {
   NavbarProps,
 } from "./components/navigation/Navbar";
 
+=======
+export { Video } from "./components/media/Video";
+export type { VideoProps, CaptionTrack, VideoVariant, VideoSize } from "./components/media/Video";
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+export { Breadcrumb } from "./components/navigation/Breadcrumb";
+export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
+>>>>>>> origin/main
 export { Pagination } from "./components/navigation/Pagination";
 
 export type { PaginationProps } from "./components/navigation/Pagination";
 
+<<<<<<< HEAD
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Add new component exports here as they are built.
@@ -75,3 +94,5 @@ export type { PaginationProps } from "./components/navigation/Pagination";
 // Convention: keep alphabetical within each category group.
 
 // ─────────────────────────────────────────────────────────────────────────────
+=======
+>>>>>>> origin/main

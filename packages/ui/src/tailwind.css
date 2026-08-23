@@ -1,21 +1,50 @@
 @import "tailwindcss";
+@import "@antrosys/tokens/css";
 
-/* ── Map design tokens → Tailwind v4 theme variables ──────────────────── */
 @theme {
-  /* Colors */
-  --color-brand:          var(--ant-color-brand-primary);
-  --color-brand-light:    var(--ant-color-brand-primary-lt);
-  --color-brand-dark:     var(--ant-color-brand-primary-dk);
-  --color-brand-accent:   var(--ant-color-brand-accent);
-  --color-success:        var(--ant-color-semantic-success);
-  --color-warning:        var(--ant-color-semantic-warning);
-  --color-error:          var(--ant-color-semantic-error);
-  --color-info:           var(--ant-color-semantic-info);
-  --color-surface-border: var(--ant-color-surface-border);
-  --color-surface-text:   var(--ant-color-surface-text);
-  --color-neutral-100:    var(--ant-color-neutral-100);
+  --color-brand: var(--ant-color-brand-primary);
+  --color-brand-light: var(--ant-color-brand-primary-lt);
+  --color-brand-dark: var(--ant-color-brand-primary-dk);
+  --color-brand-accent: var(--ant-color-brand-accent);
 
-  /* Typography */
-  --font-sans: var(--ant-typography-fontfamily-sans);
-  --font-mono: var(--ant-typography-fontfamily-mono);
+  --color-success: var(--ant-color-semantic-success);
+  --color-warning: var(--ant-color-semantic-warning);
+  --color-error: var(--ant-color-semantic-error);
+  --color-info: var(--ant-color-semantic-info);
+
+  --color-surface-bg: var(--ant-color-surface-bg);
+  --color-surface-bg-card: var(--ant-color-surface-bg-card);
+  --color-surface-border: var(--ant-color-surface-border);
+  --color-surface-text: var(--ant-color-surface-text);
+  --color-surface-text-sub: var(--ant-color-surface-text-sub);
+
+  --color-neutral-0: var(--ant-color-neutral-0);
+  --color-neutral-50: var(--ant-color-neutral-50);
+  --color-neutral-100: var(--ant-color-neutral-100);
+  --color-neutral-200: var(--ant-color-neutral-200);
+  --color-neutral-300: var(--ant-color-neutral-300);
+  --color-neutral-400: var(--ant-color-neutral-400);
+  --color-neutral-500: var(--ant-color-neutral-500);
+  --color-neutral-600: var(--ant-color-neutral-600);
+  --color-neutral-700: var(--ant-color-neutral-700);
+  --color-neutral-800: var(--ant-color-neutral-800);
+  --color-neutral-900: var(--ant-color-neutral-900);
+
+  --color-lightbox-background: var(--ant-lightbox-background);
+  --color-lightbox-foreground: var(--ant-lightbox-foreground);
+  --color-lightbox-glass: var(--ant-lightbox-glass);
+  --color-lightbox-border: var(--ant-lightbox-border);
+  --color-lightbox-shadow: var(--ant-lightbox-shadow);
+  --color-lightbox-overlay: var(--ant-lightbox-overlay);
+  --color-lightbox-background-blur: var(--ant-lightbox-backgroundBlur);
+  --color-lightbox-background-opacity: var(--ant-lightbox-backgroundOpacity);
+  --color-lightbox-accent: var(--ant-lightbox-accent);
+  --color-lightbox-accent-hover: var(--ant-lightbox-accentHover);
+  --color-lightbox-accent-active: var(--ant-lightbox-accentActive);
+  --color-lightbox-arrow-background: var(--ant-lightbox-arrowBackground);
+  --color-lightbox-arrow-color: var(--ant-lightbox-arrowColor);
+  --color-lightbox-accent-glow: var(--ant-lightbox-accentGlow);
+
+  --font-sans: var(--ant-typography-fontFamily-sans);
+  --font-mono: var(--ant-typography-fontFamily-mono);
 }
