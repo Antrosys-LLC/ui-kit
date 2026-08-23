@@ -229,7 +229,7 @@ export function Navbar({
   return (
     <header
       className={clsx(
-        "sticky top-0 z-50 w-full transition-colors",
+        "sticky top-0 z-[var(--ant-zIndex-sticky)] w-full transition-colors",
         isTransparent
           ? [
               "bg-transparent",
@@ -312,7 +312,7 @@ export function Navbar({
                         "absolute left-0 top-full mt-[var(--ant-spacing-2)] min-w-[var(--ant-spacing-48)]",
                         "rounded-[var(--ant-radius-md)] border",
                         surfaceClasses,
-                        "p-[var(--ant-spacing-2)] shadow-lg",
+                        "p-[var(--ant-spacing-2)] shadow-[var(--ant-shadow-lg)]",
                       )}
                     >
                       {link.children?.map((child) => {
@@ -419,7 +419,7 @@ export function Navbar({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 top-[var(--ant-spacing-16)] z-40 bg-[var(--ant-color-neutral-900)]/40 md:hidden"
+              className="fixed inset-0 top-[var(--ant-spacing-16)] z-[var(--ant-zIndex-overlay)] bg-[var(--ant-color-neutral-900)]/40 md:hidden"
             />
 
             <motion.div
@@ -429,7 +429,7 @@ export function Navbar({
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: durationSlow }}
               className={clsx(
-                "fixed bottom-0 right-0 top-[var(--ant-spacing-16)] z-50 w-[min(90vw,var(--ant-spacing-96))]",
+                "fixed bottom-0 right-0 top-[var(--ant-spacing-16)] z-[var(--ant-zIndex-modal)] w-[min(90vw,var(--ant-spacing-96))]",
                 "overflow-y-auto border-l",
                 surfaceClasses,
                 "p-[var(--ant-spacing-4)] md:hidden",

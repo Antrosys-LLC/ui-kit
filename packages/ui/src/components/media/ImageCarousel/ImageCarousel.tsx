@@ -6,7 +6,10 @@ import type { Swiper as SwiperInstance } from "swiper";
 
 import "swiper/css";
 import "swiper/css/pagination";
+import { tokens } from "@antrosys/tokens";
 import { useTheme } from "../../../hooks/useTheme";
+
+const durationSlower = parseInt(tokens["motion-duration-slower"], 10);
 
 export interface CarouselImage {
   /** Full-size image URL */
@@ -282,7 +285,7 @@ export function ImageCarousel({
               : false
           }
           loop={hasMultipleImages}
-          speed={prefersReducedMotion ? 0 : 450}
+          speed={prefersReducedMotion ? 0 : durationSlower}
           onSwiper={setSwiper}
           onSlideChange={(instance) => {
             setActiveIndex(instance.realIndex);
@@ -342,12 +345,12 @@ export function ImageCarousel({
               aria-label="Show previous image"
               onClick={goToPreviousSlide}
               className={clsx(
-                "absolute left-[var(--ant-spacing-2)] top-1/2 z-10",
+                "absolute left-[var(--ant-spacing-2)] top-1/2 z-[var(--ant-zIndex-raised)]",
                 "-translate-y-1/2",
                 "flex h-[var(--ant-spacing-10)] w-[var(--ant-spacing-10)] items-center justify-center rounded-[var(--ant-radius-full)]",
                 "bg-[var(--ant-color-neutral-900)]/60",
                 "text-[var(--ant-color-neutral-0)]",
-                "shadow-md backdrop-blur-sm",
+                "shadow-[var(--ant-shadow-md)] backdrop-blur-sm",
                 "transition-all duration-[var(--ant-motion-duration-normal)]",
                 "hover:scale-105",
                 "hover:bg-[var(--ant-color-brand-primary)]",
@@ -369,12 +372,12 @@ export function ImageCarousel({
               aria-label="Show next image"
               onClick={goToNextSlide}
               className={clsx(
-                "absolute right-[var(--ant-spacing-2)] top-1/2 z-10",
+                "absolute right-[var(--ant-spacing-2)] top-1/2 z-[var(--ant-zIndex-raised)]",
                 "-translate-y-1/2",
                 "flex h-[var(--ant-spacing-10)] w-[var(--ant-spacing-10)] items-center justify-center rounded-[var(--ant-radius-full)]",
                 "bg-[var(--ant-color-neutral-900)]/60",
                 "text-[var(--ant-color-neutral-0)]",
-                "shadow-md backdrop-blur-sm",
+                "shadow-[var(--ant-shadow-md)] backdrop-blur-sm",
                 "transition-all duration-[var(--ant-motion-duration-normal)]",
                 "hover:scale-105",
                 "hover:bg-[var(--ant-color-brand-primary)]",
@@ -425,7 +428,7 @@ export function ImageCarousel({
                   isActive
                     ? [
                         "border-[var(--ant-color-brand-primary)]",
-                        "opacity-100 shadow-sm",
+                        "opacity-100 shadow-[var(--ant-shadow-sm)]",
                       ]
                     : [
                         isDark
