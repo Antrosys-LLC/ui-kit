@@ -49,18 +49,18 @@ function getYouTubeEmbedUrl(src: string, autoplay?: boolean, loop?: boolean, mut
   if (match && match[1]) {
     videoId = match[1];
   }
-  
+
   const params = new URLSearchParams();
   params.append("autoplay", autoplay ? "1" : "0");
   params.append("mute", muted ? "1" : "0");
   params.append("controls", "1");
   params.append("rel", "0");
-  
+
   if (loop) {
     params.append("loop", "1");
     params.append("playlist", videoId);
   }
-  
+
   return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
 }
 
@@ -71,7 +71,7 @@ function getVimeoEmbedUrl(src: string, autoplay?: boolean, loop?: boolean, muted
   if (match && match[1]) {
     videoId = match[1];
   }
-  
+
   const params = new URLSearchParams({
     autoplay: autoplay ? "1" : "0",
     muted: muted ? "1" : "0",
@@ -79,7 +79,7 @@ function getVimeoEmbedUrl(src: string, autoplay?: boolean, loop?: boolean, muted
     badge: "0",
     autopause: "0",
   });
-  
+
   return `https://player.vimeo.com/video/${videoId}?${params.toString()}`;
 }
 
@@ -391,7 +391,7 @@ export function Video({
               ? "opacity-100 translate-y-0 visible pointer-events-auto"
               : "opacity-0 translate-y-2 invisible pointer-events-none"
           )}
-          {...(!showControlsOverlay ? { inert: "" } : {})}
+          {...(!showControlsOverlay ? { inert: "" as unknown as boolean } : {})}
         >
           {/* Progress / Seek bar */}
           <div className="flex items-center w-full gap-[var(--ant-spacing-2)] group/progress">
@@ -401,7 +401,10 @@ export function Video({
               max={duration || 100}
               value={currentTime}
               onChange={handleSeek}
-              className={clsx("w-full h-1 bg-[var(--ant-color-overlay-track)] hover:h-1.5 rounded-[var(--ant-radius-lg)] appearance-none cursor-pointer accent-[var(--ant-color-brand-primary)] transition-all", focusRingClass)}
+              className={clsx(
+                "w-full h-[var(--ant-spacing-1)] hover:h-[var(--ant-spacing-1.5)] bg-[var(--ant-color-overlay-track)] rounded-[var(--ant-radius-lg)] appearance-none cursor-pointer accent-[var(--ant-color-brand-primary)] transition-all",
+                focusRingClass
+              )}
               aria-label="Seek track"
             />
           </div>
@@ -412,7 +415,10 @@ export function Video({
               {/* Play / Pause */}
               <button
                 onClick={togglePlay}
-                className={clsx("p-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)] hover:bg-[var(--ant-color-overlay-hover)] text-[var(--ant-color-overlay-text)] transition-colors", focusRingClass)}
+                className={clsx(
+                  "p-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)] hover:bg-[var(--ant-color-overlay-hover)] text-[var(--ant-color-overlay-text)] transition-colors",
+                  focusRingClass
+                )}
                 aria-label={isPlaying ? "Pause" : "Play"}
               >
                 {isPlaying ? (
@@ -427,7 +433,7 @@ export function Video({
               </button>
 
               {/* Time Display */}
-              <span className="text-[var(--ant-typography-fontSize-xs)] font-mono tabular-nums text-[var(--ant-color-overlay-text-sub)]">
+              <span className="text-[var(--ant-typography-fontsize-xs)] font-mono tabular-nums text-[var(--ant-color-overlay-text-sub)]">
                 {formatTime(currentTime)} / {formatTime(duration)}
               </span>
             </div>
@@ -455,7 +461,10 @@ export function Video({
               <div className="flex items-center gap-[var(--ant-spacing-1.5)] group/volume">
                 <button
                   onClick={toggleMute}
-                  className={clsx("p-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)] hover:bg-[var(--ant-color-overlay-hover)] text-[var(--ant-color-overlay-text)] transition-colors", focusRingClass)}
+                  className={clsx(
+                    "p-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)] hover:bg-[var(--ant-color-overlay-hover)] text-[var(--ant-color-overlay-text)] transition-colors",
+                    focusRingClass
+                  )}
                   aria-label={isMuted ? "Unmute" : "Mute"}
                 >
                   {isMuted || volume === 0 ? (
@@ -479,7 +488,10 @@ export function Video({
                   step={0.05}
                   value={isMuted ? 0 : volume}
                   onChange={handleVolumeChange}
-                  className={clsx("w-0 opacity-0 pointer-events-none group-hover/volume:w-[var(--ant-spacing-16)] group-hover/volume:opacity-100 group-hover/volume:pointer-events-auto focus-visible:w-[var(--ant-spacing-16)] focus-visible:opacity-100 focus-visible:pointer-events-auto h-1 bg-[var(--ant-color-overlay-track)] rounded-[var(--ant-radius-lg)] appearance-none cursor-pointer accent-[var(--ant-color-brand-primary)] transition-all duration-[var(--ant-motion-duration-slow)]", focusRingClass)}
+                  className={clsx(
+                    "w-[var(--ant-spacing-0)] opacity-0 pointer-events-none group-hover/volume:w-[var(--ant-spacing-16)] group-hover/volume:opacity-100 group-hover/volume:pointer-events-auto focus-visible:w-[var(--ant-spacing-16)] focus-visible:opacity-100 focus-visible:pointer-events-auto h-[var(--ant-spacing-1)] bg-[var(--ant-color-overlay-track)] rounded-[var(--ant-radius-lg)] appearance-none cursor-pointer accent-[var(--ant-color-brand-primary)] transition-all duration-[var(--ant-motion-duration-slow)]",
+                    focusRingClass
+                  )}
                   aria-label="Volume level"
                 />
               </div>
@@ -487,7 +499,10 @@ export function Video({
               {/* Fullscreen */}
               <button
                 onClick={toggleFullscreen}
-                className={clsx("p-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)] hover:bg-[var(--ant-color-overlay-hover)] text-[var(--ant-color-overlay-text)] transition-colors", focusRingClass)}
+                className={clsx(
+                  "p-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)] hover:bg-[var(--ant-color-overlay-hover)] text-[var(--ant-color-overlay-text)] transition-colors",
+                  focusRingClass
+                )}
                 aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
               >
                 {isFullscreen ? (
