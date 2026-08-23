@@ -6,6 +6,7 @@ import type { Swiper as SwiperInstance } from "swiper";
 
 import "swiper/css";
 import "swiper/css/pagination";
+import { useTheme } from "../../../hooks/useTheme";
 
 export interface CarouselImage {
   /** Full-size image URL */
@@ -60,7 +61,7 @@ function ArrowIcon({ direction }: ArrowIconProps) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-5 w-5 sm:h-6 sm:w-6"
+      className="h-[var(--ant-spacing-5)] w-[var(--ant-spacing-5)] sm:h-[var(--ant-spacing-6)] sm:w-[var(--ant-spacing-6)]"
     >
       <path d={path} />
     </svg>
@@ -77,7 +78,7 @@ function EmptyImageIcon() {
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-8 w-8"
+      className="h-[var(--ant-spacing-8)] w-[var(--ant-spacing-8)]"
     >
       <rect x="3" y="4" width="18" height="16" rx="2" />
       <circle cx="8.5" cy="9" r="1.5" />
@@ -127,6 +128,37 @@ export function ImageCarousel({
   const [swiper, setSwiper] = useState<SwiperInstance | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { theme } = useTheme();
+
+  const isDark = theme === "dark";
+
+  const emptyContainerClasses = isDark
+    ? [
+        "border-[var(--ant-color-neutral-700)]",
+        "bg-[var(--ant-color-neutral-900)]",
+      ]
+    : [
+        "border-[var(--ant-color-neutral-200)]",
+        "bg-[var(--ant-color-neutral-50)]",
+      ];
+
+  const emptyIconClasses = isDark
+    ? [
+        "bg-[var(--ant-color-neutral-800)]",
+        "text-[var(--ant-color-neutral-400)]",
+      ]
+    : [
+        "bg-[var(--ant-color-neutral-100)]",
+        "text-[var(--ant-color-neutral-500)]",
+      ];
+
+  const emptyTitleClass = isDark
+    ? "text-[var(--ant-color-neutral-0)]"
+    : "text-[var(--ant-color-neutral-900)]";
+
+  const emptySubtitleClass = isDark
+    ? "text-[var(--ant-color-neutral-400)]"
+    : "text-[var(--ant-color-neutral-500)]";
 
   const hasMultipleImages = images.length > 1;
   const shouldShowDots = showDots && hasMultipleImages;
@@ -142,9 +174,11 @@ export function ImageCarousel({
           "var(--ant-color-neutral-0)",
         "--swiper-pagination-bullet-inactive-opacity": "0.65",
         "--swiper-pagination-bullet-size":
-  "var(--ant-spacing-2)",
+          "var(--ant-spacing-2)",
         "--swiper-pagination-bullet-horizontal-gap":
           "var(--ant-spacing-1)",
+        "--swiper-pagination-bottom":
+          "var(--ant-spacing-2)",
       }) as React.CSSProperties,
     [aspectRatio],
   );
@@ -155,10 +189,10 @@ export function ImageCarousel({
         role="status"
         aria-live="polite"
         className={clsx(
-          "flex min-h-48 w-full flex-col items-center justify-center",
-          "gap-[var(--ant-spacing-3)] rounded-lg",
-          "border border-dashed border-[var(--ant-color-neutral-200)]",
-          "bg-[var(--ant-color-neutral-50)]",
+          "flex min-h-[var(--ant-spacing-48)] w-full flex-col items-center justify-center",
+          "gap-[var(--ant-spacing-3)] rounded-[var(--ant-radius-lg)]",
+          "border border-dashed",
+          emptyContainerClasses,
           "px-[var(--ant-spacing-6)] py-[var(--ant-spacing-8)]",
           "text-center",
           className,
@@ -166,9 +200,8 @@ export function ImageCarousel({
       >
         <div
           className={clsx(
-            "flex h-14 w-14 items-center justify-center rounded-full",
-            "bg-[var(--ant-color-neutral-100)]",
-            "text-[var(--ant-color-neutral-500)]",
+            "flex h-[var(--ant-spacing-14)] w-[var(--ant-spacing-14)] items-center justify-center rounded-[var(--ant-radius-full)]",
+            emptyIconClasses,
           )}
         >
           <EmptyImageIcon />
@@ -178,7 +211,7 @@ export function ImageCarousel({
           <p
             className={clsx(
               "m-0 font-semibold",
-              "text-[var(--ant-color-neutral-900)]",
+              emptyTitleClass,
             )}
           >
             No images available
@@ -187,7 +220,7 @@ export function ImageCarousel({
           <p
             className={clsx(
               "m-0 text-[length:var(--ant-typography-fontsize-sm)]",
-              "text-[var(--ant-color-neutral-500)]",
+              emptySubtitleClass,
             )}
           >
             Add images to display them in the carousel.
@@ -213,14 +246,14 @@ export function ImageCarousel({
     >
       <div
         className={clsx(
-          "group relative overflow-hidden rounded-lg",
+          "group relative overflow-hidden rounded-[var(--ant-radius-lg)]",
           "bg-[var(--ant-color-neutral-900)]",
           "[&_.swiper-pagination]:bottom-[var(--ant-spacing-2)]",
           "[&_.swiper-pagination-bullet]:transition-all",
-          "[&_.swiper-pagination-bullet]:duration-200",
+          "[&_.swiper-pagination-bullet]:duration-[var(--ant-motion-duration-normal)]",
           "[&_.swiper-pagination-bullet]:motion-reduce:transition-none",
-          "[&_.swiper-pagination-bullet-active]:w-5",
-          "[&_.swiper-pagination-bullet-active]:rounded-full",
+          "[&_.swiper-pagination-bullet-active]:w-[var(--ant-spacing-5)]",
+          "[&_.swiper-pagination-bullet-active]:rounded-[var(--ant-radius-full)]",
         )}
         style={carouselStyle}
       >
@@ -311,11 +344,11 @@ export function ImageCarousel({
               className={clsx(
                 "absolute left-[var(--ant-spacing-2)] top-1/2 z-10",
                 "-translate-y-1/2",
-                "flex h-10 w-10 items-center justify-center rounded-full",
+                "flex h-[var(--ant-spacing-10)] w-[var(--ant-spacing-10)] items-center justify-center rounded-[var(--ant-radius-full)]",
                 "bg-[var(--ant-color-neutral-900)]/60",
                 "text-[var(--ant-color-neutral-0)]",
                 "shadow-md backdrop-blur-sm",
-                "transition-all duration-200",
+                "transition-all duration-[var(--ant-motion-duration-normal)]",
                 "hover:scale-105",
                 "hover:bg-[var(--ant-color-brand-primary)]",
                 "active:scale-95",
@@ -325,7 +358,7 @@ export function ImageCarousel({
                 "focus-visible:ring-offset-[var(--ant-color-brand-primary)]",
                 "motion-reduce:transition-none",
                 "sm:left-[var(--ant-spacing-4)]",
-                "sm:h-11 sm:w-11",
+                "sm:h-[var(--ant-spacing-11)] sm:w-[var(--ant-spacing-11)]",
               )}
             >
               <ArrowIcon direction="previous" />
@@ -338,11 +371,11 @@ export function ImageCarousel({
               className={clsx(
                 "absolute right-[var(--ant-spacing-2)] top-1/2 z-10",
                 "-translate-y-1/2",
-                "flex h-10 w-10 items-center justify-center rounded-full",
+                "flex h-[var(--ant-spacing-10)] w-[var(--ant-spacing-10)] items-center justify-center rounded-[var(--ant-radius-full)]",
                 "bg-[var(--ant-color-neutral-900)]/60",
                 "text-[var(--ant-color-neutral-0)]",
                 "shadow-md backdrop-blur-sm",
-                "transition-all duration-200",
+                "transition-all duration-[var(--ant-motion-duration-normal)]",
                 "hover:scale-105",
                 "hover:bg-[var(--ant-color-brand-primary)]",
                 "active:scale-95",
@@ -352,7 +385,7 @@ export function ImageCarousel({
                 "focus-visible:ring-offset-[var(--ant-color-brand-primary)]",
                 "motion-reduce:transition-none",
                 "sm:right-[var(--ant-spacing-4)]",
-                "sm:h-11 sm:w-11",
+                "sm:h-[var(--ant-spacing-11)] sm:w-[var(--ant-spacing-11)]",
               )}
             >
               <ArrowIcon direction="next" />
@@ -382,8 +415,8 @@ export function ImageCarousel({
                 aria-pressed={isActive}
                 onClick={() => swiper?.slideToLoop(index)}
                 className={clsx(
-                  "relative shrink-0 overflow-hidden rounded-md border-2",
-                  "transition-all duration-200",
+                  "relative shrink-0 overflow-hidden rounded-[var(--ant-radius-md)] border-2",
+                  "transition-all duration-[var(--ant-motion-duration-normal)]",
                   "hover:-translate-y-0.5 hover:opacity-100",
                   "focus-visible:outline-none focus-visible:ring-2",
                   "focus-visible:ring-[var(--ant-color-brand-primary)]",
@@ -395,7 +428,9 @@ export function ImageCarousel({
                         "opacity-100 shadow-sm",
                       ]
                     : [
-                        "border-[var(--ant-color-neutral-200)]",
+                        isDark
+                          ? "border-[var(--ant-color-neutral-700)]"
+                          : "border-[var(--ant-color-neutral-200)]",
                         "opacity-70",
                       ],
                 )}
@@ -407,8 +442,8 @@ export function ImageCarousel({
                   decoding="async"
                   draggable={false}
                   className={clsx(
-                    "h-14 w-20 object-cover",
-                    "sm:h-16 sm:w-24",
+                    "h-[var(--ant-spacing-14)] w-[var(--ant-spacing-20)] object-cover",
+                    "sm:h-[var(--ant-spacing-16)] sm:w-[var(--ant-spacing-24)]",
                   )}
                 />
 
@@ -416,7 +451,7 @@ export function ImageCarousel({
                   <span
                     aria-hidden="true"
                     className={clsx(
-                      "absolute inset-x-0 bottom-0 h-1",
+                      "absolute inset-x-0 bottom-0 h-[var(--ant-spacing-1)]",
                       "bg-[var(--ant-color-brand-primary)]",
                     )}
                   />

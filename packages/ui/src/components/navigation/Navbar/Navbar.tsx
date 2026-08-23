@@ -1,8 +1,12 @@
 import React, { useEffect, useId, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { clsx } from "clsx";
+import { tokens } from "@antrosys/tokens";
 import { useScrollY } from "../../../hooks/useScrollY";
 import { useTheme } from "../../../hooks/useTheme";
+
+const durationFast = parseFloat(tokens["motion-duration-fast"]) / 1000;
+const durationSlow = parseFloat(tokens["motion-duration-slow"]) / 1000;
 
 export interface NavbarLink {
   /** Visible link label */
@@ -50,7 +54,7 @@ function MenuIcon({ open }: { open: boolean }) {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-5 w-5"
+      className="h-[var(--ant-spacing-5)] w-[var(--ant-spacing-5)]"
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
@@ -61,7 +65,7 @@ function MenuIcon({ open }: { open: boolean }) {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-5 w-5"
+      className="h-[var(--ant-spacing-5)] w-[var(--ant-spacing-5)]"
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
@@ -76,7 +80,7 @@ function ChevronIcon() {
     <svg
       aria-hidden="true"
       viewBox="0 0 20 20"
-      className="h-4 w-4"
+      className="h-[var(--ant-spacing-4)] w-[var(--ant-spacing-4)]"
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
@@ -91,7 +95,7 @@ function ThemeIcon({ theme }: { theme: "light" | "dark" }) {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-5 w-5"
+      className="h-[var(--ant-spacing-5)] w-[var(--ant-spacing-5)]"
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
@@ -104,7 +108,7 @@ function ThemeIcon({ theme }: { theme: "light" | "dark" }) {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-5 w-5"
+      className="h-[var(--ant-spacing-5)] w-[var(--ant-spacing-5)]"
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
@@ -206,7 +210,7 @@ export function Navbar({
 
   const linkClass = (active: boolean) =>
     clsx(
-      "rounded-md px-[var(--ant-spacing-3)] py-[var(--ant-spacing-2)]",
+      "rounded-[var(--ant-radius-md)] px-[var(--ant-spacing-3)] py-[var(--ant-spacing-2)]",
       "text-[length:var(--ant-typography-fontsize-sm)] font-medium",
       "transition-colors",
       "focus-visible:outline-none focus-visible:ring-2",
@@ -240,7 +244,7 @@ export function Navbar({
       <nav
         aria-label={ariaLabel}
         className={clsx(
-          "mx-auto flex h-16 max-w-7xl items-center justify-between",
+          "mx-auto flex h-[var(--ant-spacing-16)] max-w-[var(--ant-spacing-7xl)] items-center justify-between",
           "px-[var(--ant-spacing-4)]",
         )}
       >
@@ -303,10 +307,10 @@ export function Navbar({
                       initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
-                      transition={{ duration: 0.15 }}
+                      transition={{ duration: durationFast }}
                       className={clsx(
-                        "absolute left-0 top-full mt-[var(--ant-spacing-2)] min-w-48",
-                        "rounded-md border",
+                        "absolute left-0 top-full mt-[var(--ant-spacing-2)] min-w-[var(--ant-spacing-48)]",
+                        "rounded-[var(--ant-radius-md)] border",
                         surfaceClasses,
                         "p-[var(--ant-spacing-2)] shadow-lg",
                       )}
@@ -351,7 +355,7 @@ export function Navbar({
                   : "Switch to light theme"
               }
               className={clsx(
-                "inline-flex h-9 w-9 items-center justify-center rounded-md",
+                "inline-flex h-[var(--ant-spacing-9)] w-[var(--ant-spacing-9)] items-center justify-center rounded-[var(--ant-radius-md)]",
                 interactiveSurfaceClasses,
                 "focus-visible:outline-none focus-visible:ring-2",
                 "focus-visible:ring-[var(--ant-color-brand-primary)]",
@@ -367,7 +371,7 @@ export function Navbar({
               href={ctaButton.href}
               onClick={() => handleNavigate(ctaButton.href)}
               className={clsx(
-                "hidden rounded-md md:inline-flex",
+                "hidden rounded-[var(--ant-radius-md)] md:inline-flex",
                 "bg-[var(--ant-color-brand-primary)]",
                 "px-[var(--ant-spacing-4)] py-[var(--ant-spacing-2)]",
                 "text-[length:var(--ant-typography-fontsize-sm)] font-medium",
@@ -393,7 +397,7 @@ export function Navbar({
             aria-controls={drawerId}
             onClick={() => setMobileOpen((open) => !open)}
             className={clsx(
-              "inline-flex h-9 w-9 items-center justify-center rounded-md md:hidden",
+              "inline-flex h-[var(--ant-spacing-9)] w-[var(--ant-spacing-9)] items-center justify-center rounded-[var(--ant-radius-md)] md:hidden",
               interactiveSurfaceClasses,
               "focus-visible:outline-none focus-visible:ring-2",
               "focus-visible:ring-[var(--ant-color-brand-primary)]",
@@ -415,7 +419,7 @@ export function Navbar({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 top-16 z-40 bg-[var(--ant-color-neutral-900)]/40 md:hidden"
+              className="fixed inset-0 top-[var(--ant-spacing-16)] z-40 bg-[var(--ant-color-neutral-900)]/40 md:hidden"
             />
 
             <motion.div
@@ -423,9 +427,9 @@ export function Navbar({
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "tween", duration: 0.2 }}
+              transition={{ type: "tween", duration: durationSlow }}
               className={clsx(
-                "fixed bottom-0 right-0 top-16 z-50 w-[min(90vw,24rem)]",
+                "fixed bottom-0 right-0 top-[var(--ant-spacing-16)] z-50 w-[min(90vw,var(--ant-spacing-96))]",
                 "overflow-y-auto border-l",
                 surfaceClasses,
                 "p-[var(--ant-spacing-4)] md:hidden",
@@ -476,6 +480,7 @@ export function Navbar({
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: durationFast }}
                             className="overflow-hidden"
                           >
                             <div
@@ -493,7 +498,7 @@ export function Navbar({
                                   href={child.href}
                                   aria-current={
                                     child.href === currentHref
-                                      ? "page"
+                                       ? "page"
                                       : undefined
                                   }
                                   onClick={() =>
@@ -519,7 +524,7 @@ export function Navbar({
                     href={ctaButton.href}
                     onClick={() => handleNavigate(ctaButton.href)}
                     className={clsx(
-                      "mt-[var(--ant-spacing-2)] rounded-md text-center",
+                      "mt-[var(--ant-spacing-2)] rounded-[var(--ant-radius-md)] text-center",
                       "bg-[var(--ant-color-brand-primary)]",
                       "px-[var(--ant-spacing-4)] py-[var(--ant-spacing-2)]",
                       "text-[length:var(--ant-typography-fontsize-sm)] font-medium",

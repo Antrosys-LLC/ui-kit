@@ -2,6 +2,8 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { ImageCarousel } from "./ImageCarousel";
 import type { CarouselImage } from "./ImageCarousel";
+import { ThemeProvider } from "../../../providers/ThemeProvider";
+import { useTheme } from "../../../hooks/useTheme";
 
 const sampleImages: CarouselImage[] = [
   {
@@ -47,9 +49,11 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="w-[min(90vw,56rem)]">
-        <Story />
-      </div>
+      <ThemeProvider>
+        <div className="w-[min(90vw,56rem)]">
+          <Story />
+        </div>
+      </ThemeProvider>
     ),
   ],
   argTypes: {
@@ -103,6 +107,22 @@ export const Autoplay: Story = {
     interval: 3000,
     showDots: true,
     showArrows: true,
+  },
+};
+
+export const StopOnInteraction: Story = {
+  args: {
+    images: sampleImages,
+    autoplay: true,
+    stopOnInteraction: true,
+  },
+};
+
+export const CustomInterval: Story = {
+  args: {
+    images: sampleImages,
+    autoplay: true,
+    interval: 1500,
   },
 };
 
@@ -160,4 +180,32 @@ export const Empty: Story = {
   args: {
     images: [],
   },
+};
+
+function DarkThemeWrapper({ children }: { children: React.ReactNode }) {
+  const { setTheme } = useTheme();
+
+  React.useEffect(() => {
+    setTheme("dark");
+  }, [setTheme]);
+
+  return (
+    <div className="rounded-[var(--ant-radius-lg)] bg-[var(--ant-color-neutral-900)] p-[var(--ant-spacing-6)]">
+      {children}
+    </div>
+  );
+}
+
+export const EmptyDarkTheme: Story = {
+  args: {
+    images: [],
+  },
+  parameters: {
+    backgrounds: { default: "dark" },
+  },
+  render: (args) => (
+    <DarkThemeWrapper>
+      <ImageCarousel {...args} />
+    </DarkThemeWrapper>
+  ),
 };
