@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { clsx } from "clsx";
+import { ThemeContext } from "../../../providers/ThemeProvider";
 
 export interface BreadcrumbItem {
   /** Label to display */
@@ -20,7 +21,11 @@ export interface BreadcrumbProps extends React.ComponentPropsWithoutRef<"nav"> {
   /** Enable schema.org JSON-LD script for SEO */
   jsonLd?: boolean;
   /** Callback triggered when any crumb link is clicked */
-  onItemClick?: (crumb: BreadcrumbItem, index: number, e: React.MouseEvent<HTMLAnchorElement>) => void;
+  onItemClick?: (
+    crumb: BreadcrumbItem,
+    index: number,
+    e: React.MouseEvent<HTMLAnchorElement>
+  ) => void;
 }
 
 export function Breadcrumb({
@@ -32,6 +37,10 @@ export function Breadcrumb({
   className,
   ...props
 }: BreadcrumbProps) {
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx?.theme === "dark";
+
   let visibleCrumbs = crumbs;
   let hasEllipsis = false;
 
@@ -55,6 +64,11 @@ export function Breadcrumb({
       }
     : null;
 
+  const ellipsisColor = isDark ? "var(--ant-color-neutral-500)" : "var(--ant-color-neutral-400)";
+  const activeColor = isDark ? "var(--ant-color-neutral-100)" : "var(--ant-color-neutral-900)";
+  const linkColor = isDark ? "var(--ant-color-neutral-300)" : "var(--ant-color-neutral-600)";
+  const separatorColor = isDark ? "var(--ant-color-neutral-500)" : "var(--ant-color-neutral-400)";
+
   return (
     <>
       {jsonLd && structuredData && (
@@ -63,12 +77,16 @@ export function Breadcrumb({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       )}
-      <nav
-        aria-label="Breadcrumb"
-        className={clsx("ant-breadcrumb", className)}
-        {...props}
-      >
-        <ol style={{ display: "flex", alignItems: "center", listStyle: "none", padding: 0, margin: 0 }}>
+      <nav aria-label="Breadcrumb" className={clsx("ant-breadcrumb", className)} {...props}>
+        <ol
+          style={{
+            display: "flex",
+            alignItems: "center",
+            listStyle: "none",
+            padding: 0,
+            margin: 0,
+          }}
+        >
           {visibleCrumbs.map((crumb, index) => {
             const isLast = index === visibleCrumbs.length - 1;
             const isEllipsis = crumb.label === "..." && hasEllipsis;
@@ -76,14 +94,14 @@ export function Breadcrumb({
             return (
               <li key={index} style={{ display: "inline-flex", alignItems: "center" }}>
                 {isEllipsis ? (
-                  <span aria-hidden="true" style={{ color: "var(--ant-color-neutral-400)" }}>
+                  <span aria-hidden="true" style={{ color: ellipsisColor }}>
                     ...
                   </span>
                 ) : isLast ? (
                   <span
                     aria-current="page"
                     style={{
-                      color: "var(--ant-color-neutral-900)",
+                      color: activeColor,
                       fontWeight: 600,
                     }}
                   >
@@ -92,6 +110,8 @@ export function Breadcrumb({
                 ) : (
                   <a
                     href={crumb.href || "#"}
+                    onFocus={() => setFocusedIndex(index)}
+                    onBlur={() => setFocusedIndex(null)}
                     onClick={(e) => {
                       if (crumb.onClick) {
                         crumb.onClick(e);
@@ -101,9 +121,15 @@ export function Breadcrumb({
                       }
                     }}
                     style={{
-                      color: "var(--ant-color-neutral-600)",
+                      color: linkColor,
                       textDecoration: "none",
                       cursor: "pointer",
+                      borderRadius: "var(--ant-radius-sm)",
+                      outline:
+                        focusedIndex === index
+                          ? "2px solid var(--ant-color-brand-primary)"
+                          : "none",
+                      outlineOffset: "2px",
                     }}
                   >
                     {crumb.label}
@@ -114,8 +140,8 @@ export function Breadcrumb({
                   <span
                     aria-hidden="true"
                     style={{
-                      margin: "0 8px",
-                      color: "var(--ant-color-neutral-400)",
+                      margin: "0 var(--ant-spacing-2)",
+                      color: separatorColor,
                     }}
                   >
                     {separator}
