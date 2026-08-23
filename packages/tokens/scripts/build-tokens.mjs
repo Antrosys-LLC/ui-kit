@@ -67,15 +67,6 @@ function flatten(obj, prefix = "") {
 
 const flat = flatten(tokens);
 
-/** Resolve design token references, e.g. "{color.neutral.50}" → "var(--ant-color-neutral-50)" */
-function resolveReference(val) {
-  if (typeof val === "string" && val.startsWith("{") && val.endsWith("}")) {
-    const refKey = val.slice(1, -1).replace(/\./g, "-");
-    return `var(--ant-${refKey})`;
-  }
-  return val;
-}
-
 // ── CSS custom properties ────────────────────────────────────────────────────
 
 mkdirSync(resolve(root, "dist/css"), {
