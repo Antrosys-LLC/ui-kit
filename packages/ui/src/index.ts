@@ -33,10 +33,7 @@ export type {
   ButtonVariant,
   ButtonSize,
 } from "./components/feedback/Button";
-<<<<<<< HEAD
-=======
 
->>>>>>> e373bad03afc48af77e6941190b26e39cbd65d3b
 // ── Media ────────────────────────────────────────────────────────────────────
 
 export { Lightbox } from "./components/media/Lightbox";
