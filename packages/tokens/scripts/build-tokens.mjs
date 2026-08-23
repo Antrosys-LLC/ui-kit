@@ -48,7 +48,13 @@ const jsEntries = Object.entries(flat)
   .map(([k, v]) => `  "${k}": "${resolveReference(v)}"`).join(",\n");
 const js = `export const tokens = {\n${jsEntries}\n};\n`;
 writeFileSync(resolve(root, "dist/js/index.mjs"), js);
-writeFileSync(resolve(root, "dist/js/index.js"), js.replace(/export const/g, "module.exports =").replace(" = {", " ({").replace(/\};\n$/, "});\n"));
+writeFileSync(
+  resolve(root, "dist/js/index.js"),
+  js
+    .replace(/export const/g, "module.exports =")
+    .replace(" = {", " ({")
+    .replace(/\};\n$/, "});\n")
+);
 
 const dts = `export declare const tokens: Record<string, string>;\n`;
 writeFileSync(resolve(root, "dist/js/index.d.ts"), dts);
