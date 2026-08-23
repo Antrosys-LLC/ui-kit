@@ -25,6 +25,17 @@ function flatten(obj, prefix = "") {
 
 const flat = flatten(tokens);
 
+// Resolve aliases like "{color.neutral.50}"
+for (const [k, v] of Object.entries(flat)) {
+  if (typeof v === "string" && v.startsWith("{") && v.endsWith("}")) {
+    const ref = v.slice(1, -1).replace(/\./g, "-");
+    if (flat[ref]) {
+      flat[k] = flat[ref];
+    }
+  }
+}
+
+
 // ── CSS custom properties ────────────────────────────────────────────────────
 mkdirSync(resolve(root, "dist/css"), { recursive: true });
 const cssVars = Object.entries(flat)

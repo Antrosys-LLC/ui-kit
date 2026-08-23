@@ -18,6 +18,9 @@ export { Cluster } from "./primitives/Cluster";
 export { Button } from "./components/feedback/Button";
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/feedback/Button";
 
+// ── Navigation ─────────────────────────────────────────────────────────────
+export { Breadcrumb } from "./components/navigation/Breadcrumb";
+export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
 // ── Data ─────────────────────────────────────────────────────────────────────
 export { AvatarUserCard } from "./components/data/AvatarUserCard";
 export type {
