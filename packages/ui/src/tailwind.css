@@ -1,65 +1,50 @@
 @import "tailwindcss";
-
-/* ── Global Design Tokens ───────────────────────────────────────────── */
-
-:root {
-  /* Lightbox base */
-  --lightbox-background: #111111;
-  --lightbox-foreground: #F5F1E8;
-
-  /* Glass UI */
-  --lightbox-glass: rgba(255, 255, 255, 0.12);
-  --lightbox-glass-hover: rgba(255, 255, 255, 0.2);
-  --lightbox-border: rgba(255, 255, 255, 0.22);
-  --lightbox-shadow: rgba(0, 0, 0, 0.3);
-
-  /* Background */
-  --lightbox-overlay: rgba(0, 0, 0, 0.12);
-  --lightbox-background-blur: 12px;
-  --lightbox-background-opacity: 0.50;
-
-  /* Accent */
-  --lightbox-accent: #3B82F6;
-  --lightbox-accent-hover: #60A5FA;
-  --lightbox-accent-active: #1D4ED8;
-
-  /* Navigation arrows */
-  --lightbox-arrow-bg: #000000;
-  --lightbox-arrow-color: #ffffff;
-
-  --lightbox-blue: #3B82F6;
-  --lightbox-blue-dark: #1D4ED8;
-  --lightbox-blue-glow: rgba(59, 130, 246, 0.55);
-}
-
-
-/* ── Tailwind v4 Theme ───────────────────────────────────────────────── */
+@import "@antrosys/tokens/css";
 
 @theme {
-  /* Brand */
   --color-brand: var(--ant-color-brand-primary);
   --color-brand-light: var(--ant-color-brand-primary-lt);
   --color-brand-dark: var(--ant-color-brand-primary-dk);
   --color-brand-accent: var(--ant-color-brand-accent);
 
-  /* Semantic */
   --color-success: var(--ant-color-semantic-success);
   --color-warning: var(--ant-color-semantic-warning);
   --color-error: var(--ant-color-semantic-error);
   --color-info: var(--ant-color-semantic-info);
 
-  /* Surface */
+  --color-surface-bg: var(--ant-color-surface-bg);
+  --color-surface-bg-card: var(--ant-color-surface-bg-card);
   --color-surface-border: var(--ant-color-surface-border);
   --color-surface-text: var(--ant-color-surface-text);
+  --color-surface-text-sub: var(--ant-color-surface-text-sub);
+
+  --color-neutral-0: var(--ant-color-neutral-0);
+  --color-neutral-50: var(--ant-color-neutral-50);
   --color-neutral-100: var(--ant-color-neutral-100);
+  --color-neutral-200: var(--ant-color-neutral-200);
+  --color-neutral-300: var(--ant-color-neutral-300);
+  --color-neutral-400: var(--ant-color-neutral-400);
+  --color-neutral-500: var(--ant-color-neutral-500);
+  --color-neutral-600: var(--ant-color-neutral-600);
+  --color-neutral-700: var(--ant-color-neutral-700);
+  --color-neutral-800: var(--ant-color-neutral-800);
+  --color-neutral-900: var(--ant-color-neutral-900);
 
-  /* Lightbox */
-  --color-lightbox-background: var(--lightbox-background);
-  --color-lightbox-foreground: var(--lightbox-foreground);
-  --color-lightbox-glass: var(--lightbox-glass);
-  --color-lightbox-accent: var(--lightbox-accent);
+  --color-lightbox-background: var(--ant-lightbox-background);
+  --color-lightbox-foreground: var(--ant-lightbox-foreground);
+  --color-lightbox-glass: var(--ant-lightbox-glass);
+  --color-lightbox-border: var(--ant-lightbox-border);
+  --color-lightbox-shadow: var(--ant-lightbox-shadow);
+  --color-lightbox-overlay: var(--ant-lightbox-overlay);
+  --color-lightbox-background-blur: var(--ant-lightbox-backgroundBlur);
+  --color-lightbox-background-opacity: var(--ant-lightbox-backgroundOpacity);
+  --color-lightbox-accent: var(--ant-lightbox-accent);
+  --color-lightbox-accent-hover: var(--ant-lightbox-accentHover);
+  --color-lightbox-accent-active: var(--ant-lightbox-accentActive);
+  --color-lightbox-arrow-background: var(--ant-lightbox-arrowBackground);
+  --color-lightbox-arrow-color: var(--ant-lightbox-arrowColor);
+  --color-lightbox-accent-glow: var(--ant-lightbox-accentGlow);
 
-  /* Typography */
-  --font-sans: var(--ant-typography-fontfamily-sans);
-  --font-mono: var(--ant-typography-fontfamily-mono);
+  --font-sans: var(--ant-typography-fontFamily-sans);
+  --font-mono: var(--ant-typography-fontFamily-mono);
 }

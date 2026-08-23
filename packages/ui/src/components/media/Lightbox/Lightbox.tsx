@@ -1,41 +1,191 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import FocusTrap from "focus-trap-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 
 export interface LightboxProps {
+  /** Image URL displayed when the lightbox opens. */
   src: string;
+
+  /** Accessible alternative text for the currently displayed image. */
   alt?: string;
+
+  /** Optional list of image URLs used for navigation and thumbnails. */
   thumbnails?: string[];
+
+  /** Enables zoom controls using double-click, mouse wheel, and keyboard shortcuts. Defaults to true. */
   zoomEnabled?: boolean;
+
+  /** Enables automatic image rotation. Defaults to false. */
+  autoPlay?: boolean;
+
+  /** Interval in milliseconds between automatically displayed images. Defaults to 3000ms. */
+  autoPlayInterval?: number;
+
+  /** Callback invoked when the lightbox is closed. */
   onClose: () => void;
 }
 
+type Direction = "prev" | "next";
+
+interface NavigationButtonProps {
+  direction: Direction;
+  pressed: boolean;
+  onClick: () => void;
+  onPressedChange: (pressed: boolean) => void;
+}
+
+function NavigationButton({ direction, pressed, onClick, onPressedChange }: NavigationButtonProps) {
+  const isPrevious = direction === "prev";
+
+  const style: CSSProperties = {
+    position: "absolute",
+    [isPrevious ? "left" : "right"]: "clamp(var(--ant-spacing-4), 3vw, var(--ant-spacing-12))",
+    top: "50%",
+    zIndex: "var(--ant-zIndex-raised)",
+    width: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
+    height: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
+    minWidth: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
+    minHeight: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
+    padding: "var(--ant-spacing-0)",
+    margin: "var(--ant-spacing-0)",
+    borderRadius: "var(--ant-radius-full)",
+    border: pressed
+      ? "2px solid var(--ant-lightbox-accentActive)"
+      : "2px solid var(--ant-lightbox-arrowBackground)",
+    background: pressed
+      ? "var(--ant-lightbox-accentActive)"
+      : "var(--ant-lightbox-arrowBackground)",
+    color: "var(--ant-lightbox-arrowColor)",
+    fontSize: "var(--ant-typography-fontSize-3xl)",
+    fontWeight: 700,
+    lineHeight: 1,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: pressed
+      ? "0 0 0 var(--ant-spacing-1) var(--ant-lightbox-accentGlow), var(--ant-shadow-lg)"
+      : "var(--ant-shadow-lg)",
+  };
+
+  return (
+    <motion.button
+      type="button"
+      aria-label={isPrevious ? "Previous image" : "Next image"}
+      aria-pressed={pressed}
+      onPointerDown={(event) => {
+        event.stopPropagation();
+        onPressedChange(true);
+      }}
+      onPointerUp={(event) => {
+        event.stopPropagation();
+        onPressedChange(false);
+      }}
+      onPointerCancel={() => onPressedChange(false)}
+      onPointerLeave={() => onPressedChange(false)}
+      onClick={(event) => {
+        event.stopPropagation();
+        onPressedChange(false);
+        onClick();
+      }}
+      whileHover={{
+        scale: 1.12,
+        x: isPrevious ? -4 : 4,
+        backgroundColor: "var(--ant-lightbox-accent)",
+        borderColor: "var(--ant-lightbox-accent)",
+        color: "var(--ant-lightbox-arrowColor)",
+        boxShadow:
+          "0 0 0 var(--ant-spacing-1) var(--ant-lightbox-accentGlow), var(--ant-shadow-lg)",
+      }}
+      whileTap={{
+        scale: 0.92,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 400,
+        damping: 20,
+      }}
+      style={style}
+    >
+      <span
+        aria-hidden="true"
+        style={{
+          display: "block",
+          transform: isPrevious
+            ? "translateX(calc(var(--ant-spacing-0) - 1px))"
+            : "translateX(1px)",
+          fontFamily: "var(--ant-typography-fontFamily-sans)",
+          fontWeight: 700,
+        }}
+      >
+        {isPrevious ? "‹" : "›"}
+      </span>
+    </motion.button>
+  );
+}
+
+/**
+ * Responsive image lightbox with navigation, thumbnails, zoom,
+ * autoplay, keyboard controls, focus trapping, and body scroll locking.
+ *
+ * Keyboard controls:
+ * Escape closes the lightbox.
+ * ArrowLeft and ArrowRight navigate between images.
+ * Plus or Equal zooms in.
+ * Minus zooms out.
+ */
 export function Lightbox({
   src,
   alt = "Image",
   thumbnails = [],
   zoomEnabled = true,
+  autoPlay = false,
+  autoPlayInterval = 3000,
   onClose,
 }: LightboxProps) {
   const images = thumbnails.length > 0 ? thumbnails : [src];
-
   const initialIndex = Math.max(images.indexOf(src), 0);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [scale, setScale] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
-  const [pressedButton, setPressedButton] = useState<
-    "prev" | "next" | null
-  >(null);
+  const [pressedButton, setPressedButton] = useState<Direction | null>(null);
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocusedElementRef = useRef<HTMLElement | null>(null);
+
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
 
   const currentImage = images[currentIndex];
 
-  /* ── Change image ─────────────────────────────────────────────── */
+  useEffect(() => {
+    previouslyFocusedElementRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
-  const goToImage = (index: number, resume = true) => {
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      previouslyFocusedElementRef.current?.focus();
+      previouslyFocusedElementRef.current = null;
+    };
+  }, []);
+
+  const goToImage = (index: number, resumeAutoPlay = true) => {
     setCurrentIndex(index);
     setScale(1);
 
-    if (resume) {
+    if (resumeAutoPlay) {
       setIsPaused(false);
     }
   };
@@ -45,44 +195,40 @@ export function Lightbox({
   };
 
   const previousImage = () => {
-    goToImage(
-      (currentIndex - 1 + images.length) % images.length,
-      true,
-    );
+    goToImage((currentIndex - 1 + images.length) % images.length, true);
   };
 
-  /* ── Automatic slider ────────────────────────────────────────── */
-
   useEffect(() => {
-    if (images.length <= 1 || isPaused) {
+    if (!autoPlay || images.length <= 1 || isPaused || autoPlayInterval <= 0) {
       return;
     }
 
     const interval = window.setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
+      setCurrentIndex((previousIndex) => (previousIndex + 1) % images.length);
       setScale(1);
-    }, 3000);
+    }, autoPlayInterval);
 
     return () => {
       window.clearInterval(interval);
     };
-  }, [images.length, isPaused]);
-
-  /* ── Keyboard controls ───────────────────────────────────────── */
+  }, [autoPlay, autoPlayInterval, images.length, isPaused]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        event.preventDefault();
         onClose();
         return;
       }
 
       if (event.key === "ArrowRight") {
+        event.preventDefault();
         nextImage();
         return;
       }
 
       if (event.key === "ArrowLeft") {
+        event.preventDefault();
         previousImage();
         return;
       }
@@ -92,13 +238,16 @@ export function Lightbox({
       }
 
       if (event.key === "+" || event.key === "=") {
+        event.preventDefault();
         setIsPaused(true);
-        setScale((prev) => Math.min(prev + 0.25, 3));
+        setScale((previousScale) => Math.min(previousScale + 0.25, 3));
+        return;
       }
 
       if (event.key === "-") {
+        event.preventDefault();
         setIsPaused(true);
-        setScale((prev) => Math.max(prev - 0.25, 1));
+        setScale((previousScale) => Math.max(previousScale - 0.25, 1));
       }
     };
 
@@ -109,127 +258,194 @@ export function Lightbox({
     };
   }, [zoomEnabled, onClose, currentIndex, images.length]);
 
-  /* ── Mouse wheel zoom ────────────────────────────────────────── */
+  useEffect(() => {
+    const dialog = dialogRef.current;
 
-  const handleWheel = (event: React.WheelEvent) => {
-    if (!zoomEnabled) {
+    if (!dialog || !zoomEnabled) {
       return;
     }
 
-    event.preventDefault();
-    setIsPaused(true);
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
 
-    setScale((prev) => {
-      const nextScale = prev - event.deltaY * 0.001;
+      setIsPaused(true);
 
-      return Math.min(Math.max(nextScale, 1), 3);
+      setScale((previousScale) => {
+        const nextScale = previousScale - event.deltaY * 0.001;
+
+        return Math.min(Math.max(nextScale, 1), 3);
+      });
+    };
+
+    dialog.addEventListener("wheel", handleWheel, {
+      passive: false,
     });
+
+    return () => {
+      dialog.removeEventListener("wheel", handleWheel);
+    };
+  }, [zoomEnabled]);
+
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "touch") {
+      return;
+    }
+
+    touchStartXRef.current = event.clientX;
+    touchStartYRef.current = event.clientY;
+  };
+
+  const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (
+      event.pointerType !== "touch" ||
+      touchStartXRef.current === null ||
+      touchStartYRef.current === null ||
+      images.length <= 1 ||
+      scale > 1
+    ) {
+      touchStartXRef.current = null;
+      touchStartYRef.current = null;
+      return;
+    }
+
+    const deltaX = event.clientX - touchStartXRef.current;
+
+    const deltaY = event.clientY - touchStartYRef.current;
+
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+
+    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) {
+      return;
+    }
+
+    if (deltaX < 0) {
+      nextImage();
+    } else {
+      previousImage();
+    }
   };
 
   return (
-    <AnimatePresence>
+    <FocusTrap
+      focusTrapOptions={{
+        initialFocus: () => closeButtonRef.current,
+        clickOutsideDeactivates: false,
+        escapeDeactivates: false,
+        returnFocusOnDeactivate: false,
+      }}
+    >
       <motion.div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="Image viewer"
+        tabIndex={-1}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
         onClick={onClose}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.25 }}
+        transition={{
+          duration: 0.25,
+        }}
         style={{
           position: "fixed",
           inset: 0,
-          zIndex: 9999,
+          zIndex: "var(--ant-zIndex-modal)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: "1rem",
-          padding: "2rem",
+          gap: "var(--ant-spacing-4)",
+          padding: "var(--ant-spacing-8)",
           overflow: "hidden",
-          background: "var(--lightbox-background)",
+          background: "var(--ant-lightbox-background)",
+          touchAction: "none",
         }}
       >
-        {/* ── Dynamic blurred background ─────────────────────────── */}
-
         <AnimatePresence mode="wait">
           <motion.img
-            key={currentImage}
+            key={`background-${currentImage}`}
             src={currentImage}
             alt=""
             aria-hidden="true"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.6,
+            }}
             style={{
               position: "absolute",
-              inset: "-20px",
-              width: "calc(100% + 40px)",
-              height: "calc(100% + 40px)",
+              inset: "calc(var(--ant-spacing-2) * -1)",
+              width: "calc(100% + var(--ant-spacing-4))",
+              height: "calc(100% + var(--ant-spacing-4))",
               objectFit: "cover",
-              filter:
-                "blur(var(--lightbox-background-blur))",
-              opacity:
-                "var(--lightbox-background-opacity)",
+              filter: "blur(var(--ant-lightbox-backgroundBlur))",
+              opacity: "var(--ant-lightbox-backgroundOpacity)",
               transform: "scale(1.04)",
               pointerEvents: "none",
             }}
           />
         </AnimatePresence>
 
-        {/* ── Soft overlay ───────────────────────────────────────── */}
-
         <div
+          aria-hidden="true"
           style={{
             position: "absolute",
             inset: 0,
-            background: "var(--lightbox-overlay)",
-            pointerEvents: "none",
+            zIndex: "var(--ant-zIndex-raised)",
+            background: "var(--ant-lightbox-overlay)",
+            pointerEvents: "auto",
           }}
         />
 
-        {/* ── Top bar ────────────────────────────────────────────── */}
-
         <motion.div
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: -12,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
           onClick={(event) => event.stopPropagation()}
           style={{
             position: "absolute",
-            top: "1.25rem",
-            left: "1.25rem",
-            right: "1.25rem",
+            top: "var(--ant-spacing-5)",
+            left: "var(--ant-spacing-5)",
+            right: "var(--ant-spacing-5)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            zIndex: 5,
+            zIndex: "var(--ant-zIndex-toast)",
           }}
         >
-          {/* Counter */}
-
-          <motion.div
+          <div
             style={{
-              padding: "0.45rem 0.8rem",
-              borderRadius: "999px",
-              color: "var(--lightbox-foreground)",
-              background: "var(--lightbox-glass)",
-              border:
-                "1px solid var(--lightbox-border)",
-              backdropFilter: "blur(12px)",
-              fontSize: "0.8rem",
-              fontWeight: 600,
-              boxShadow:
-                "0 8px 25px var(--lightbox-shadow)",
+              padding: "var(--ant-spacing-2) var(--ant-spacing-3)",
+              borderRadius: "var(--ant-radius-full)",
+              color: "var(--ant-lightbox-foreground)",
+              background: "var(--ant-lightbox-glass)",
+              border: "1px solid var(--ant-lightbox-border)",
+              backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
+              fontSize: "var(--ant-typography-fontSize-xs)",
+              fontWeight: "var(--ant-typography-fontWeight-semibold)",
+              boxShadow: "var(--ant-lightbox-shadow)",
             }}
           >
             Image {currentIndex + 1} / {images.length}
-          </motion.div>
-
-          {/* Close */}
+          </div>
 
           <motion.button
+            ref={closeButtonRef}
             type="button"
             aria-label="Close image viewer"
             onClick={(event) => {
@@ -244,28 +460,24 @@ export function Lightbox({
               scale: 0.9,
             }}
             style={{
-              width: "2.75rem",
-              height: "2.75rem",
-              borderRadius: "50%",
-              border:
-                "1px solid var(--lightbox-border)",
-              background: "var(--lightbox-glass)",
-              color: "var(--lightbox-foreground)",
-              backdropFilter: "blur(12px)",
-              fontSize: "1.5rem",
+              width: "var(--ant-spacing-10)",
+              height: "var(--ant-spacing-10)",
+              borderRadius: "var(--ant-radius-full)",
+              border: "1px solid var(--ant-lightbox-border)",
+              background: "var(--ant-lightbox-glass)",
+              color: "var(--ant-lightbox-foreground)",
+              backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
+              fontSize: "var(--ant-typography-fontSize-xl)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow:
-                "0 8px 25px var(--lightbox-shadow)",
+              boxShadow: "var(--ant-lightbox-shadow)",
             }}
           >
             ×
           </motion.button>
         </motion.div>
-
-        {/* ── Main image ─────────────────────────────────────────── */}
 
         <motion.div
           initial={{
@@ -279,34 +491,28 @@ export function Lightbox({
           onClick={(event) => event.stopPropagation()}
           style={{
             position: "relative",
-            zIndex: 2,
-            padding: "0.5rem",
-            borderRadius: "1rem",
-            background:
-              "var(--lightbox-glass)",
-            border:
-              "1px solid var(--lightbox-border)",
-            backdropFilter: "blur(12px)",
-            boxShadow:
-              "0 25px 80px var(--lightbox-shadow)",
+            zIndex: "var(--ant-zIndex-raised)",
+            padding: "var(--ant-spacing-2)",
+            borderRadius: "var(--ant-radius-xl)",
+            background: "var(--ant-lightbox-glass)",
+            border: "1px solid var(--ant-lightbox-border)",
+            backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
+            boxShadow: "var(--ant-lightbox-shadow)",
           }}
         >
           <AnimatePresence mode="wait">
             <motion.img
-              key={currentImage}
+              key={`image-${currentImage}`}
               src={currentImage}
               alt={alt}
               drag={zoomEnabled && scale > 1}
               dragConstraints={{
-                top: 200,
-                bottom: 200,
-                left: 200,
-                right: 200,
+                top: Infinity,
+                bottom: Infinity,
+                left: Infinity,
+                right: Infinity,
               }}
-              onWheel={handleWheel}
-              onClick={() => {
-                setIsPaused(true);
-              }}
+              dragElastic={0.2}
               onDoubleClick={() => {
                 if (!zoomEnabled) {
                   return;
@@ -314,9 +520,7 @@ export function Lightbox({
 
                 setIsPaused(true);
 
-                setScale((prev) =>
-                  prev === 1 ? 2 : 1,
-                );
+                setScale((previousScale) => (previousScale === 1 ? 2 : 1));
               }}
               initial={{
                 opacity: 0,
@@ -340,173 +544,32 @@ export function Lightbox({
                 maxWidth: "88vw",
                 maxHeight: "68vh",
                 objectFit: "contain",
-                borderRadius: "0.75rem",
+                borderRadius: "var(--ant-radius-lg)",
                 userSelect: "none",
-                touchAction: "none",
-                cursor:
-                  zoomEnabled && scale > 1
-                    ? "grab"
-                    : "zoom-in",
+                touchAction: zoomEnabled && scale > 1 ? "none" : "pan-y",
+                cursor: !zoomEnabled ? "default" : scale > 1 ? "grab" : "zoom-in",
               }}
             />
           </AnimatePresence>
         </motion.div>
 
-        {/* ── Previous button ────────────────────────────────────── */}
-
         {images.length > 1 && (
-          <motion.button
-            type="button"
-            aria-label="Previous image"
-            onMouseDown={() => {
-              setPressedButton("prev");
-            }}
-            onMouseUp={() => {
-              setPressedButton(null);
-            }}
-            onMouseLeave={() => {
-              setPressedButton(null);
-            }}
-            onClick={(event) => {
-              event.stopPropagation();
-              previousImage();
-            }}
-            whileHover={{
-              scale: 1.1,
-              x: -4,
-              borderColor:
-                "var(--lightbox-blue)",
-              boxShadow:
-                "0 0 22px var(--lightbox-blue-glow)",
-            }}
-            whileTap={{
-              scale: 0.94,
-              y: -8,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 350,
-              damping: 18,
-            }}
-            style={{
-              position: "absolute",
-              left: "calc(50% - 44vw)",
-              top: "50%",
-              zIndex: 4,
-              width: "3.25rem",
-              height: "3.25rem",
-              borderRadius: "50%",
+          <>
+            <NavigationButton
+              direction="prev"
+              pressed={pressedButton === "prev"}
+              onClick={previousImage}
+              onPressedChange={(pressed) => setPressedButton(pressed ? "prev" : null)}
+            />
 
-              border:
-                pressedButton === "prev"
-                  ? "2px solid var(--lightbox-blue-dark)"
-                  : "2px solid var(--lightbox-arrow-bg)",
-
-              background:
-                pressedButton === "prev"
-                  ? "var(--lightbox-blue-dark)"
-                  : "var(--lightbox-arrow-bg)",
-
-              color:
-                "var(--lightbox-arrow-color)",
-
-              fontSize: "2rem",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-
-              boxShadow:
-                pressedButton === "prev"
-                  ? "0 0 28px var(--lightbox-blue-glow)"
-                  : "0 8px 30px var(--lightbox-shadow)",
-
-              transition:
-                "background 0.15s ease, border-color 0.15s ease",
-            }}
-          >
-            ‹
-          </motion.button>
+            <NavigationButton
+              direction="next"
+              pressed={pressedButton === "next"}
+              onClick={nextImage}
+              onPressedChange={(pressed) => setPressedButton(pressed ? "next" : null)}
+            />
+          </>
         )}
-
-        {/* ── Next button ────────────────────────────────────────── */}
-
-        {images.length > 1 && (
-          <motion.button
-            type="button"
-            aria-label="Next image"
-            onMouseDown={() => {
-              setPressedButton("next");
-            }}
-            onMouseUp={() => {
-              setPressedButton(null);
-            }}
-            onMouseLeave={() => {
-              setPressedButton(null);
-            }}
-            onClick={(event) => {
-              event.stopPropagation();
-              nextImage();
-            }}
-            whileHover={{
-              scale: 1.1,
-              x: 4,
-              borderColor:
-                "var(--lightbox-blue)",
-              boxShadow:
-                "0 0 22px var(--lightbox-blue-glow)",
-            }}
-            whileTap={{
-              scale: 0.94,
-              y: -8,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 350,
-              damping: 18,
-            }}
-            style={{
-              position: "absolute",
-              right: "calc(50% - 44vw)",
-              top: "50%",
-              zIndex: 4,
-              width: "3.25rem",
-              height: "3.25rem",
-              borderRadius: "50%",
-
-              border:
-                pressedButton === "next"
-                  ? "2px solid var(--lightbox-blue-dark)"
-                  : "2px solid var(--lightbox-arrow-bg)",
-
-              background:
-                pressedButton === "next"
-                  ? "var(--lightbox-blue-dark)"
-                  : "var(--lightbox-arrow-bg)",
-
-              color:
-                "var(--lightbox-arrow-color)",
-
-              fontSize: "2rem",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-
-              boxShadow:
-                pressedButton === "next"
-                  ? "0 0 28px var(--lightbox-blue-glow)"
-                  : "0 8px 30px var(--lightbox-shadow)",
-
-              transition:
-                "background 0.15s ease, border-color 0.15s ease",
-            }}
-          >
-            ›
-          </motion.button>
-        )}
-
-        {/* ── Thumbnails ─────────────────────────────────────────── */}
 
         {images.length > 1 && (
           <motion.div
@@ -518,23 +581,19 @@ export function Lightbox({
               opacity: 1,
               y: 0,
             }}
-            onClick={(event) =>
-              event.stopPropagation()
-            }
+            onClick={(event) => event.stopPropagation()}
             style={{
               position: "relative",
-              zIndex: 3,
+              zIndex: "var(--ant-zIndex-raised)",
               display: "flex",
-              gap: "0.55rem",
-              padding: "0.5rem",
+              gap: "var(--ant-spacing-2)",
+              padding: "var(--ant-spacing-2)",
               maxWidth: "90vw",
               overflowX: "auto",
-              borderRadius: "0.85rem",
-              background:
-                "var(--lightbox-glass)",
-              border:
-                "1px solid var(--lightbox-border)",
-              backdropFilter: "blur(12px)",
+              borderRadius: "var(--ant-radius-lg)",
+              background: "var(--ant-lightbox-glass)",
+              border: "1px solid var(--ant-lightbox-border)",
+              backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
             }}
           >
             {images.map((image, index) => (
@@ -542,10 +601,9 @@ export function Lightbox({
                 key={`${image}-${index}`}
                 type="button"
                 aria-label={`View image ${index + 1}`}
+                aria-current={index === currentIndex ? "true" : undefined}
                 onClick={() => {
-                  setCurrentIndex(index);
-                  setScale(1);
-                  setIsPaused(false);
+                  goToImage(index, true);
                 }}
                 whileHover={{
                   scale: 1.06,
@@ -558,29 +616,25 @@ export function Lightbox({
                   padding: 0,
                   border:
                     index === currentIndex
-                      ? "2px solid var(--lightbox-accent)"
+                      ? "2px solid var(--ant-lightbox-accent)"
                       : "2px solid transparent",
                   background: "transparent",
-                  borderRadius: "0.55rem",
+                  borderRadius: "var(--ant-radius-md)",
                   cursor: "pointer",
-                  opacity:
-                    index === currentIndex
-                      ? 1
-                      : 0.55,
+                  opacity: index === currentIndex ? 1 : 0.55,
                   overflow: "hidden",
-                  transition:
-                    "border-color 0.2s ease, opacity 0.2s ease",
+                  transition: "border-color 0.2s ease, opacity 0.2s ease",
                 }}
               >
                 <img
                   src={image}
                   alt=""
                   style={{
-                    width: "4.5rem",
-                    height: "3.25rem",
+                    width: "calc(var(--ant-spacing-20) + var(--ant-spacing-2))",
+                    height: "calc(var(--ant-spacing-12) - var(--ant-spacing-1))",
                     display: "block",
                     objectFit: "cover",
-                    borderRadius: "0.4rem",
+                    borderRadius: "var(--ant-radius-sm)",
                   }}
                 />
               </motion.button>
@@ -588,10 +642,8 @@ export function Lightbox({
           </motion.div>
         )}
 
-        {/* ── Pause indicator ────────────────────────────────────── */}
-
         <AnimatePresence>
-          {isPaused && (
+          {isPaused && autoPlay && (
             <motion.div
               initial={{
                 opacity: 0,
@@ -608,24 +660,19 @@ export function Lightbox({
                 y: 8,
                 scale: 0.9,
               }}
-              onClick={(event) =>
-                event.stopPropagation()
-              }
+              onClick={(event) => event.stopPropagation()}
               style={{
                 position: "absolute",
-                bottom: "1rem",
-                zIndex: 4,
-                padding: "0.4rem 0.75rem",
-                borderRadius: "999px",
-                background:
-                  "var(--lightbox-glass)",
-                border:
-                  "1px solid var(--lightbox-border)",
-                backdropFilter: "blur(10px)",
-                color:
-                  "var(--lightbox-foreground)",
-                fontSize: "0.75rem",
-                fontWeight: 500,
+                bottom: "var(--ant-spacing-4)",
+                zIndex: "var(--ant-zIndex-raised)",
+                padding: "var(--ant-spacing-1) var(--ant-spacing-3)",
+                borderRadius: "var(--ant-radius-full)",
+                background: "var(--ant-lightbox-glass)",
+                border: "1px solid var(--ant-lightbox-border)",
+                backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
+                color: "var(--ant-lightbox-foreground)",
+                fontSize: "var(--ant-typography-fontSize-xs)",
+                fontWeight: "var(--ant-typography-fontWeight-medium)",
               }}
             >
               Ⅱ Paused • Click Next / Previous to continue
@@ -633,6 +680,6 @@ export function Lightbox({
           )}
         </AnimatePresence>
       </motion.div>
-    </AnimatePresence>
+    </FocusTrap>
   );
 }
