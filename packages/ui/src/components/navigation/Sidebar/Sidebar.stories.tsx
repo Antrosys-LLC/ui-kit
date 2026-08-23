@@ -132,48 +132,51 @@ const navigationItems = [
   },
 ];
 
-const InteractiveSidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const [activeRoute, setActiveRoute] = useState("/dashboard");
-
-  return (
-    <Sidebar
-      items={navigationItems}
-      collapsed={collapsed}
-      activeRoute={activeRoute}
-      userProfile={{
-        name: "Fatima Razaq",
-        role: "Frontend Developer",
-      }}
-      onCollapse={() => setCollapsed((prev) => !prev)}
-      onNavigate={(route) => {
-        setActiveRoute(route);
-        console.log("Navigate:", route);
-      }}
-    />
-  );
+const userProfile = {
+  name: "Fatima Razaq",
+  role: "Frontend Developer",
 };
 
 export const Default: Story = {
-  render: () => <InteractiveSidebar />,
-};
-
-export const Collapsed: Story = {
   render: () => {
-    const [activeRoute, setActiveRoute] = useState("/dashboard");
+    const [collapsed, setCollapsed] = useState(false);
+    const [activeRoute, setActiveRoute] =
+      useState("/dashboard");
 
     return (
       <Sidebar
         items={navigationItems}
-        collapsed={true}
+        collapsed={collapsed}
         activeRoute={activeRoute}
-        userProfile={{
-          name: "Fatima Razaq",
-          role: "Frontend Developer",
-        }}
+        userProfile={userProfile}
+        onCollapse={() =>
+          setCollapsed((previous) => !previous)
+        }
         onNavigate={(route) => {
           setActiveRoute(route);
-          console.log("Navigate:", route);
+        }}
+      />
+    );
+  },
+};
+
+export const Collapsed: Story = {
+  render: () => {
+    const [collapsed, setCollapsed] = useState(true);
+    const [activeRoute, setActiveRoute] =
+      useState("/dashboard");
+
+    return (
+      <Sidebar
+        items={navigationItems}
+        collapsed={collapsed}
+        activeRoute={activeRoute}
+        userProfile={userProfile}
+        onCollapse={() =>
+          setCollapsed((previous) => !previous)
+        }
+        onNavigate={(route) => {
+          setActiveRoute(route);
         }}
       />
     );
@@ -181,21 +184,39 @@ export const Collapsed: Story = {
 };
 
 export const NestedNavigation: Story = {
-  args: {
-    items: navigationItems,
-    collapsed: false,
-    activeRoute: "/projects/active",
-    userProfile: {
-      name: "Fatima Razaq",
-      role: "Frontend Developer",
-    },
+  render: () => {
+    const [activeRoute, setActiveRoute] = useState(
+      "/projects/active"
+    );
+
+    return (
+      <Sidebar
+        items={navigationItems}
+        collapsed={false}
+        activeRoute={activeRoute}
+        userProfile={userProfile}
+        onNavigate={(route) => {
+          setActiveRoute(route);
+        }}
+      />
+    );
   },
 };
 
 export const WithoutProfile: Story = {
-  args: {
-    items: navigationItems,
-    collapsed: false,
-    activeRoute: "/messages",
+  render: () => {
+    const [activeRoute, setActiveRoute] =
+      useState("/messages");
+
+    return (
+      <Sidebar
+        items={navigationItems}
+        collapsed={false}
+        activeRoute={activeRoute}
+        onNavigate={(route) => {
+          setActiveRoute(route);
+        }}
+      />
+    );
   },
 };
