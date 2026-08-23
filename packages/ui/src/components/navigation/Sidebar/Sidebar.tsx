@@ -1,4 +1,8 @@
-import React, { HTMLAttributes, ReactNode, useState } from "react";
+import React, {
+  HTMLAttributes,
+  ReactNode,
+  useState,
+} from "react";
 import { clsx } from "clsx";
 
 export interface SidebarItem {
@@ -54,8 +58,19 @@ function DeveloperAvatar() {
         fill="var(--ant-sidebar-active-text)"
       />
 
-      <circle cx="21" cy="23" r="1" fill="var(--ant-sidebar-text)" />
-      <circle cx="27" cy="23" r="1" fill="var(--ant-sidebar-text)" />
+      <circle
+        cx="21"
+        cy="23"
+        r="1"
+        fill="var(--ant-sidebar-text)"
+      />
+
+      <circle
+        cx="27"
+        cy="23"
+        r="1"
+        fill="var(--ant-sidebar-text)"
+      />
 
       <path
         d="M21 27C22.5 28.5 25.5 28.5 27 27"
@@ -112,7 +127,9 @@ export function Sidebar({
   className,
   ...props
 }: SidebarProps) {
-  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+  const [openItems, setOpenItems] = useState<
+    Record<string, boolean>
+  >({});
 
   const toggleItem = (route: string) => {
     setOpenItems((previous) => ({
@@ -122,12 +139,19 @@ export function Sidebar({
   };
 
   const isActive = (item: SidebarItem): boolean => {
-    if (activeRoute === item.route) return true;
+    if (activeRoute === item.route) {
+      return true;
+    }
 
-    return Boolean(item.children?.some((child) => isActive(child)));
+    return Boolean(
+      item.children?.some((child) => isActive(child))
+    );
   };
 
-  const renderItems = (navigationItems: SidebarItem[], level = 0) => {
+  const renderItems = (
+    navigationItems: SidebarItem[],
+    level = 0
+  ) => {
     return navigationItems.map((item) => {
       const active = isActive(item);
 
@@ -138,7 +162,10 @@ export function Sidebar({
       const isOpen = Boolean(openItems[item.route]);
 
       return (
-        <li key={item.route} className="w-full">
+        <li
+          key={item.route}
+          className="w-full"
+        >
           <div
             className={clsx(
               "relative flex w-full items-center rounded-xl transition-all",
@@ -162,12 +189,19 @@ export function Sidebar({
                 onNavigate?.(item.route);
               }}
               aria-current={
-                activeRoute === item.route ? "page" : undefined
+                activeRoute === item.route
+                  ? "page"
+                  : undefined
               }
-              aria-label={collapsed ? item.label : undefined}
-              title={collapsed ? item.label : undefined}
+              aria-label={
+                collapsed ? item.label : undefined
+              }
+              title={
+                collapsed ? item.label : undefined
+              }
               className={clsx(
-                "group flex min-h-sidebar-item-height w-full min-w-0 cursor-pointer items-center rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-active-text",
+                "group flex min-h-sidebar-item-height w-full min-w-0 cursor-pointer items-center rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-all",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-active-text",
                 active
                   ? "bg-sidebar-active-bg text-sidebar-active-text shadow-sm"
                   : "text-sidebar-text hover:bg-sidebar-hover",
@@ -230,9 +264,12 @@ export function Sidebar({
                   <li key={child.route}>
                     <button
                       type="button"
-                      onClick={() => onNavigate?.(child.route)}
+                      onClick={() =>
+                        onNavigate?.(child.route)
+                      }
                       className={clsx(
-                        "relative flex min-h-sidebar-child-height w-full cursor-pointer items-center rounded-lg px-3 py-2 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-active-text",
+                        "relative flex min-h-sidebar-child-height w-full cursor-pointer items-center rounded-lg px-3 py-2 text-sm transition-all",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-active-text",
                         childActive
                           ? "bg-sidebar-active-bg font-medium text-sidebar-active-text"
                           : "text-sidebar-text-secondary hover:bg-sidebar-hover hover:text-sidebar-text"
@@ -269,7 +306,9 @@ export function Sidebar({
     <aside
       className={clsx(
         "flex h-full min-h-screen flex-col border-r border-sidebar-border bg-sidebar-bg transition-[width] duration-300 ease-in-out",
-        collapsed ? "w-20" : "w-sidebar-width",
+        collapsed
+          ? "w-20"
+          : "w-sidebar-width",
         className
       )}
       {...props}
@@ -286,7 +325,9 @@ export function Sidebar({
         <div
           className={clsx(
             "flex min-w-0 items-center",
-            collapsed ? "justify-center" : "gap-3"
+            collapsed
+              ? "justify-center"
+              : "gap-3"
           )}
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sidebar-active-bg text-lg font-bold text-sidebar-active-text">
@@ -321,7 +362,9 @@ export function Sidebar({
                 : "Collapse sidebar"
             }
             className={clsx(
-              "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-sidebar-border bg-sidebar-bg text-sidebar-text-secondary shadow-sm transition-all hover:bg-sidebar-hover hover:text-sidebar-active-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-active-text",
+              "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-sidebar-border bg-sidebar-bg text-sidebar-text-secondary shadow-sm transition-all",
+              "hover:bg-sidebar-hover hover:text-sidebar-active-text",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-active-text",
               collapsed &&
                 "absolute left-sidebar-collapse-button-offset top-5 z-10"
             )}
