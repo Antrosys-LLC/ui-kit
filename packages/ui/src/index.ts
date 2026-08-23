@@ -52,6 +52,24 @@ export type {
 } from "./components/data/AvatarUserCard";
 
 // ── Media ────────────────────────────────────────────────────────────────────
+
+export { ImageCarousel } from "./components/media/ImageCarousel";
+
+export type {
+  CarouselImage,
+  ImageCarouselProps,
+} from "./components/media/ImageCarousel";
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+
+export { Navbar } from "./components/navigation/Navbar";
+
+export type {
+  NavbarCtaButton,
+  NavbarLink,
+  NavbarProps,
+} from "./components/navigation/Navbar";
+
 export { Video } from "./components/media/Video";
 export type { VideoProps, CaptionTrack, VideoVariant, VideoSize } from "./components/media/Video";
 
@@ -59,5 +77,13 @@ export type { VideoProps, CaptionTrack, VideoVariant, VideoSize } from "./compon
 export { Breadcrumb } from "./components/navigation/Breadcrumb";
 export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
 export { Pagination } from "./components/navigation/Pagination";
+
 export type { PaginationProps } from "./components/navigation/Pagination";
 
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Add new component exports here as they are built.
+
+// Convention: keep alphabetical within each category group.
+
+// ─────────────────────────────────────────────────────────────────────────────

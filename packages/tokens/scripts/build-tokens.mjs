@@ -56,7 +56,11 @@ function flatten(obj, prefix = "") {
     const path = prefix ? `${prefix}-${key}` : key;
 
     if (val && typeof val === "object" && "value" in val) {
-      acc[path] = resolveReference(val.value);
+      const rawVal = val.value;
+      const resolved = typeof rawVal === "string"
+        ? rawVal.replace(/\{([^}]+)\}/g, (_, ref) => `var(--ant-${ref.replace(/\./g, "-")})`)
+        : rawVal;
+      acc[path] = resolved;
     } else if (val && typeof val === "object") {
       Object.assign(acc, flatten(val, path));
     }
