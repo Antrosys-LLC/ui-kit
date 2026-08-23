@@ -52,7 +52,7 @@ function BrandLogo() {
     <span className="flex items-center gap-[var(--ant-spacing-2)]">
       <span
         className={[
-          "flex h-8 w-8 items-center justify-center rounded-md",
+          "flex h-[var(--ant-spacing-8)] w-[var(--ant-spacing-8)] items-center justify-center rounded-[var(--ant-radius-md)]",
           "bg-[var(--ant-color-brand-primary)]",
           "font-bold text-[var(--ant-color-neutral-0)]",
         ].join(" ")}
@@ -172,7 +172,7 @@ export const TransparentOnScroll: Story = {
     >
       <Navbar {...args} />
 
-      <main className="mx-auto max-w-7xl p-[var(--ant-spacing-6)]">
+      <main className="mx-auto max-w-[var(--ant-spacing-7xl)] p-[var(--ant-spacing-6)]">
         <h1
           className={[
             "text-[length:var(--ant-typography-fontsize-2xl)] font-bold",
