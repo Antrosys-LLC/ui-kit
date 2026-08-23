@@ -41,6 +41,82 @@ export const Default: Story = {
   },
 };
 
+export const SizesSM: Story = {
+  args: {
+    src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
+    controls: true,
+    size: "sm",
+  },
+};
+
+export const SizesMD: Story = {
+  args: {
+    src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
+    controls: true,
+    size: "md",
+  },
+};
+
+export const SizesXL: Story = {
+  args: {
+    src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
+    controls: true,
+    size: "xl",
+  },
+};
+
+export const SizesFull: Story = {
+  args: {
+    src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
+    controls: true,
+    size: "full",
+  },
+};
+
+export const CustomDimensions: Story = {
+  args: {
+    src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
+    controls: true,
+    width: "500px",
+    height: "300px",
+  },
+};
+
+export const LoadingBuffering: Story = {
+  args: {
+    src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
+    poster: "https://media.w3.org/2010/05/sintel/poster.png",
+    controls: true,
+    loading: true,
+    size: "lg",
+  },
+};
+
+export const NoControls: Story = {
+  args: {
+    src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
+    controls: false,
+    size: "lg",
+  },
+};
+
+export const CaptionsDisabled: Story = {
+  args: {
+    src: "https://vjs.zencdn.net/v/oceans.mp4",
+    poster: "https://vjs.zencdn.net/v/oceans.png",
+    controls: true,
+    size: "lg",
+    captions: [
+      {
+        src: "https://vjs.zencdn.net/v/oceans.vtt",
+        label: "English",
+        srcLang: "en",
+        default: false,
+      },
+    ],
+  },
+};
+
 export const Rounded: Story = {
   args: {
     src: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
@@ -100,3 +176,4 @@ export const VimeoEmbed: Story = {
     size: "lg",
   },
 };
+

@@ -20,7 +20,8 @@ export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/feedba
 
 // ── Media ────────────────────────────────────────────────────────────────────
 export { Video } from "./components/media/Video";
-export type { VideoProps } from "./components/media/Video";
+export type { VideoProps, CaptionTrack, VideoVariant, VideoSize } from "./components/media/Video";
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Add new component exports here as they are built.

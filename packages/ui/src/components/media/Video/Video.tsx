@@ -30,13 +30,15 @@ export interface VideoProps extends VideoHTMLAttributes<HTMLVideoElement> {
   embedType?: "html5" | "youtube" | "vimeo";
   /** Plays the video automatically when loaded (lowercase option) */
   autoplay?: boolean;
+  /** Force/simulate loading buffering state */
+  loading?: boolean;
 }
 
 const sizePresets: Record<VideoSize, string> = {
-  sm: "max-w-[320px] w-full",
-  md: "max-w-[480px] w-full",
-  lg: "max-w-[640px] w-full",
-  xl: "max-w-[800px] w-full",
+  sm: "max-w-[var(--ant-video-size-sm)] w-full",
+  md: "max-w-[var(--ant-video-size-md)] w-full",
+  lg: "max-w-[var(--ant-video-size-lg)] w-full",
+  xl: "max-w-[var(--ant-video-size-xl)] w-full",
   full: "w-full",
 };
 
@@ -93,6 +95,7 @@ export function Video({
   loop,
   muted,
   controls = true,
+  loading = false,
   width,
   height,
   className,
@@ -265,6 +268,8 @@ export function Video({
   };
 
   const hasCustomSize = width !== undefined || height !== undefined;
+  const showSpinner = loading || isBuffering;
+  const focusRingClass = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ant-color-brand-primary)] focus-visible:ring-offset-1";
 
   // Render iframe for YouTube or Vimeo
   if (detectedEmbedType === "youtube" || detectedEmbedType === "vimeo") {
@@ -281,7 +286,7 @@ export function Video({
           height,
         }}
         className={clsx(
-          "relative overflow-hidden bg-black",
+          "relative overflow-hidden bg-[var(--ant-color-neutral-900)]",
           !hasCustomSize && sizePresets[size],
           !height && "aspect-video",
           variant === "rounded" && "rounded-[var(--ant-radius-lg)] shadow-[var(--ant-shadow-md)]",
@@ -304,6 +309,7 @@ export function Video({
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
+      onFocus={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControlsOverlay(false)}
       style={{
         width,
@@ -346,12 +352,13 @@ export function Video({
             default={track.default}
           />
         ))}
+        Your browser does not support HTML5 video.
       </video>
 
       {/* Buffering/Loading Spinner */}
-      {isBuffering && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none transition-opacity duration-200">
-          <svg className="animate-spin h-10 w-10 text-[var(--ant-color-brand-primary)]" fill="none" viewBox="0 0 24 24">
+      {showSpinner && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[var(--ant-color-overlay-backdrop)] pointer-events-none transition-opacity duration-[var(--ant-motion-duration-normal)]">
+          <svg className="animate-spin w-[var(--ant-spacing-10)] h-[var(--ant-spacing-10)] text-[var(--ant-color-brand-primary)]" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
           </svg>
@@ -359,13 +366,16 @@ export function Video({
       )}
 
       {/* Big Play Overlay (when paused or not started, only if controls are enabled) */}
-      {controls && !isPlaying && !isBuffering && (
+      {controls && !isPlaying && !showSpinner && (
         <button
           onClick={togglePlay}
-          className="cursor-pointer absolute flex items-center justify-center w-16 h-16 rounded-full bg-black/60 hover:bg-[var(--ant-color-brand-primary)] text-white hover:scale-105 transition-all duration-[var(--ant-motion-duration-fast)] ease-out shadow-[var(--ant-shadow-lg)] backdrop-blur-sm border border-white/10"
+          className={clsx(
+            "cursor-pointer absolute flex items-center justify-center w-[var(--ant-spacing-16)] h-[var(--ant-spacing-16)] rounded-[var(--ant-radius-full)] bg-[var(--ant-color-overlay-bg)] hover:bg-[var(--ant-color-brand-primary)] text-[var(--ant-color-overlay-text)] hover:scale-105 transition-all duration-[var(--ant-motion-duration-fast)] ease-out shadow-[var(--ant-shadow-lg)] backdrop-blur-md border border-[var(--ant-color-overlay-border)]",
+            focusRingClass
+          )}
           aria-label="Play video"
         >
-          <svg className="w-6 h-6 fill-current ml-1" viewBox="0 0 24 24">
+          <svg className="w-[var(--ant-spacing-6)] h-[var(--ant-spacing-6)] fill-current ml-[var(--ant-spacing-1)]" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />
           </svg>
         </button>
@@ -374,85 +384,90 @@ export function Video({
       {/* Custom Controls Overlay */}
       {controls && (
         <div
+          onFocus={handleMouseMove}
           className={clsx(
-            "absolute bottom-3 left-3 right-3 bg-black/60 backdrop-blur-md border border-white/10 text-white px-4 py-2.5 rounded-xl flex flex-col gap-2 z-10 transition-all duration-[var(--ant-motion-duration-slow)] ease-out",
-            showControlsOverlay ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
+            "absolute bottom-[var(--ant-spacing-3)] left-[var(--ant-spacing-3)] right-[var(--ant-spacing-3)] bg-[var(--ant-color-overlay-bg)] backdrop-blur-md border border-[var(--ant-color-overlay-border)] text-[var(--ant-color-overlay-text)] px-[var(--ant-spacing-4)] py-[var(--ant-spacing-2.5)] rounded-[var(--ant-radius-xl)] flex flex-col gap-[var(--ant-spacing-2)] z-10 transition-all duration-[var(--ant-motion-duration-slow)] ease-out",
+            showControlsOverlay
+              ? "opacity-100 translate-y-0 visible pointer-events-auto"
+              : "opacity-0 translate-y-2 invisible pointer-events-none"
           )}
+          {...(!showControlsOverlay ? { inert: "" } : {})}
         >
           {/* Progress / Seek bar */}
-          <div className="flex items-center w-full gap-2 group/progress">
+          <div className="flex items-center w-full gap-[var(--ant-spacing-2)] group/progress">
             <input
               type="range"
               min={0}
               max={duration || 100}
               value={currentTime}
               onChange={handleSeek}
-              className="w-full h-1 bg-white/20 hover:h-1.5 rounded-lg appearance-none cursor-pointer accent-[var(--ant-color-brand-primary)] transition-all"
+              className={clsx("w-full h-1 bg-[var(--ant-color-overlay-track)] hover:h-1.5 rounded-[var(--ant-radius-lg)] appearance-none cursor-pointer accent-[var(--ant-color-brand-primary)] transition-all", focusRingClass)}
               aria-label="Seek track"
             />
           </div>
 
           {/* Buttons & Labels Row */}
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-[var(--ant-spacing-3)]">
               {/* Play / Pause */}
               <button
                 onClick={togglePlay}
-                className="p-1 rounded-md hover:bg-white/10 text-white transition-colors"
+                className={clsx("p-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)] hover:bg-[var(--ant-color-overlay-hover)] text-[var(--ant-color-overlay-text)] transition-colors", focusRingClass)}
                 aria-label={isPlaying ? "Pause" : "Play"}
               >
                 {isPlaying ? (
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <svg className="w-[var(--ant-spacing-5)] h-[var(--ant-spacing-5)] fill-current" viewBox="0 0 24 24">
                     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <svg className="w-[var(--ant-spacing-5)] h-[var(--ant-spacing-5)] fill-current" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 )}
               </button>
 
               {/* Time Display */}
-              <span className="text-xs font-mono tabular-nums text-white/80">
+              <span className="text-[var(--ant-typography-fontSize-xs)] font-mono tabular-nums text-[var(--ant-color-overlay-text-sub)]">
                 {formatTime(currentTime)} / {formatTime(duration)}
               </span>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-[var(--ant-spacing-3)]">
               {/* Captions Toggle */}
               {captions && captions.length > 0 && (
                 <button
                   onClick={toggleCaptions}
                   className={clsx(
-                    "p-1 rounded-md transition-colors hover:bg-white/10",
-                    showCaptions ? "text-[var(--ant-color-brand-accent)]" : "text-white/60 hover:text-white"
+                    "p-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)] transition-colors hover:bg-[var(--ant-color-overlay-hover)]",
+                    focusRingClass,
+                    showCaptions ? "text-[var(--ant-color-brand-accent)]" : "text-[var(--ant-color-overlay-text-muted)] hover:text-[var(--ant-color-neutral-0)]"
                   )}
                   aria-label="Toggle Subtitles"
                   title="Toggle Subtitles"
                 >
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <svg className="w-[var(--ant-spacing-5)] h-[var(--ant-spacing-5)] fill-current" viewBox="0 0 24 24">
                     <path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1c0 .55-.45 1-1 1h-3c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1z" />
                   </svg>
                 </button>
               )}
 
               {/* Volume Slider / Mute */}
-              <div className="flex items-center gap-1.5 group/volume">
+              <div className="flex items-center gap-[var(--ant-spacing-1.5)] group/volume">
                 <button
                   onClick={toggleMute}
-                  className="p-1 rounded-md hover:bg-white/10 text-white transition-colors"
+                  className={clsx("p-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)] hover:bg-[var(--ant-color-overlay-hover)] text-[var(--ant-color-overlay-text)] transition-colors", focusRingClass)}
                   aria-label={isMuted ? "Unmute" : "Mute"}
                 >
                   {isMuted || volume === 0 ? (
-                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <svg className="w-[var(--ant-spacing-5)] h-[var(--ant-spacing-5)] fill-current" viewBox="0 0 24 24">
                       <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
                     </svg>
                   ) : volume < 0.5 ? (
-                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <svg className="w-[var(--ant-spacing-5)] h-[var(--ant-spacing-5)] fill-current" viewBox="0 0 24 24">
                       <path d="M7 9v6h4l5 5V4l-5 5H7zm11.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
                     </svg>
                   ) : (
-                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <svg className="w-[var(--ant-spacing-5)] h-[var(--ant-spacing-5)] fill-current" viewBox="0 0 24 24">
                       <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
                     </svg>
                   )}
@@ -464,7 +479,7 @@ export function Video({
                   step={0.05}
                   value={isMuted ? 0 : volume}
                   onChange={handleVolumeChange}
-                  className="w-0 opacity-0 pointer-events-none group-hover/volume:w-16 group-hover/volume:opacity-100 group-hover/volume:pointer-events-auto focus-within:w-16 focus-within:opacity-100 focus-within:pointer-events-auto h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[var(--ant-color-brand-primary)] transition-all duration-300"
+                  className={clsx("w-0 opacity-0 pointer-events-none group-hover/volume:w-[var(--ant-spacing-16)] group-hover/volume:opacity-100 group-hover/volume:pointer-events-auto focus-visible:w-[var(--ant-spacing-16)] focus-visible:opacity-100 focus-visible:pointer-events-auto h-1 bg-[var(--ant-color-overlay-track)] rounded-[var(--ant-radius-lg)] appearance-none cursor-pointer accent-[var(--ant-color-brand-primary)] transition-all duration-[var(--ant-motion-duration-slow)]", focusRingClass)}
                   aria-label="Volume level"
                 />
               </div>
@@ -472,15 +487,15 @@ export function Video({
               {/* Fullscreen */}
               <button
                 onClick={toggleFullscreen}
-                className="p-1 rounded-md hover:bg-white/10 text-white transition-colors"
+                className={clsx("p-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)] hover:bg-[var(--ant-color-overlay-hover)] text-[var(--ant-color-overlay-text)] transition-colors", focusRingClass)}
                 aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
               >
                 {isFullscreen ? (
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <svg className="w-[var(--ant-spacing-5)] h-[var(--ant-spacing-5)] fill-current" viewBox="0 0 24 24">
                     <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <svg className="w-[var(--ant-spacing-5)] h-[var(--ant-spacing-5)] fill-current" viewBox="0 0 24 24">
                     <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
                   </svg>
                 )}
