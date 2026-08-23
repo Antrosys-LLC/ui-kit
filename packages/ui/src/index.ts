@@ -21,6 +21,18 @@ export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/feedba
 // ── Navigation ─────────────────────────────────────────────────────────────
 export { Breadcrumb } from "./components/navigation/Breadcrumb";
 export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
+// ── Data ─────────────────────────────────────────────────────────────────────
+export { AvatarUserCard } from "./components/data/AvatarUserCard";
+export type {
+  AvatarUserCardProps,
+  AvatarUserCardSize,
+  AvatarUserCardStatus,
+  SocialLink,
+} from "./components/data/AvatarUserCard";
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+export { Pagination } from "./components/navigation/Pagination";
+export type { PaginationProps } from "./components/navigation/Pagination";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Add new component exports here as they are built.
