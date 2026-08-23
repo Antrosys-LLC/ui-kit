@@ -40,9 +40,6 @@ export { Lightbox } from "./components/media/Lightbox";
 
 export type { LightboxProps } from "./components/media/Lightbox";
 
-// ── Navigation ─────────────────────────────────────────────────────────────
-export { Breadcrumb } from "./components/navigation/Breadcrumb";
-export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
 // ── Data ─────────────────────────────────────────────────────────────────────
 
 export { AvatarUserCard } from "./components/data/AvatarUserCard";
@@ -54,8 +51,13 @@ export type {
   SocialLink,
 } from "./components/data/AvatarUserCard";
 
+// ── Media ────────────────────────────────────────────────────────────────────
+export { Video } from "./components/media/Video";
+export type { VideoProps, CaptionTrack, VideoVariant, VideoSize } from "./components/media/Video";
+
 // ── Navigation ───────────────────────────────────────────────────────────────
-
+export { Breadcrumb } from "./components/navigation/Breadcrumb";
+export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
 export { Pagination } from "./components/navigation/Pagination";
-
 export type { PaginationProps } from "./components/navigation/Pagination";
+
