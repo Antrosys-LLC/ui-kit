@@ -61,11 +61,3 @@ export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Br
 export { Pagination } from "./components/navigation/Pagination";
 export type { PaginationProps } from "./components/navigation/Pagination";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Add new component exports here as they are built.
-// Convention: keep alphabetical within each category group.
-// ─────────────────────────────────────────────────────────────────────────────
-
-export { Pagination } from "./components/navigation/Pagination";
-
-export type { PaginationProps } from "./components/navigation/Pagination";
