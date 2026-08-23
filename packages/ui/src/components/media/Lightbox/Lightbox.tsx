@@ -40,38 +40,41 @@ interface NavigationButtonProps {
   onPressedChange: (pressed: boolean) => void;
 }
 
-function NavigationButton({ direction, pressed, onClick, onPressedChange }: NavigationButtonProps) {
+function NavigationButton({
+  direction,
+  pressed,
+  onClick,
+  onPressedChange,
+}: NavigationButtonProps) {
   const isPrevious = direction === "prev";
 
   const style: CSSProperties = {
     position: "absolute",
-    [isPrevious ? "left" : "right"]: "clamp(var(--ant-spacing-4), 3vw, var(--ant-spacing-12))",
+    [isPrevious ? "left" : "right"]:
+      "clamp(var(--ant-spacing-4), 3vw, var(--ant-spacing-12))",
     top: "50%",
-    zIndex: "var(--ant-zIndex-raised)",
-    width: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
-    height: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
-    minWidth: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
-    minHeight: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
+    zIndex: "var(--ant-zIndex-modal)",
+    width: "var(--ant-spacing-12)",
+    height: "var(--ant-spacing-12)",
+    minWidth: "var(--ant-spacing-12)",
+    minHeight: "var(--ant-spacing-12)",
     padding: "var(--ant-spacing-0)",
     margin: "var(--ant-spacing-0)",
+    border: "var(--ant-spacing-0)",
     borderRadius: "var(--ant-radius-full)",
-    border: pressed
-      ? "2px solid var(--ant-lightbox-accentActive)"
-      : "2px solid var(--ant-lightbox-arrowBackground)",
     background: pressed
-      ? "var(--ant-lightbox-accentActive)"
-      : "var(--ant-lightbox-arrowBackground)",
-    color: "var(--ant-lightbox-arrowColor)",
-    fontSize: "var(--ant-typography-fontSize-3xl)",
-    fontWeight: 700,
-    lineHeight: 1,
+      ? "var(--ant-lightbox-accent)"
+      : "var(--ant-color-neutral-900)",
+    color: "var(--ant-color-neutral-0)",
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: pressed
-      ? "0 0 0 var(--ant-spacing-1) var(--ant-lightbox-accentGlow), var(--ant-shadow-lg)"
-      : "var(--ant-shadow-lg)",
+    fontFamily: "var(--ant-typography-fontFamily-sans)",
+    fontSize: "var(--ant-typography-fontSize-3xl)",
+    fontWeight: "var(--ant-typography-fontWeight-bold)",
+    lineHeight: 1,
+    boxShadow: "var(--ant-shadow-lg)",
   };
 
   return (
@@ -98,13 +101,12 @@ function NavigationButton({ direction, pressed, onClick, onPressedChange }: Navi
         scale: 1.12,
         x: isPrevious ? -4 : 4,
         backgroundColor: "var(--ant-lightbox-accent)",
-        borderColor: "var(--ant-lightbox-accent)",
-        color: "var(--ant-lightbox-arrowColor)",
-        boxShadow:
-          "0 0 0 var(--ant-spacing-1) var(--ant-lightbox-accentGlow), var(--ant-shadow-lg)",
+        color: "var(--ant-color-neutral-0)",
       }}
       whileTap={{
         scale: 0.92,
+        backgroundColor: "var(--ant-lightbox-accent)",
+        color: "var(--ant-color-neutral-0)",
       }}
       transition={{
         type: "spring",
@@ -117,11 +119,9 @@ function NavigationButton({ direction, pressed, onClick, onPressedChange }: Navi
         aria-hidden="true"
         style={{
           display: "block",
-          transform: isPrevious
-            ? "translateX(calc(var(--ant-spacing-0) - 1px))"
-            : "translateX(1px)",
           fontFamily: "var(--ant-typography-fontFamily-sans)",
-          fontWeight: 700,
+          fontWeight: "var(--ant-typography-fontWeight-bold)",
+          lineHeight: 1,
         }}
       >
         {isPrevious ? "‹" : "›"}
@@ -168,7 +168,9 @@ export function Lightbox({
 
   useEffect(() => {
     previouslyFocusedElementRef.current =
-      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
 
     const previousOverflow = document.body.style.overflow;
 
@@ -199,7 +201,12 @@ export function Lightbox({
   };
 
   useEffect(() => {
-    if (!autoPlay || images.length <= 1 || isPaused || autoPlayInterval <= 0) {
+    if (
+      !autoPlay ||
+      images.length <= 1 ||
+      isPaused ||
+      autoPlayInterval <= 0
+    ) {
       return;
     }
 
@@ -286,7 +293,9 @@ export function Lightbox({
     };
   }, [zoomEnabled]);
 
-  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+  const handlePointerDown = (
+    event: ReactPointerEvent<HTMLDivElement>,
+  ) => {
     if (event.pointerType !== "touch") {
       return;
     }
@@ -295,7 +304,9 @@ export function Lightbox({
     touchStartYRef.current = event.clientY;
   };
 
-  const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+  const handlePointerUp = (
+    event: ReactPointerEvent<HTMLDivElement>,
+  ) => {
     if (
       event.pointerType !== "touch" ||
       touchStartXRef.current === null ||
@@ -309,13 +320,15 @@ export function Lightbox({
     }
 
     const deltaX = event.clientX - touchStartXRef.current;
-
     const deltaY = event.clientY - touchStartYRef.current;
 
     touchStartXRef.current = null;
     touchStartYRef.current = null;
 
-    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) {
+    if (
+      Math.abs(deltaX) < 50 ||
+      Math.abs(deltaX) < Math.abs(deltaY)
+    ) {
       return;
     }
 
@@ -370,15 +383,9 @@ export function Lightbox({
             src={currentImage}
             alt=""
             aria-hidden="true"
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{
               duration: 0.6,
             }}
@@ -430,14 +437,17 @@ export function Lightbox({
         >
           <div
             style={{
-              padding: "var(--ant-spacing-2) var(--ant-spacing-3)",
+              padding:
+                "var(--ant-spacing-2) var(--ant-spacing-3)",
               borderRadius: "var(--ant-radius-full)",
               color: "var(--ant-lightbox-foreground)",
               background: "var(--ant-lightbox-glass)",
               border: "1px solid var(--ant-lightbox-border)",
-              backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
+              backdropFilter:
+                "blur(var(--ant-lightbox-backgroundBlur))",
               fontSize: "var(--ant-typography-fontSize-xs)",
-              fontWeight: "var(--ant-typography-fontWeight-semibold)",
+              fontWeight:
+                "var(--ant-typography-fontWeight-semibold)",
               boxShadow: "var(--ant-lightbox-shadow)",
             }}
           >
@@ -466,7 +476,8 @@ export function Lightbox({
               border: "1px solid var(--ant-lightbox-border)",
               background: "var(--ant-lightbox-glass)",
               color: "var(--ant-lightbox-foreground)",
-              backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
+              backdropFilter:
+                "blur(var(--ant-lightbox-backgroundBlur))",
               fontSize: "var(--ant-typography-fontSize-xl)",
               cursor: "pointer",
               display: "flex",
@@ -496,7 +507,8 @@ export function Lightbox({
             borderRadius: "var(--ant-radius-xl)",
             background: "var(--ant-lightbox-glass)",
             border: "1px solid var(--ant-lightbox-border)",
-            backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
+            backdropFilter:
+              "blur(var(--ant-lightbox-backgroundBlur))",
             boxShadow: "var(--ant-lightbox-shadow)",
           }}
         >
@@ -520,7 +532,9 @@ export function Lightbox({
 
                 setIsPaused(true);
 
-                setScale((previousScale) => (previousScale === 1 ? 2 : 1));
+                setScale((previousScale) =>
+                  previousScale === 1 ? 2 : 1,
+                );
               }}
               initial={{
                 opacity: 0,
@@ -546,8 +560,13 @@ export function Lightbox({
                 objectFit: "contain",
                 borderRadius: "var(--ant-radius-lg)",
                 userSelect: "none",
-                touchAction: zoomEnabled && scale > 1 ? "none" : "pan-y",
-                cursor: !zoomEnabled ? "default" : scale > 1 ? "grab" : "zoom-in",
+                touchAction:
+                  zoomEnabled && scale > 1 ? "none" : "pan-y",
+                cursor: !zoomEnabled
+                  ? "default"
+                  : scale > 1
+                    ? "grab"
+                    : "zoom-in",
               }}
             />
           </AnimatePresence>
@@ -559,14 +578,18 @@ export function Lightbox({
               direction="prev"
               pressed={pressedButton === "prev"}
               onClick={previousImage}
-              onPressedChange={(pressed) => setPressedButton(pressed ? "prev" : null)}
+              onPressedChange={(pressed) =>
+                setPressedButton(pressed ? "prev" : null)
+              }
             />
 
             <NavigationButton
               direction="next"
               pressed={pressedButton === "next"}
               onClick={nextImage}
-              onPressedChange={(pressed) => setPressedButton(pressed ? "next" : null)}
+              onPressedChange={(pressed) =>
+                setPressedButton(pressed ? "next" : null)
+              }
             />
           </>
         )}
@@ -593,7 +616,8 @@ export function Lightbox({
               borderRadius: "var(--ant-radius-lg)",
               background: "var(--ant-lightbox-glass)",
               border: "1px solid var(--ant-lightbox-border)",
-              backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
+              backdropFilter:
+                "blur(var(--ant-lightbox-backgroundBlur))",
             }}
           >
             {images.map((image, index) => (
@@ -601,7 +625,9 @@ export function Lightbox({
                 key={`${image}-${index}`}
                 type="button"
                 aria-label={`View image ${index + 1}`}
-                aria-current={index === currentIndex ? "true" : undefined}
+                aria-current={
+                  index === currentIndex ? "true" : undefined
+                }
                 onClick={() => {
                   goToImage(index, true);
                 }}
@@ -623,15 +649,18 @@ export function Lightbox({
                   cursor: "pointer",
                   opacity: index === currentIndex ? 1 : 0.55,
                   overflow: "hidden",
-                  transition: "border-color 0.2s ease, opacity 0.2s ease",
+                  transition:
+                    "border-color 0.2s ease, opacity 0.2s ease",
                 }}
               >
                 <img
                   src={image}
                   alt=""
                   style={{
-                    width: "calc(var(--ant-spacing-20) + var(--ant-spacing-2))",
-                    height: "calc(var(--ant-spacing-12) - var(--ant-spacing-1))",
+                    width:
+                      "calc(var(--ant-spacing-20) + var(--ant-spacing-2))",
+                    height:
+                      "calc(var(--ant-spacing-12) - var(--ant-spacing-1))",
                     display: "block",
                     objectFit: "cover",
                     borderRadius: "var(--ant-radius-sm)",
@@ -665,14 +694,17 @@ export function Lightbox({
                 position: "absolute",
                 bottom: "var(--ant-spacing-4)",
                 zIndex: "var(--ant-zIndex-raised)",
-                padding: "var(--ant-spacing-1) var(--ant-spacing-3)",
+                padding:
+                  "var(--ant-spacing-1) var(--ant-spacing-3)",
                 borderRadius: "var(--ant-radius-full)",
                 background: "var(--ant-lightbox-glass)",
                 border: "1px solid var(--ant-lightbox-border)",
-                backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
+                backdropFilter:
+                  "blur(var(--ant-lightbox-backgroundBlur))",
                 color: "var(--ant-lightbox-foreground)",
                 fontSize: "var(--ant-typography-fontSize-xs)",
-                fontWeight: "var(--ant-typography-fontWeight-medium)",
+                fontWeight:
+                  "var(--ant-typography-fontWeight-medium)",
               }}
             >
               Ⅱ Paused • Click Next / Previous to continue

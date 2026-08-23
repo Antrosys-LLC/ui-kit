@@ -22,3 +22,11 @@ export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/feedba
 // Add new component exports here as they are built.
 // Convention: keep alphabetical within each category group.
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Navigation
+export { Sidebar } from "./components/navigation/Sidebar";
+export type {
+  SidebarProps,
+  SidebarItem,
+  SidebarUserProfile,
+} from "./components/navigation/Sidebar";

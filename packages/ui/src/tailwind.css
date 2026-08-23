@@ -80,3 +80,55 @@
   --sidebar-icon-active-bg: #ede9fe;
   --sidebar-profile-bg: #fafafa;
 }
+/* Sidebar design tokens */
+
+:root {
+  --ant-sidebar-bg: var(--ant-sidebar-bg);
+  --ant-sidebar-text: var(--ant-sidebar-text);
+  --ant-sidebar-text-secondary: var(--ant-sidebar-text-secondary);
+  --ant-sidebar-border: var(--ant-sidebar-border);
+  --ant-sidebar-active-bg: var(--ant-sidebar-active-bg);
+  --ant-sidebar-active-text: var(--ant-sidebar-active-text);
+  --ant-sidebar-hover: var(--ant-sidebar-hover);
+  --ant-sidebar-badge: var(--ant-sidebar-badge);
+  --ant-sidebar-icon: var(--ant-sidebar-icon);
+  --ant-sidebar-icon-active-bg: var(--ant-sidebar-icon-active-bg);
+  --ant-sidebar-profile-bg: var(--ant-sidebar-profile-bg);
+  --ant-sidebar-width: var(--ant-sidebar-width);
+  --ant-sidebar-header-height: var(--ant-sidebar-header-height);
+  --ant-sidebar-item-height: var(--ant-sidebar-item-height);
+  --ant-sidebar-child-height: var(--ant-sidebar-child-height);
+  --ant-sidebar-icon-size: var(--ant-sidebar-icon-size);
+  --ant-sidebar-collapse-button-offset: var(--ant-sidebar-collapse-button-offset);
+  --ant-sidebar-section-font-size: var(--ant-sidebar-section-font-size);
+}
+
+:root.dark,
+:root[data-theme="dark"],
+.dark {
+  --ant-sidebar-bg: var(--ant-sidebar-dark-bg);
+  --ant-sidebar-text: var(--ant-sidebar-dark-text);
+  --ant-sidebar-text-secondary: var(--ant-sidebar-dark-text-secondary);
+  --ant-sidebar-border: var(--ant-sidebar-dark-border);
+  --ant-sidebar-active-bg: var(--ant-sidebar-dark-active-bg);
+  --ant-sidebar-active-text: var(--ant-sidebar-dark-active-text);
+  --ant-sidebar-hover: var(--ant-sidebar-dark-hover);
+  --ant-sidebar-badge: var(--ant-sidebar-dark-badge);
+  --ant-sidebar-icon: var(--ant-sidebar-dark-icon);
+  --ant-sidebar-icon-active-bg: var(--ant-sidebar-dark-icon-active-bg);
+  --ant-sidebar-profile-bg: var(--ant-sidebar-dark-profile-bg);
+}
+
+@theme {
+  --color-sidebar-bg: var(--ant-sidebar-bg);
+  --color-sidebar-text: var(--ant-sidebar-text);
+  --color-sidebar-text-secondary: var(--ant-sidebar-text-secondary);
+  --color-sidebar-border: var(--ant-sidebar-border);
+  --color-sidebar-active-bg: var(--ant-sidebar-active-bg);
+  --color-sidebar-active-text: var(--ant-sidebar-active-text);
+  --color-sidebar-hover: var(--ant-sidebar-hover);
+  --color-sidebar-badge: var(--ant-sidebar-badge);
+  --color-sidebar-icon: var(--ant-sidebar-icon);
+  --color-sidebar-icon-active-bg: var(--ant-sidebar-icon-active-bg);
+  --color-sidebar-profile-bg: var(--ant-sidebar-profile-bg);
+}

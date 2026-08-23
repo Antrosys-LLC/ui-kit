@@ -28,7 +28,7 @@ const containerStyle = {
   alignItems: "center",
   justifyContent: "center",
   padding: "2rem",
-  background: "#ffffff",
+  background: "var(--ant-color-neutral-0)",
   borderRadius: "1.25rem",
   boxSizing: "border-box" as const,
 };
@@ -53,15 +53,24 @@ const buttonStyle = {
   padding: "0.8rem 1.5rem",
   border: "none",
   borderRadius: "999px",
-  background: "#111111",
-  color: "#ffffff",
+  background: "var(--ant-color-neutral-900)",
+  color: "var(--ant-color-neutral-0)",
   cursor: "pointer",
   fontWeight: 700,
   fontSize: "0.95rem",
-  transition: "transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease",
+  transition:
+    "transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease",
 };
 
-function Preview({ image, label, onOpen }: { image: string; label: string; onOpen: () => void }) {
+function Preview({
+  image,
+  label,
+  onOpen,
+}: {
+  image: string;
+  label: string;
+  onOpen: () => void;
+}) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -77,8 +86,12 @@ function Preview({ image, label, onOpen }: { image: string; label: string; onOpe
           style={{
             ...buttonStyle,
             transform: hovered ? "translateY(-2px) scale(1.03)" : "scale(1)",
-            boxShadow: hovered ? "0 10px 25px rgb(0 0 0 / 0.18)" : "0 5px 15px rgb(0 0 0 / 0.12)",
-            background: hovered ? "#7C3AED" : "#111111",
+            boxShadow: hovered
+              ? "var(--ant-shadow-lg)"
+              : "var(--ant-shadow-md)",
+            background: hovered
+              ? "var(--ant-color-brand-accent)"
+              : "var(--ant-color-neutral-900)",
           }}
         >
           {label}
@@ -100,7 +113,11 @@ export const Default: Story = {
         onClose={() => setOpen(false)}
       />
     ) : (
-      <Preview image={images[0]} label="Open Image" onOpen={() => setOpen(true)} />
+      <Preview
+        image={images[0]}
+        label="Open Image"
+        onOpen={() => setOpen(true)}
+      />
     );
   },
 };
@@ -110,9 +127,17 @@ export const SingleImage: Story = {
     const [open, setOpen] = useState(false);
 
     return open ? (
-      <Lightbox src={images[0]} alt="Single landscape" onClose={() => setOpen(false)} />
+      <Lightbox
+        src={images[0]}
+        alt="Single landscape"
+        onClose={() => setOpen(false)}
+      />
     ) : (
-      <Preview image={images[0]} label="Open Single Image" onOpen={() => setOpen(true)} />
+      <Preview
+        image={images[0]}
+        label="Open Single Image"
+        onOpen={() => setOpen(true)}
+      />
     );
   },
 };
@@ -130,7 +155,11 @@ export const NoZoom: Story = {
         onClose={() => setOpen(false)}
       />
     ) : (
-      <Preview image={images[0]} label="Open Without Zoom" onOpen={() => setOpen(true)} />
+      <Preview
+        image={images[0]}
+        label="Open Without Zoom"
+        onOpen={() => setOpen(true)}
+      />
     );
   },
 };
@@ -148,7 +177,11 @@ export const AutoPlayOff: Story = {
         onClose={() => setOpen(false)}
       />
     ) : (
-      <Preview image={images[0]} label="Open AutoPlay Off" onOpen={() => setOpen(true)} />
+      <Preview
+        image={images[0]}
+        label="Open AutoPlay Off"
+        onOpen={() => setOpen(true)}
+      />
     );
   },
 };
@@ -167,7 +200,11 @@ export const AutoPlayOn: Story = {
         onClose={() => setOpen(false)}
       />
     ) : (
-      <Preview image={images[0]} label="Open AutoPlay On" onOpen={() => setOpen(true)} />
+      <Preview
+        image={images[0]}
+        label="Open AutoPlay On"
+        onOpen={() => setOpen(true)}
+      />
     );
   },
 };
@@ -185,7 +222,11 @@ export const Accessibility: Story = {
         onClose={() => setOpen(false)}
       />
     ) : (
-      <Preview image={images[0]} label="Open Accessible Lightbox" onOpen={() => setOpen(true)} />
+      <Preview
+        image={images[0]}
+        label="Open Accessible Lightbox"
+        onOpen={() => setOpen(true)}
+      />
     );
   },
 };
