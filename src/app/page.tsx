@@ -13,12 +13,28 @@ export default function Home() {
   const [presentationStartIndex, setPresentationStartIndex] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Sync dark class on html tag
+  // Sync dark class on html & body tags
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => {
+      const next = !prev;
+      if (next) {
+        document.documentElement.classList.add("dark");
+        document.body.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        document.body.classList.remove("dark");
+      }
+      return next;
+    });
+  };
+
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
+      document.body.classList.remove("dark");
     }
   }, [isDarkMode]);
 
@@ -35,7 +51,7 @@ export default function Home() {
         onVersionChange={setActiveVersion}
         onLaunchPresentation={() => handleOpenPresentation(0)}
         isDarkMode={isDarkMode}
-        onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+        onToggleDarkMode={toggleDarkMode}
       />
 
       {/* Main Active View */}
