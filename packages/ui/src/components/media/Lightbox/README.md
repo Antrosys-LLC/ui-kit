@@ -24,6 +24,7 @@ A responsive image lightbox component with image navigation, thumbnail navigatio
 
 | Prop               | Type         | Default   | Description                                                               |
 | ------------------ | ------------ | --------- | ------------------------------------------------------------------------- |
+| `isOpen`           | `boolean`    | `true`    | Determines if the lightbox is currently open and visible                  |
 | `src`              | `string`     | required  | Main image URL                                                            |
 | `alt`              | `string`     | `"Image"` | Image alt text                                                            |
 | `thumbnails`       | `string[]`   | `[]`      | Images shown as thumbnails                                                |
@@ -40,6 +41,7 @@ To enable autoplay, set `autoPlay` to `true`:
 
 ```tsx
 <Lightbox
+  isOpen={open}
   src="/images/example.jpg"
   thumbnails={["/images/example.jpg", "/images/example-2.jpg", "/images/example-3.jpg"]}
   autoPlay
@@ -109,17 +111,16 @@ function Example() {
         Open Lightbox
       </button>
 
-      {open && (
-        <Lightbox
-          src="/images/example.jpg"
-          alt="Example image"
-          thumbnails={["/images/example.jpg", "/images/example-2.jpg", "/images/example-3.jpg"]}
-          zoomEnabled
-          autoPlay
-          autoPlayInterval={3000}
-          onClose={() => setOpen(false)}
-        />
-      )}
+      <Lightbox
+        isOpen={open}
+        src="/images/example.jpg"
+        alt="Example image"
+        thumbnails={["/images/example.jpg", "/images/example-2.jpg", "/images/example-3.jpg"]}
+        zoomEnabled
+        autoPlay
+        autoPlayInterval={3000}
+        onClose={() => setOpen(false)}
+      />
     </>
   );
 }
@@ -130,7 +131,7 @@ function Example() {
 The lightbox also works with a single image:
 
 ```tsx
-<Lightbox src="/images/example.jpg" alt="Example image" onClose={() => setOpen(false)} />
+<Lightbox isOpen={open} src="/images/example.jpg" alt="Example image" onClose={() => setOpen(false)} />
 ```
 
 When only one image is provided, previous/next navigation and thumbnail navigation are not displayed.
@@ -140,7 +141,7 @@ When only one image is provided, previous/next navigation and thumbnail navigati
 To disable all zoom interactions:
 
 ```tsx
-<Lightbox src="/images/example.jpg" zoomEnabled={false} onClose={() => setOpen(false)} />
+<Lightbox isOpen={open} src="/images/example.jpg" zoomEnabled={false} onClose={() => setOpen(false)} />
 ```
 
 ## Autoplay Off
@@ -149,6 +150,7 @@ Autoplay is disabled by default:
 
 ```tsx
 <Lightbox
+  isOpen={open}
   src="/images/example.jpg"
   thumbnails={["/images/example.jpg", "/images/example-2.jpg"]}
   autoPlay={false}
@@ -162,6 +164,7 @@ Autoplay can be enabled with a custom interval:
 
 ```tsx
 <Lightbox
+  isOpen={open}
   src="/images/example.jpg"
   thumbnails={["/images/example.jpg", "/images/example-2.jpg", "/images/example-3.jpg"]}
   autoPlay

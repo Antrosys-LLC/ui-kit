@@ -138,6 +138,7 @@ const userProfile = {
 };
 
 export const Default: Story = {
+  args: { items: navigationItems, userProfile },
   render: () => {
     const [collapsed, setCollapsed] = useState(false);
     const [activeRoute, setActiveRoute] =
@@ -161,6 +162,7 @@ export const Default: Story = {
 };
 
 export const Collapsed: Story = {
+  args: { items: navigationItems, userProfile, collapsed: true },
   render: () => {
     const [collapsed, setCollapsed] = useState(true);
     const [activeRoute, setActiveRoute] =
@@ -184,6 +186,7 @@ export const Collapsed: Story = {
 };
 
 export const NestedNavigation: Story = {
+  args: { items: navigationItems, userProfile, activeRoute: "/projects/active" },
   render: () => {
     const [activeRoute, setActiveRoute] = useState(
       "/projects/active"
@@ -204,6 +207,7 @@ export const NestedNavigation: Story = {
 };
 
 export const WithoutProfile: Story = {
+  args: { items: navigationItems, activeRoute: "/messages" },
   render: () => {
     const [activeRoute, setActiveRoute] =
       useState("/messages");

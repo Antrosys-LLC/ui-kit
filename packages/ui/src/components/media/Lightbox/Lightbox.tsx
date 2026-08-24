@@ -6,15 +6,25 @@ import {
   useState,
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
+  type MouseEvent as ReactMouseEvent,
 } from "react";
 
 export interface LightboxProps {
+  /** Controls whether the lightbox is mounted; defaults to true when uncontrolled */
+  isOpen?: boolean;
+  /** URL of the image to display */
   src: string;
+  /** Alt text describing the image for screen readers */
   alt?: string;
+  /** Optional list of image URLs to browse between; falls back to src alone */
   thumbnails?: string[];
+  /** Enables click-to-zoom interaction on the main image */
   zoomEnabled?: boolean;
+  /** Automatically advances through thumbnails at autoPlayInterval */
   autoPlay?: boolean;
+  /** Delay in milliseconds between autoplay transitions */
   autoPlayInterval?: number;
+  /** Callback fired when the lightbox requests to close (Escape, backdrop, or close button) */
   onClose: () => void;
 }
 
@@ -79,7 +89,7 @@ function NavigationButton({
       }}
       onPointerCancel={() => onPressedChange(false)}
       onPointerLeave={() => onPressedChange(false)}
-      onClick={(event) => {
+      onClick={(event: ReactMouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         onPressedChange(false);
         onClick();
@@ -117,7 +127,7 @@ function NavigationButton({
   );
 }
 
-export function Lightbox({
+function LightboxBase({
   src,
   alt = "Image",
   thumbnails = [],
@@ -402,7 +412,7 @@ export function Lightbox({
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
-          onClick={(event) => event.stopPropagation()}
+          onClick={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
           style={{
             position: "absolute",
             top: "var(--ant-spacing-5)",
@@ -440,7 +450,7 @@ export function Lightbox({
             ref={closeButtonRef}
             type="button"
             aria-label="Close image viewer"
-            onClick={(event) => {
+            onClick={(event: ReactMouseEvent<HTMLButtonElement>) => {
               event.stopPropagation();
               onClose();
             }}
@@ -482,7 +492,7 @@ export function Lightbox({
             opacity: 1,
             scale: 1,
           }}
-          onClick={(event) => event.stopPropagation()}
+          onClick={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
           style={{
             position: "relative",
             zIndex: "var(--ant-zIndex-raised)",
@@ -594,7 +604,7 @@ export function Lightbox({
               opacity: 1,
               y: 0,
             }}
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
             style={{
               position: "relative",
               zIndex: "var(--ant-zIndex-raised)",
@@ -682,7 +692,7 @@ export function Lightbox({
                 y: 8,
                 scale: 0.9,
               }}
-              onClick={(event) =>
+              onClick={(event: ReactMouseEvent<HTMLDivElement>) =>
                 event.stopPropagation()
               }
               style={{
@@ -711,5 +721,23 @@ export function Lightbox({
         </AnimatePresence>
       </motion.div>
     </FocusTrap>
+  );
+}
+
+/**
+ * Responsive image lightbox with navigation, thumbnails, zoom,
+ * autoplay, keyboard controls, focus trapping, and body scroll locking.
+ *
+ * Keyboard controls:
+ * Escape closes the lightbox.
+ * ArrowLeft and ArrowRight navigate between images.
+ * Plus or Equal zooms in.
+ * Minus zooms out.
+ */
+export function Lightbox({ isOpen = true, ...props }: LightboxProps) {
+  return (
+    <AnimatePresence>
+      {isOpen && <LightboxBase {...props} />}
+    </AnimatePresence>
   );
 }

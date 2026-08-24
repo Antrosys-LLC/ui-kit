@@ -6,25 +6,39 @@ import React, {
 import { clsx } from "clsx";
 
 export interface SidebarItem {
+  /** Display label for the item */
   label: string;
+  /** Optional icon rendered next to the label */
   icon?: ReactNode;
+  /** Unique route string used for navigation and active state matching */
   route: string;
+  /** Optional badge content (e.g. notification count) */
   badge?: number | string;
+  /** Optional nested children items */
   children?: SidebarItem[];
 }
 
 export interface SidebarUserProfile {
+  /** Display name of the user */
   name: string;
+  /** Optional role or subtitle */
   role?: string;
+  /** Optional URL for the user's avatar image */
   avatar?: string;
 }
 
 export interface SidebarProps extends HTMLAttributes<HTMLElement> {
+  /** Navigation tree — supports one level of nested children */
   items: SidebarItem[];
+  /** Renders the collapsed (icon-rail) layout */
   collapsed?: boolean;
+  /** Route of the currently active item, e.g. "/dashboard" */
   activeRoute?: string;
+  /** Details for the user profile block at the bottom */
   userProfile?: SidebarUserProfile;
+  /** Callback fired when an item is clicked */
   onNavigate?: (route: string) => void;
+  /** Callback fired when the collapse button is clicked */
   onCollapse?: () => void;
 }
 
@@ -117,6 +131,9 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
+/**
+ * Collapsible sidebar navigation with nested routes, badges, and a user profile block.
+ */
 export function Sidebar({
   items,
   collapsed = false,
