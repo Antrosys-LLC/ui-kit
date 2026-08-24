@@ -40,6 +40,9 @@ importers:
       react-dom:
         specifier: ^18.0.0
         version: 18.3.1(react@18.3.1)
+      swiper:
+        specifier: ^14.1.0
+        version: 14.1.0
     devDependencies:
       '@antrosys/tokens':
         specifier: workspace:*
@@ -2876,6 +2879,10 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  swiper@14.1.0:
+    resolution: {integrity: sha512-ppit/AqmGvThKlXy4I1/9N/gEyb9s/BDHWciWNeIxbfteFKUhPQXrYuOMKszomXKd9WiLd+/0vKdPHW+0N0mhA==}
+    engines: {node: '>= 4.7.0'}
 
   tabbable@6.5.0:
     resolution: {integrity: sha512-wieBHXygIm7OyQOu5hQlkk62/WyCFYGlWg7L6/ZCUZwx0o398Zkn4pVmMyfYhfMG8kGrj/Krt8eIk6UKC6VzwA==}
@@ -6048,6 +6055,8 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  swiper@14.1.0: {}
 
   tabbable@6.5.0: {}
 
