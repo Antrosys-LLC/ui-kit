@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: var(--ant-color-brand-primary);
+  --color-brand-light: var(--ant-color-brand-primary-lt);
+  --color-brand-dark: var(--ant-color-brand-primary-dk);
+  --color-brand-accent: var(--ant-color-brand-accent);
+
+  --color-success: var(--ant-color-semantic-success);
+  --color-warning: var(--ant-color-semantic-warning);
+  --color-error: var(--ant-color-semantic-error);
+  --color-info: var(--ant-color-semantic-info);
+
+  --color-surface-bg: var(--ant-color-surface-bg);
+  --color-surface-card: var(--ant-color-surface-bg-card);
+  --color-surface-border: var(--ant-color-surface-border);
+  --color-surface-text: var(--ant-color-surface-text);
+  --color-surface-text-sub: var(--ant-color-surface-text-sub);
+
+  --color-neutral-0: var(--ant-color-neutral-0);
+  --color-neutral-50: var(--ant-color-neutral-50);
+  --color-neutral-100: var(--ant-color-neutral-100);
+  --color-neutral-200: var(--ant-color-neutral-200);
+  --color-neutral-300: var(--ant-color-neutral-300);
+  --color-neutral-400: var(--ant-color-neutral-400);
+  --color-neutral-500: var(--ant-color-neutral-500);
+  --color-neutral-600: var(--ant-color-neutral-600);
+  --color-neutral-700: var(--ant-color-neutral-700);
+  --color-neutral-800: var(--ant-color-neutral-800);
+  --color-neutral-900: var(--ant-color-neutral-900);
+
+  --font-sans: var(--ant-typography-fontFamily-sans);
+  --font-mono: var(--ant-typography-fontFamily-mono);
+
+  --text-xs: var(--ant-typography-fontSize-xs);
+  --text-sm: var(--ant-typography-fontSize-sm);
+  --text-base: var(--ant-typography-fontSize-base);
+  --text-md: var(--ant-typography-fontSize-md);
+  --text-lg: var(--ant-typography-fontSize-lg);
+  --text-xl: var(--ant-typography-fontSize-xl);
+  --text-2xl: var(--ant-typography-fontSize-2xl);
+  --text-3xl: var(--ant-typography-fontSize-3xl);
+  --text-4xl: var(--ant-typography-fontSize-4xl);
+
+  --radius-none: var(--ant-radius-none);
+  --radius-sm: var(--ant-radius-sm);
+  --radius-md: var(--ant-radius-md);
+  --radius-lg: var(--ant-radius-lg);
+  --radius-xl: var(--ant-radius-xl);
+  --radius-2xl: var(--ant-radius-2xl);
+  --radius-full: var(--ant-radius-full);
+
+  --shadow-sm: var(--ant-shadow-sm);
+  --shadow-md: var(--ant-shadow-md);
+  --shadow-lg: var(--ant-shadow-lg);
+  --shadow-xl: var(--ant-shadow-xl);
+
+  --z-base: var(--ant-zIndex-base);
+  --z-raised: var(--ant-zIndex-raised);
+  --z-dropdown: var(--ant-zIndex-dropdown);
+  --z-sticky: var(--ant-zIndex-sticky);
+  --z-overlay: var(--ant-zIndex-overlay);
+  --z-modal: var(--ant-zIndex-modal);
+  --z-toast: var(--ant-zIndex-toast);
+  --z-tooltip: var(--ant-zIndex-tooltip);
+
+  /* Sidebar color tokens */
+  --color-sidebar-bg: var(--ant-sidebar-bg);
+  --color-sidebar-text: var(--ant-sidebar-text);
+  --color-sidebar-text-secondary: var(--ant-sidebar-text-secondary);
+  --color-sidebar-border: var(--ant-sidebar-border);
+  --color-sidebar-active-bg: var(--ant-sidebar-active-bg);
+  --color-sidebar-active-text: var(--ant-sidebar-active-text);
+  --color-sidebar-hover: var(--ant-sidebar-hover);
+  --color-sidebar-badge: var(--ant-sidebar-badge);
+  --color-sidebar-icon: var(--ant-sidebar-icon);
+  --color-sidebar-icon-active-bg: var(--ant-sidebar-icon-active-bg);
+  --color-sidebar-profile-bg: var(--ant-sidebar-profile-bg);
+
+  /* Sidebar dimension tokens */
+  --spacing-sidebar-width: var(--ant-sidebar-width);
+  --spacing-sidebar-header-height: var(--ant-sidebar-header-height);
+  --spacing-sidebar-item-height: var(--ant-sidebar-item-height);
+  --spacing-sidebar-child-height: var(--ant-sidebar-child-height);
+  --spacing-sidebar-icon-size: var(--ant-sidebar-icon-size);
+  --spacing-sidebar-collapse-button-offset: var(
+    --ant-sidebar-collapse-button-offset
+  );
+
+  /* Sidebar typography token */
+  --text-sidebar-section: var(--ant-sidebar-section-font-size);
+}
+
+:root.dark,
+:root[data-theme="dark"],
+.dark {
+  --ant-sidebar-bg: var(--ant-sidebar-dark-bg);
+  --ant-sidebar-text: var(--ant-sidebar-dark-text);
+  --ant-sidebar-text-secondary: var(--ant-sidebar-dark-text-secondary);
+  --ant-sidebar-border: var(--ant-sidebar-dark-border);
+  --ant-sidebar-active-bg: var(--ant-sidebar-dark-active-bg);
+  --ant-sidebar-active-text: var(--ant-sidebar-dark-active-text);
+  --ant-sidebar-hover: var(--ant-sidebar-dark-hover);
+  --ant-sidebar-badge: var(--ant-sidebar-dark-badge);
+  --ant-sidebar-icon: var(--ant-sidebar-dark-icon);
+  --ant-sidebar-icon-active-bg: var(--ant-sidebar-dark-icon-active-bg);
+  --ant-sidebar-profile-bg: var(--ant-sidebar-dark-profile-bg);
+}

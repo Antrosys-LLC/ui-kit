@@ -1,0 +1,22 @@
+{
+  "name": "@antrosys/tokens",
+  "version": "0.1.0",
+  "description": "Antrosys Design Token System — source of truth for colors, spacing, typography, and motion",
+  "main": "./dist/js/index.js",
+  "module": "./dist/js/index.mjs",
+  "types": "./dist/js/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/js/index.d.ts",
+      "import": "./dist/js/index.mjs",
+      "require": "./dist/js/index.js"
+    },
+    "./css": "./dist/css/tokens.css",
+    "./tailwind": "./dist/tailwind/tokens.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "node scripts/build-tokens.mjs",
+    "dev": "node scripts/build-tokens.mjs --watch"
+  }
+}

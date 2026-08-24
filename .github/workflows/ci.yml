@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  ci:
+    name: Lint · Type-check · Storybook build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # version comes from package.json "packageManager" — do not set "version" here
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build tokens
+        run: pnpm --filter @antrosys/tokens build
+
+      - name: Lint
+        run: pnpm turbo lint
+
+      - name: Type-check
+        run: pnpm turbo type-check
+
+      - name: Build Storybook
+        run: pnpm turbo storybook:build
