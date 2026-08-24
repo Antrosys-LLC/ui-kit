@@ -1,6 +1,7 @@
-import React, { FormEvent, useId, useState } from "react";
+import React, { FormEvent, useContext, useId, useState } from "react";
 import { clsx } from "clsx";
 import { Button } from "../../feedback/Button";
+import { ThemeContext } from "../../../providers/ThemeProvider";
 
 export interface PaginationProps {
   /** Total number of items */
@@ -17,6 +18,7 @@ export interface PaginationProps {
   onPerPageChange?: (perPage: number) => void;
   /** Options for the items-per-page selector */
   pageSizeOptions?: number[];
+  /** Optional additional CSS classes */
   className?: string;
 }
 
@@ -62,18 +64,6 @@ export function getPageItems(currentPage: number, totalPages: number, siblingCou
   return [1, "ellipsis", ...range(leftSibling, rightSibling), "ellipsis", totalPages];
 }
 
-const controlClass = [
-  "h-7 rounded-md",
-  "border border-[var(--ant-color-surface-border)]",
-  "bg-[var(--ant-color-neutral-0)]",
-  "text-[length:var(--ant-typography-fontsize-sm)]",
-  "text-[var(--ant-color-surface-text)]",
-  "px-[var(--ant-spacing-2)]",
-  "focus-visible:outline-none focus-visible:ring-2",
-  "focus-visible:ring-[var(--ant-color-brand-primary)]",
-  "focus-visible:ring-offset-2",
-].join(" ");
-
 export function Pagination({
   total,
   perPage,
@@ -86,6 +76,9 @@ export function Pagination({
 }: PaginationProps) {
   const [jumpValue, setJumpValue] = useState("");
   const jumpInputId = useId();
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx?.theme === "dark";
+
   const totalPages = getTotalPages(total, perPage);
   const safeCurrentPage = totalPages > 0 ? Math.min(Math.max(1, currentPage), totalPages) : 1;
   const pageItems = getPageItems(safeCurrentPage, totalPages);
@@ -123,6 +116,39 @@ export function Pagination({
     }
   };
 
+  const controlClass = clsx(
+    "h-7 rounded-[var(--ant-radius-md)]",
+    "text-[length:var(--ant-typography-fontSize-sm)]",
+    "px-[var(--ant-spacing-2)]",
+    "transition-colors",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-[var(--ant-color-brand-primary)]",
+    "focus-visible:ring-offset-2",
+    isDark
+      ? [
+          "border border-[var(--ant-color-neutral-700)]",
+          "bg-[var(--ant-color-neutral-800)]",
+          "text-[var(--ant-color-neutral-0)]",
+          "focus-visible:ring-offset-[var(--ant-color-neutral-900)]",
+        ]
+      : [
+          "border border-[var(--ant-color-neutral-200)]",
+          "bg-[var(--ant-color-neutral-0)]",
+          "text-[var(--ant-color-neutral-900)]",
+          "focus-visible:ring-offset-[var(--ant-color-neutral-0)]",
+        ],
+  );
+
+  const labelTextClass = clsx(
+    "text-[length:var(--ant-typography-fontSize-sm)]",
+    isDark ? "text-[var(--ant-color-neutral-100)]" : "text-[var(--ant-color-neutral-900)]",
+  );
+
+  const ellipsisClass = clsx(
+    "px-[var(--ant-spacing-1)]",
+    isDark ? "text-[var(--ant-color-neutral-400)]" : "text-[var(--ant-color-neutral-500)]",
+  );
+
   return (
     <div
       className={clsx(
@@ -158,7 +184,7 @@ export function Pagination({
             <span
               key={`ellipsis-${index}`}
               aria-hidden="true"
-              className="px-[var(--ant-spacing-1)] text-[var(--ant-color-surface-text-sub)]"
+              className={ellipsisClass}
             >
               …
             </span>
@@ -200,7 +226,7 @@ export function Pagination({
       </nav>
 
       {showSizeChanger && (
-        <label className="inline-flex items-center gap-[var(--ant-spacing-2)] text-[length:var(--ant-typography-fontsize-sm)] text-[var(--ant-color-surface-text)]">
+        <label className={clsx("inline-flex items-center gap-[var(--ant-spacing-2)]", labelTextClass)}>
           <span>Items per page</span>
           <select
             aria-label="Items per page"
@@ -223,7 +249,7 @@ export function Pagination({
       >
         <label
           htmlFor={jumpInputId}
-          className="text-[length:var(--ant-typography-fontsize-sm)] text-[var(--ant-color-surface-text)]"
+          className={labelTextClass}
         >
           Go to page
         </label>
