@@ -28,7 +28,7 @@ const containerStyle = {
   alignItems: "center",
   justifyContent: "center",
   padding: "2rem",
-  background: "#ffffff",
+  background: "var(--ant-color-neutral-0)",
   borderRadius: "1.25rem",
   boxSizing: "border-box" as const,
 };
@@ -53,8 +53,8 @@ const buttonStyle = {
   padding: "0.8rem 1.5rem",
   border: "none",
   borderRadius: "999px",
-  background: "#111111",
-  color: "#ffffff",
+  background: "var(--ant-color-neutral-900)",
+  color: "var(--ant-color-neutral-0)",
   cursor: "pointer",
   fontWeight: 700,
   fontSize: "0.95rem",
@@ -77,8 +77,8 @@ function Preview({ image, label, onOpen }: { image: string; label: string; onOpe
           style={{
             ...buttonStyle,
             transform: hovered ? "translateY(-2px) scale(1.03)" : "scale(1)",
-            boxShadow: hovered ? "0 10px 25px rgb(0 0 0 / 0.18)" : "0 5px 15px rgb(0 0 0 / 0.12)",
-            background: hovered ? "#7C3AED" : "#111111",
+            boxShadow: hovered ? "var(--ant-shadow-lg)" : "var(--ant-shadow-md)",
+            background: hovered ? "var(--ant-color-brand-primary)" : "var(--ant-color-neutral-900)",
           }}
         >
           {label}
@@ -89,6 +89,7 @@ function Preview({ image, label, onOpen }: { image: string; label: string; onOpe
 }
 
 export const Default: Story = {
+  args: { src: images[0], onClose: () => undefined },
   render: () => {
     const [open, setOpen] = useState(false);
 
@@ -108,6 +109,7 @@ export const Default: Story = {
 };
 
 export const SingleImage: Story = {
+  args: { src: images[0], onClose: () => undefined },
   render: () => {
     const [open, setOpen] = useState(false);
 
@@ -121,6 +123,7 @@ export const SingleImage: Story = {
 };
 
 export const NoZoom: Story = {
+  args: { src: images[0], zoomEnabled: false, onClose: () => undefined },
   render: () => {
     const [open, setOpen] = useState(false);
 
@@ -141,6 +144,7 @@ export const NoZoom: Story = {
 };
 
 export const AutoPlayOff: Story = {
+  args: { src: images[0], autoPlay: false, onClose: () => undefined },
   render: () => {
     const [open, setOpen] = useState(false);
 
@@ -161,6 +165,7 @@ export const AutoPlayOff: Story = {
 };
 
 export const AutoPlayOn: Story = {
+  args: { src: images[0], autoPlay: true, autoPlayInterval: 3000, onClose: () => undefined },
   render: () => {
     const [open, setOpen] = useState(false);
 
@@ -182,6 +187,7 @@ export const AutoPlayOn: Story = {
 };
 
 export const Accessibility: Story = {
+  args: { src: images[0], autoPlay: false, onClose: () => undefined },
   render: () => {
     const [open, setOpen] = useState(false);
 

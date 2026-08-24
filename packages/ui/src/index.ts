@@ -87,3 +87,11 @@ export type { PaginationProps } from "./components/navigation/Pagination";
 // Convention: keep alphabetical within each category group.
 
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Navigation
+export { Sidebar } from "./components/navigation/Sidebar";
+export type {
+  SidebarProps,
+  SidebarItem,
+  SidebarUserProfile,
+} from "./components/navigation/Sidebar";

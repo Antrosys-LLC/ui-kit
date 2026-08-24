@@ -10,28 +10,21 @@ import {
 } from "react";
 
 export interface LightboxProps {
-  /** Determines if the lightbox is currently open and visible. */
+  /** Controls whether the lightbox is mounted; defaults to true when uncontrolled */
   isOpen?: boolean;
-
-  /** Image URL displayed when the lightbox opens. */
+  /** URL of the image to display */
   src: string;
-
-  /** Accessible alternative text for the currently displayed image. */
+  /** Alt text describing the image for screen readers */
   alt?: string;
-
-  /** Optional list of image URLs used for navigation and thumbnails. */
+  /** Optional list of image URLs to browse between; falls back to src alone */
   thumbnails?: string[];
-
-  /** Enables zoom controls using double-click, mouse wheel, and keyboard shortcuts. Defaults to true. */
+  /** Enables click-to-zoom interaction on the main image */
   zoomEnabled?: boolean;
-
-  /** Enables automatic image rotation. Defaults to false. */
+  /** Automatically advances through thumbnails at autoPlayInterval */
   autoPlay?: boolean;
-
-  /** Interval in milliseconds between automatically displayed images. Defaults to 3000ms. */
+  /** Delay in milliseconds between autoplay transitions */
   autoPlayInterval?: number;
-
-  /** Callback invoked when the lightbox is closed. */
+  /** Callback fired when the lightbox requests to close (Escape, backdrop, or close button) */
   onClose: () => void;
 }
 
@@ -44,38 +37,41 @@ interface NavigationButtonProps {
   onPressedChange: (pressed: boolean) => void;
 }
 
-function NavigationButton({ direction, pressed, onClick, onPressedChange }: NavigationButtonProps) {
+function NavigationButton({
+  direction,
+  pressed,
+  onClick,
+  onPressedChange,
+}: NavigationButtonProps) {
   const isPrevious = direction === "prev";
 
   const style: CSSProperties = {
     position: "absolute",
-    [isPrevious ? "left" : "right"]: "clamp(var(--ant-spacing-4), 3vw, var(--ant-spacing-12))",
+    [isPrevious ? "left" : "right"]:
+      "clamp(var(--ant-spacing-4), 3vw, var(--ant-spacing-12))",
     top: "50%",
-    zIndex: "var(--ant-zIndex-raised)",
-    width: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
-    height: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
-    minWidth: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
-    minHeight: "calc(var(--ant-spacing-16) - var(--ant-spacing-2))",
+    zIndex: "var(--ant-zIndex-modal)",
+    width: "var(--ant-spacing-12)",
+    height: "var(--ant-spacing-12)",
+    minWidth: "var(--ant-spacing-12)",
+    minHeight: "var(--ant-spacing-12)",
     padding: "var(--ant-spacing-0)",
     margin: "var(--ant-spacing-0)",
+    border: "var(--ant-spacing-0)",
     borderRadius: "var(--ant-radius-full)",
-    border: pressed
-      ? "2px solid var(--ant-lightbox-accentActive)"
-      : "2px solid var(--ant-lightbox-arrowBackground)",
     background: pressed
-      ? "var(--ant-lightbox-accentActive)"
-      : "var(--ant-lightbox-arrowBackground)",
-    color: "var(--ant-lightbox-arrowColor)",
-    fontSize: "var(--ant-typography-fontSize-3xl)",
-    fontWeight: 700,
-    lineHeight: 1,
+      ? "var(--ant-color-brand-primary)"
+      : "var(--ant-color-neutral-900)",
+    color: "var(--ant-color-neutral-0)",
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: pressed
-      ? "0 0 0 var(--ant-spacing-1) var(--ant-lightbox-accentGlow), var(--ant-shadow-lg)"
-      : "var(--ant-shadow-lg)",
+    fontFamily: "var(--ant-typography-fontFamily-sans)",
+    fontSize: "var(--ant-typography-fontSize-3xl)",
+    fontWeight: "var(--ant-typography-fontWeight-bold)",
+    lineHeight: 1,
+    boxShadow: "var(--ant-shadow-lg)",
   };
 
   return (
@@ -83,11 +79,11 @@ function NavigationButton({ direction, pressed, onClick, onPressedChange }: Navi
       type="button"
       aria-label={isPrevious ? "Previous image" : "Next image"}
       aria-pressed={pressed}
-      onPointerDown={(event: ReactPointerEvent<HTMLButtonElement>) => {
+      onPointerDown={(event) => {
         event.stopPropagation();
         onPressedChange(true);
       }}
-      onPointerUp={(event: ReactPointerEvent<HTMLButtonElement>) => {
+      onPointerUp={(event) => {
         event.stopPropagation();
         onPressedChange(false);
       }}
@@ -101,14 +97,13 @@ function NavigationButton({ direction, pressed, onClick, onPressedChange }: Navi
       whileHover={{
         scale: 1.12,
         x: isPrevious ? -4 : 4,
-        backgroundColor: "var(--ant-lightbox-accentHover)",
-        borderColor: "var(--ant-lightbox-accentHover)",
-        color: "var(--ant-lightbox-arrowColor)",
-        boxShadow:
-          "0 0 0 var(--ant-spacing-1) var(--ant-lightbox-accentGlow), var(--ant-shadow-lg)",
+        backgroundColor: "var(--ant-color-brand-primary)",
+        color: "var(--ant-color-neutral-0)",
       }}
       whileTap={{
         scale: 0.92,
+        backgroundColor: "var(--ant-color-brand-primary)",
+        color: "var(--ant-color-neutral-0)",
       }}
       transition={{
         type: "spring",
@@ -121,11 +116,9 @@ function NavigationButton({ direction, pressed, onClick, onPressedChange }: Navi
         aria-hidden="true"
         style={{
           display: "block",
-          transform: isPrevious
-            ? "translateX(calc(var(--ant-spacing-0) - 1px))"
-            : "translateX(1px)",
           fontFamily: "var(--ant-typography-fontFamily-sans)",
-          fontWeight: 700,
+          fontWeight: "var(--ant-typography-fontWeight-bold)",
+          lineHeight: 1,
         }}
       >
         {isPrevious ? "‹" : "›"}
@@ -134,16 +127,6 @@ function NavigationButton({ direction, pressed, onClick, onPressedChange }: Navi
   );
 }
 
-/**
- * Responsive image lightbox with navigation, thumbnails, zoom,
- * autoplay, keyboard controls, focus trapping, and body scroll locking.
- *
- * Keyboard controls:
- * Escape closes the lightbox.
- * ArrowLeft and ArrowRight navigate between images.
- * Plus or Equal zooms in.
- * Minus zooms out.
- */
 function LightboxBase({
   src,
   alt = "Image",
@@ -152,14 +135,15 @@ function LightboxBase({
   autoPlay = false,
   autoPlayInterval = 3000,
   onClose,
-}: Omit<LightboxProps, "isOpen">) {
+}: LightboxProps) {
   const images = thumbnails.length > 0 ? thumbnails : [src];
   const initialIndex = Math.max(images.indexOf(src), 0);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [scale, setScale] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
-  const [pressedButton, setPressedButton] = useState<Direction | null>(null);
+  const [pressedButton, setPressedButton] =
+    useState<Direction | null>(null);
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -172,7 +156,9 @@ function LightboxBase({
 
   useEffect(() => {
     previouslyFocusedElementRef.current =
-      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
 
     const previousOverflow = document.body.style.overflow;
 
@@ -195,20 +181,27 @@ function LightboxBase({
   };
 
   const nextImage = () => {
-    goToImage((currentIndex + 1) % images.length, true);
+    goToImage((currentIndex + 1) % images.length);
   };
 
   const previousImage = () => {
-    goToImage((currentIndex - 1 + images.length) % images.length, true);
+    goToImage((currentIndex - 1 + images.length) % images.length);
   };
 
   useEffect(() => {
-    if (!autoPlay || images.length <= 1 || isPaused || autoPlayInterval <= 0) {
+    if (
+      !autoPlay ||
+      images.length <= 1 ||
+      isPaused ||
+      autoPlayInterval <= 0
+    ) {
       return;
     }
 
     const interval = window.setInterval(() => {
-      setCurrentIndex((previousIndex) => (previousIndex + 1) % images.length);
+      setCurrentIndex(
+        (previousIndex) => (previousIndex + 1) % images.length,
+      );
       setScale(1);
     }, autoPlayInterval);
 
@@ -244,14 +237,18 @@ function LightboxBase({
       if (event.key === "+" || event.key === "=") {
         event.preventDefault();
         setIsPaused(true);
-        setScale((previousScale) => Math.min(previousScale + 0.25, 3));
+        setScale((previousScale) =>
+          Math.min(previousScale + 0.25, 3),
+        );
         return;
       }
 
       if (event.key === "-") {
         event.preventDefault();
         setIsPaused(true);
-        setScale((previousScale) => Math.max(previousScale - 0.25, 1));
+        setScale((previousScale) =>
+          Math.max(previousScale - 0.25, 1),
+        );
       }
     };
 
@@ -271,11 +268,11 @@ function LightboxBase({
 
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
-
       setIsPaused(true);
 
       setScale((previousScale) => {
-        const nextScale = previousScale - event.deltaY * 0.001;
+        const nextScale =
+          previousScale - event.deltaY * 0.001;
 
         return Math.min(Math.max(nextScale, 1), 3);
       });
@@ -290,7 +287,9 @@ function LightboxBase({
     };
   }, [zoomEnabled]);
 
-  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+  const handlePointerDown = (
+    event: ReactPointerEvent<HTMLDivElement>,
+  ) => {
     if (event.pointerType !== "touch") {
       return;
     }
@@ -299,7 +298,9 @@ function LightboxBase({
     touchStartYRef.current = event.clientY;
   };
 
-  const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+  const handlePointerUp = (
+    event: ReactPointerEvent<HTMLDivElement>,
+  ) => {
     if (
       event.pointerType !== "touch" ||
       touchStartXRef.current === null ||
@@ -312,14 +313,18 @@ function LightboxBase({
       return;
     }
 
-    const deltaX = event.clientX - touchStartXRef.current;
-
-    const deltaY = event.clientY - touchStartYRef.current;
+    const deltaX =
+      event.clientX - touchStartXRef.current;
+    const deltaY =
+      event.clientY - touchStartYRef.current;
 
     touchStartXRef.current = null;
     touchStartYRef.current = null;
 
-    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) {
+    if (
+      Math.abs(deltaX) < 50 ||
+      Math.abs(deltaX) < Math.abs(deltaY)
+    ) {
       return;
     }
 
@@ -350,9 +355,7 @@ function LightboxBase({
         onClick={onClose}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{
-          duration: 0.25,
-        }}
+        transition={{ duration: 0.25 }}
         style={{
           position: "fixed",
           inset: 0,
@@ -364,7 +367,7 @@ function LightboxBase({
           gap: "var(--ant-spacing-4)",
           padding: "var(--ant-spacing-8)",
           overflow: "hidden",
-          background: "var(--ant-lightbox-background)",
+          background: "var(--ant-color-neutral-900)",
           touchAction: "none",
         }}
       >
@@ -374,27 +377,21 @@ function LightboxBase({
             src={currentImage}
             alt=""
             aria-hidden="true"
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
-            transition={{
-              duration: 0.6,
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
             style={{
               position: "absolute",
-              inset: "calc(var(--ant-spacing-2) * -1)",
-              width: "calc(100% + var(--ant-spacing-4))",
-              height: "calc(100% + var(--ant-spacing-4))",
+              inset: "calc(var(--ant-spacing-4) * -1)",
+              width:
+                "calc(100% + var(--ant-spacing-8))",
+              height:
+                "calc(100% + var(--ant-spacing-8))",
               objectFit: "cover",
-              filter: "blur(var(--ant-lightbox-backgroundBlur))",
-              opacity: "var(--ant-lightbox-backgroundOpacity)",
-              transform: "scale(1.04)",
+              filter: "blur(var(--ant-spacing-4))",
+              opacity: "0.5",
+              transform: "scale(1.08)",
               pointerEvents: "none",
             }}
           />
@@ -406,20 +403,15 @@ function LightboxBase({
             position: "absolute",
             inset: 0,
             zIndex: "var(--ant-zIndex-raised)",
-            background: "var(--ant-lightbox-overlay)",
-            pointerEvents: "auto",
+            background:
+              "color-mix(in srgb, var(--ant-color-neutral-900) 35%, transparent)",
+            pointerEvents: "none",
           }}
         />
 
         <motion.div
-          initial={{
-            opacity: 0,
-            y: -12,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
           onClick={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
           style={{
             position: "absolute",
@@ -434,15 +426,21 @@ function LightboxBase({
         >
           <div
             style={{
-              padding: "var(--ant-spacing-2) var(--ant-spacing-3)",
+              padding:
+                "var(--ant-spacing-2) var(--ant-spacing-3)",
               borderRadius: "var(--ant-radius-full)",
-              color: "var(--ant-lightbox-foreground)",
-              background: "var(--ant-lightbox-glass)",
-              border: "1px solid var(--ant-lightbox-border)",
-              backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
-              fontSize: "var(--ant-typography-fontSize-xs)",
-              fontWeight: "var(--ant-typography-fontWeight-semibold)",
-              boxShadow: "var(--ant-lightbox-shadow)",
+              color: "var(--ant-color-neutral-0)",
+              background:
+                "color-mix(in srgb, var(--ant-color-neutral-900) 60%, transparent)",
+              border:
+                "1px solid color-mix(in srgb, var(--ant-color-neutral-0) 20%, transparent)",
+              backdropFilter:
+                "blur(var(--ant-spacing-4))",
+              fontSize:
+                "var(--ant-typography-fontSize-xs)",
+              fontWeight:
+                "var(--ant-typography-fontWeight-semibold)",
+              boxShadow: "var(--ant-shadow-lg)",
             }}
           >
             Image {currentIndex + 1} / {images.length}
@@ -460,23 +458,25 @@ function LightboxBase({
               scale: 1.08,
               rotate: 3,
             }}
-            whileTap={{
-              scale: 0.9,
-            }}
+            whileTap={{ scale: 0.9 }}
             style={{
               width: "var(--ant-spacing-10)",
               height: "var(--ant-spacing-10)",
               borderRadius: "var(--ant-radius-full)",
-              border: "1px solid var(--ant-lightbox-border)",
-              background: "var(--ant-lightbox-glass)",
-              color: "var(--ant-lightbox-foreground)",
-              backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
-              fontSize: "var(--ant-typography-fontSize-xl)",
+              border:
+                "1px solid color-mix(in srgb, var(--ant-color-neutral-0) 20%, transparent)",
+              background:
+                "color-mix(in srgb, var(--ant-color-neutral-900) 60%, transparent)",
+              color: "var(--ant-color-neutral-0)",
+              backdropFilter:
+                "blur(var(--ant-spacing-4))",
+              fontSize:
+                "var(--ant-typography-fontSize-xl)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "var(--ant-lightbox-shadow)",
+              boxShadow: "var(--ant-shadow-lg)",
             }}
           >
             ×
@@ -498,10 +498,13 @@ function LightboxBase({
             zIndex: "var(--ant-zIndex-raised)",
             padding: "var(--ant-spacing-2)",
             borderRadius: "var(--ant-radius-xl)",
-            background: "var(--ant-lightbox-glass)",
-            border: "1px solid var(--ant-lightbox-border)",
-            backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
-            boxShadow: "var(--ant-lightbox-shadow)",
+            background:
+              "color-mix(in srgb, var(--ant-color-neutral-0) 8%, transparent)",
+            border:
+              "1px solid color-mix(in srgb, var(--ant-color-neutral-0) 20%, transparent)",
+            backdropFilter:
+              "blur(var(--ant-spacing-4))",
+            boxShadow: "var(--ant-shadow-lg)",
           }}
         >
           <AnimatePresence mode="wait">
@@ -523,8 +526,9 @@ function LightboxBase({
                 }
 
                 setIsPaused(true);
-
-                setScale((previousScale) => (previousScale === 1 ? 2 : 1));
+                setScale((previousScale) =>
+                  previousScale === 1 ? 2 : 1,
+                );
               }}
               initial={{
                 opacity: 0,
@@ -550,8 +554,15 @@ function LightboxBase({
                 objectFit: "contain",
                 borderRadius: "var(--ant-radius-lg)",
                 userSelect: "none",
-                touchAction: zoomEnabled && scale > 1 ? "none" : "pan-y",
-                cursor: !zoomEnabled ? "default" : scale > 1 ? "grab" : "zoom-in",
+                touchAction:
+                  zoomEnabled && scale > 1
+                    ? "none"
+                    : "pan-y",
+                cursor: !zoomEnabled
+                  ? "default"
+                  : scale > 1
+                    ? "grab"
+                    : "zoom-in",
               }}
             />
           </AnimatePresence>
@@ -563,14 +574,22 @@ function LightboxBase({
               direction="prev"
               pressed={pressedButton === "prev"}
               onClick={previousImage}
-              onPressedChange={(pressed) => setPressedButton(pressed ? "prev" : null)}
+              onPressedChange={(pressed) =>
+                setPressedButton(
+                  pressed ? "prev" : null,
+                )
+              }
             />
 
             <NavigationButton
               direction="next"
               pressed={pressedButton === "next"}
               onClick={nextImage}
-              onPressedChange={(pressed) => setPressedButton(pressed ? "next" : null)}
+              onPressedChange={(pressed) =>
+                setPressedButton(
+                  pressed ? "next" : null,
+                )
+              }
             />
           </>
         )}
@@ -595,9 +614,12 @@ function LightboxBase({
               maxWidth: "90vw",
               overflowX: "auto",
               borderRadius: "var(--ant-radius-lg)",
-              background: "var(--ant-lightbox-glass)",
-              border: "1px solid var(--ant-lightbox-border)",
-              backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
+              background:
+                "color-mix(in srgb, var(--ant-color-neutral-900) 60%, transparent)",
+              border:
+                "1px solid color-mix(in srgb, var(--ant-color-neutral-0) 20%, transparent)",
+              backdropFilter:
+                "blur(var(--ant-spacing-4))",
             }}
           >
             {images.map((image, index) => (
@@ -605,10 +627,12 @@ function LightboxBase({
                 key={`${image}-${index}`}
                 type="button"
                 aria-label={`View image ${index + 1}`}
-                aria-current={index === currentIndex ? "true" : undefined}
-                onClick={() => {
-                  goToImage(index, true);
-                }}
+                aria-current={
+                  index === currentIndex
+                    ? "true"
+                    : undefined
+                }
+                onClick={() => goToImage(index)}
                 whileHover={{
                   scale: 1.06,
                   y: -2,
@@ -617,25 +641,29 @@ function LightboxBase({
                   scale: 0.94,
                 }}
                 style={{
-                  padding: 0,
+                  padding: "var(--ant-spacing-0)",
                   border:
                     index === currentIndex
-                      ? "2px solid var(--ant-lightbox-accent)"
+                      ? "2px solid var(--ant-color-brand-primary)"
                       : "2px solid transparent",
                   background: "transparent",
                   borderRadius: "var(--ant-radius-md)",
                   cursor: "pointer",
-                  opacity: index === currentIndex ? 1 : 0.55,
+                  opacity:
+                    index === currentIndex ? 1 : 0.55,
                   overflow: "hidden",
-                  transition: "border-color 0.2s ease, opacity 0.2s ease",
+                  transition:
+                    "border-color 0.2s ease, opacity 0.2s ease",
                 }}
               >
                 <img
                   src={image}
                   alt=""
                   style={{
-                    width: "calc(var(--ant-spacing-20) + var(--ant-spacing-2))",
-                    height: "calc(var(--ant-spacing-12) - var(--ant-spacing-1))",
+                    width:
+                      "calc(var(--ant-spacing-20) + var(--ant-spacing-2))",
+                    height:
+                      "calc(var(--ant-spacing-12) - var(--ant-spacing-1))",
                     display: "block",
                     objectFit: "cover",
                     borderRadius: "var(--ant-radius-sm)",
@@ -664,19 +692,27 @@ function LightboxBase({
                 y: 8,
                 scale: 0.9,
               }}
-              onClick={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
+              onClick={(event: ReactMouseEvent<HTMLDivElement>) =>
+                event.stopPropagation()
+              }
               style={{
                 position: "absolute",
                 bottom: "var(--ant-spacing-4)",
                 zIndex: "var(--ant-zIndex-raised)",
-                padding: "var(--ant-spacing-1) var(--ant-spacing-3)",
+                padding:
+                  "var(--ant-spacing-1) var(--ant-spacing-3)",
                 borderRadius: "var(--ant-radius-full)",
-                background: "var(--ant-lightbox-glass)",
-                border: "1px solid var(--ant-lightbox-border)",
-                backdropFilter: "blur(var(--ant-lightbox-backgroundBlur))",
-                color: "var(--ant-lightbox-foreground)",
-                fontSize: "var(--ant-typography-fontSize-xs)",
-                fontWeight: "var(--ant-typography-fontWeight-medium)",
+                background:
+                  "color-mix(in srgb, var(--ant-color-neutral-900) 60%, transparent)",
+                border:
+                  "1px solid color-mix(in srgb, var(--ant-color-neutral-0) 20%, transparent)",
+                backdropFilter:
+                  "blur(var(--ant-spacing-4))",
+                color: "var(--ant-color-neutral-0)",
+                fontSize:
+                  "var(--ant-typography-fontSize-xs)",
+                fontWeight:
+                  "var(--ant-typography-fontWeight-medium)",
               }}
             >
               Ⅱ Paused • Click Next / Previous to continue
@@ -705,4 +741,3 @@ export function Lightbox({ isOpen = true, ...props }: LightboxProps) {
     </AnimatePresence>
   );
 }
-
