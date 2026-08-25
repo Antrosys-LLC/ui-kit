@@ -5,6 +5,9 @@ import React, {
 } from "react";
 import { clsx } from "clsx";
 
+/**
+ * Single navigation item in the Sidebar hierarchy.
+ */
 export interface SidebarItem {
   /** Display label for the item */
   label: string;
@@ -12,12 +15,15 @@ export interface SidebarItem {
   icon?: ReactNode;
   /** Unique route string used for navigation and active state matching */
   route: string;
-  /** Optional badge content (e.g. notification count) */
+  /** Optional badge content (e.g. notification count or label) */
   badge?: number | string;
   /** Optional nested children items */
   children?: SidebarItem[];
 }
 
+/**
+ * User profile information rendered at the bottom of the Sidebar.
+ */
 export interface SidebarUserProfile {
   /** Display name of the user */
   name: string;
@@ -25,8 +31,13 @@ export interface SidebarUserProfile {
   role?: string;
   /** Optional URL for the user's avatar image */
   avatar?: string;
+  /** Status indicator: "online", "offline", or boolean true/false (omitted or false hides the indicator) */
+  status?: "online" | "offline" | boolean;
 }
 
+/**
+ * Props for the Sidebar component.
+ */
 export interface SidebarProps extends HTMLAttributes<HTMLElement> {
   /** Navigation tree — supports one level of nested children */
   items: SidebarItem[];
@@ -36,6 +47,12 @@ export interface SidebarProps extends HTMLAttributes<HTMLElement> {
   activeRoute?: string;
   /** Details for the user profile block at the bottom */
   userProfile?: SidebarUserProfile;
+  /** Brand title text (default: "AntroSys") */
+  title?: string;
+  /** Brand subtitle text (default: "Workspace") */
+  subtitle?: string;
+  /** Optional custom brand logo/icon node */
+  logo?: ReactNode;
   /** Callback fired when an item is clicked */
   onNavigate?: (route: string) => void;
   /** Callback fired when the collapse button is clicked */
@@ -132,13 +149,16 @@ function ChevronIcon({ open }: { open: boolean }) {
 }
 
 /**
- * Collapsible sidebar navigation with nested routes, badges, and a user profile block.
+ * Collapsible sidebar navigation with nested routes, badges, configurable branding, and a user profile block.
  */
 export function Sidebar({
   items,
   collapsed = false,
   activeRoute,
   userProfile,
+  title = "AntroSys",
+  subtitle = "Workspace",
+  logo,
   onNavigate,
   onCollapse,
   className,
@@ -177,6 +197,7 @@ export function Sidebar({
       );
 
       const isOpen = Boolean(openItems[item.route]);
+      const submenuId = `sidebar-submenu-${item.route.replace(/[^a-zA-Z0-9-_]/g, "-")}`;
 
       return (
         <li
@@ -199,7 +220,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => {
-                if (hasChildren) {
+                if (hasChildren && !collapsed) {
                   toggleItem(item.route);
                 }
 
@@ -208,6 +229,16 @@ export function Sidebar({
               aria-current={
                 activeRoute === item.route
                   ? "page"
+                  : undefined
+              }
+              aria-expanded={
+                hasChildren && !collapsed
+                  ? isOpen
+                  : undefined
+              }
+              aria-controls={
+                hasChildren && !collapsed
+                  ? submenuId
                   : undefined
               }
               aria-label={
@@ -268,7 +299,10 @@ export function Sidebar({
           </div>
 
           {hasChildren && isOpen && !collapsed && (
-            <ul className="relative ml-7 mt-1 space-y-1 pl-5">
+            <ul
+              id={submenuId}
+              className="relative ml-7 mt-1 space-y-1 pl-5"
+            >
               <span
                 className="absolute bottom-1 left-1 top-1 w-px bg-sidebar-border"
                 aria-hidden="true"
@@ -304,7 +338,7 @@ export function Sidebar({
                       </span>
 
                       {child.badge !== undefined && (
-                        <span className="ml-auto text-xs">
+                        <span className="ml-auto min-w-5 shrink-0 rounded-full bg-sidebar-badge px-2 py-0.5 text-center text-xs font-semibold text-neutral-0">
                           {child.badge}
                         </span>
                       )}
@@ -347,19 +381,27 @@ export function Sidebar({
               : "gap-3"
           )}
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sidebar-active-bg text-lg font-bold text-sidebar-active-text">
-            ✦
-          </div>
+          {logo !== undefined ? (
+            logo
+          ) : (
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sidebar-active-bg text-lg font-bold text-sidebar-active-text">
+              ✦
+            </div>
+          )}
 
-          {!collapsed && (
+          {!collapsed && (title || subtitle) && (
             <div className="min-w-0">
-              <p className="truncate text-sm font-bold text-sidebar-text">
-                AntroSys
-              </p>
+              {title && (
+                <p className="truncate text-sm font-bold text-sidebar-text">
+                  {title}
+                </p>
+              )}
 
-              <p className="truncate text-xs text-sidebar-text-secondary">
-                Workspace
-              </p>
+              {subtitle && (
+                <p className="truncate text-xs text-sidebar-text-secondary">
+                  {subtitle}
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -368,6 +410,7 @@ export function Sidebar({
           <button
             type="button"
             onClick={onCollapse}
+            aria-expanded={!collapsed}
             aria-label={
               collapsed
                 ? "Expand sidebar"
@@ -431,10 +474,18 @@ export function Sidebar({
                 )}
               </div>
 
-              <span
-                className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-sidebar-profile-bg bg-sidebar-active-text"
-                aria-label="Online"
-              />
+              {userProfile.status !== undefined && userProfile.status !== false && (
+                <span
+                  role="status"
+                  aria-label={userProfile.status === "offline" ? "Offline" : "Online"}
+                  className={clsx(
+                    "absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-sidebar-profile-bg",
+                    userProfile.status === "offline"
+                      ? "bg-[var(--ant-color-neutral-400)]"
+                      : "bg-[var(--ant-color-semantic-success)]"
+                  )}
+                />
+              )}
             </div>
 
             {!collapsed && (

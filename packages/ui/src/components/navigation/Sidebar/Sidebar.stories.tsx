@@ -91,6 +91,26 @@ const meta = {
   parameters: {
     layout: "fullscreen",
   },
+  argTypes: {
+    collapsed: {
+      control: "boolean",
+    },
+    activeRoute: {
+      control: "text",
+    },
+    title: {
+      control: "text",
+    },
+    subtitle: {
+      control: "text",
+    },
+    onNavigate: {
+      action: "navigated",
+    },
+    onCollapse: {
+      action: "collapsed",
+    },
+  },
 } satisfies Meta<typeof Sidebar>;
 
 export default meta;
@@ -135,17 +155,20 @@ const navigationItems = [
 const userProfile = {
   name: "Fatima Razaq",
   role: "Frontend Developer",
+  status: "online" as const,
 };
 
 export const Default: Story = {
   args: { items: navigationItems, userProfile },
-  render: () => {
-    const [collapsed, setCollapsed] = useState(false);
-    const [activeRoute, setActiveRoute] =
-      useState("/dashboard");
+  render: (args) => {
+    const [collapsed, setCollapsed] = useState(args.collapsed ?? false);
+    const [activeRoute, setActiveRoute] = useState(
+      args.activeRoute ?? "/dashboard"
+    );
 
     return (
       <Sidebar
+        {...args}
         items={navigationItems}
         collapsed={collapsed}
         activeRoute={activeRoute}
@@ -163,13 +186,15 @@ export const Default: Story = {
 
 export const Collapsed: Story = {
   args: { items: navigationItems, userProfile, collapsed: true },
-  render: () => {
+  render: (args) => {
     const [collapsed, setCollapsed] = useState(true);
-    const [activeRoute, setActiveRoute] =
-      useState("/dashboard");
+    const [activeRoute, setActiveRoute] = useState(
+      args.activeRoute ?? "/dashboard"
+    );
 
     return (
       <Sidebar
+        {...args}
         items={navigationItems}
         collapsed={collapsed}
         activeRoute={activeRoute}
@@ -187,13 +212,14 @@ export const Collapsed: Story = {
 
 export const NestedNavigation: Story = {
   args: { items: navigationItems, userProfile, activeRoute: "/projects/active" },
-  render: () => {
+  render: (args) => {
     const [activeRoute, setActiveRoute] = useState(
-      "/projects/active"
+      args.activeRoute ?? "/projects/active"
     );
 
     return (
       <Sidebar
+        {...args}
         items={navigationItems}
         collapsed={false}
         activeRoute={activeRoute}
@@ -208,12 +234,14 @@ export const NestedNavigation: Story = {
 
 export const WithoutProfile: Story = {
   args: { items: navigationItems, activeRoute: "/messages" },
-  render: () => {
-    const [activeRoute, setActiveRoute] =
-      useState("/messages");
+  render: (args) => {
+    const [activeRoute, setActiveRoute] = useState(
+      args.activeRoute ?? "/messages"
+    );
 
     return (
       <Sidebar
+        {...args}
         items={navigationItems}
         collapsed={false}
         activeRoute={activeRoute}
@@ -221,6 +249,70 @@ export const WithoutProfile: Story = {
           setActiveRoute(route);
         }}
       />
+    );
+  },
+};
+
+export const OfflineProfile: Story = {
+  args: {
+    items: navigationItems,
+    userProfile: {
+      ...userProfile,
+      status: "offline" as const,
+    },
+    activeRoute: "/dashboard",
+  },
+  render: (args) => {
+    const [collapsed, setCollapsed] = useState(false);
+    const [activeRoute, setActiveRoute] = useState(
+      args.activeRoute ?? "/dashboard"
+    );
+
+    return (
+      <Sidebar
+        {...args}
+        items={navigationItems}
+        collapsed={collapsed}
+        activeRoute={activeRoute}
+        userProfile={{
+          ...userProfile,
+          status: "offline",
+        }}
+        onCollapse={() =>
+          setCollapsed((previous) => !previous)
+        }
+        onNavigate={(route) => {
+          setActiveRoute(route);
+        }}
+      />
+    );
+  },
+};
+
+export const DarkMode: Story = {
+  args: { items: navigationItems, userProfile, activeRoute: "/dashboard" },
+  render: (args) => {
+    const [collapsed, setCollapsed] = useState(false);
+    const [activeRoute, setActiveRoute] = useState(
+      args.activeRoute ?? "/dashboard"
+    );
+
+    return (
+      <div className="dark min-h-screen bg-neutral-900">
+        <Sidebar
+          {...args}
+          items={navigationItems}
+          collapsed={collapsed}
+          activeRoute={activeRoute}
+          userProfile={userProfile}
+          onCollapse={() =>
+            setCollapsed((previous) => !previous)
+          }
+          onNavigate={(route) => {
+            setActiveRoute(route);
+          }}
+        />
+      </div>
     );
   },
 };
