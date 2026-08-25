@@ -481,8 +481,8 @@ export function Sidebar({
                   className={clsx(
                     "absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-sidebar-profile-bg",
                     userProfile.status === "offline"
-                      ? "bg-[var(--ant-color-neutral-400)]"
-                      : "bg-[var(--ant-color-semantic-success)]"
+                      ? "bg-neutral-400"
+                      : "bg-success"
                   )}
                 />
               )}
