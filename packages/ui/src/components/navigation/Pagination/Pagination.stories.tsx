@@ -94,6 +94,16 @@ export const JumpToPage: Story = {
   render: (args) => <InteractivePagination {...args} />,
 };
 
+export const SinglePage: Story = {
+  args: {
+    total: 8,
+    perPage: 10,
+    currentPage: 1,
+    onPageChange: () => undefined,
+  },
+  render: (args) => <InteractivePagination {...args} />,
+};
+
 export const ServerSide: Story = {
   args: {
     total: 95,
@@ -112,12 +122,12 @@ export const ServerSide: Story = {
       window.setTimeout(() => {
         setCurrentPage(page);
         setStatus(`Loaded page ${page} from API`);
-      }, 400);
+      }, 350);
     };
 
     return (
       <div className="flex flex-col gap-[var(--ant-spacing-3)]">
-        <p className="m-0 text-[length:var(--ant-typography-fontsize-sm)] text-[var(--ant-color-surface-text-sub)]">
+        <p className="m-0 text-[length:var(--ant-typography-fontSize-sm)] text-[var(--ant-color-surface-text-sub)]">
           {status}
         </p>
         <Pagination
@@ -131,4 +141,18 @@ export const ServerSide: Story = {
       </div>
     );
   },
+};
+
+export const DarkMode: Story = {
+  parameters: {
+    backgrounds: { default: "dark" },
+  },
+  args: {
+    total: 240,
+    perPage: 10,
+    currentPage: 3,
+    showSizeChanger: true,
+    onPageChange: () => undefined,
+  },
+  render: (args) => <InteractivePagination {...args} />,
 };
