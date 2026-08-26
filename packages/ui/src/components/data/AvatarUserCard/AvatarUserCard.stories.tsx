@@ -116,3 +116,18 @@ export const LongUserName: Story = {
     ),
   ],
 };
+
+export const DarkMode: Story = {
+  parameters: {
+    backgrounds: { default: "dark" },
+  },
+  args: {
+    name:    "Amna Farooq",
+    role:    "AI/ML Enthusiast",
+    status:  "online",
+    size:    "md",
+    image:   "https://i.pravatar.cc/150?u=amna",
+    socials: sampleSocials,
+  },
+};
+

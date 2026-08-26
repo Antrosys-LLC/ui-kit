@@ -30,6 +30,7 @@ import { AvatarUserCard } from "@antrosys/ui";
 | `size`    | `sm` `md` `lg`              | `md`    | Avatar, text, and status scale                   |
 | `image`   | `string`                    | —       | Avatar image URL; falls back to initials         |
 | `socials` | `SocialLink[]`              | —       | Optional social profile links                    |
+| `className` | `string`                  | —       | Optional additional CSS classes                  |
 
 ### SocialLink
 
