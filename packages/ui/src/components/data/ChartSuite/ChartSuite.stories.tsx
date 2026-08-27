@@ -1,7 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { ChartSuite } from "./ChartSuite";
-import type { ChartSuiteProps } from "./ChartSuite";
 
 const monthlyPerformanceData = [
   { month: "Jan", revenue: 4200, expenses: 2400, profit: 1800 },
@@ -157,6 +156,7 @@ export const Default: Story = {
   ),
   args: {
     type: "line",
+    data: monthlyPerformanceData,
     title: "Revenue Overview",
     subtitle: "Monthly performance",
     height: 320,
@@ -201,6 +201,7 @@ export const Line: Story = {
   ),
   args: {
     type: "line",
+    data: monthlyPerformanceData,
     title: "Revenue vs Expenses",
     subtitle: "Monthly performance overview in USD",
     height: 340,
@@ -232,6 +233,7 @@ export const Bar: Story = {
   ),
   args: {
     type: "bar",
+    data: trafficSourceData,
     title: "Traffic & Visitors by Source",
     subtitle: "Acquisition breakdown for current quarter",
     height: 320,
@@ -269,6 +271,7 @@ export const StackedBar: Story = {
   ),
   args: {
     type: "bar",
+    data: monthlyPerformanceData,
     title: "Revenue & Expenses Breakdown",
     subtitle: "Stacked financial comparison",
     stacked: true,
@@ -295,6 +298,7 @@ export const Pie: Story = {
   ),
   args: {
     type: "pie",
+    data: deviceShareData,
     title: "Traffic by Device",
     subtitle: "Distribution of active user sessions",
     height: 320,
@@ -319,6 +323,7 @@ export const Donut: Story = {
   ),
   args: {
     type: "donut",
+    data: deviceShareData,
     title: "Device Share (Donut)",
     subtitle: "Breakdown with center total indicator",
     innerRadius: "60%",
@@ -355,6 +360,7 @@ export const Area: Story = {
   ),
   args: {
     type: "area",
+    data: monthlyPerformanceData,
     title: "Growth Trend",
     subtitle: "Cumulative performance with gradient fill",
     height: 320,
@@ -391,6 +397,7 @@ export const Radar: Story = {
   ),
   args: {
     type: "radar",
+    data: performanceRadarData,
     title: "System Performance Audit",
     subtitle: "Current metrics vs industry benchmark (Score out of 100)",
     height: 340,
@@ -414,6 +421,7 @@ export const Heatmap: Story = {
   ),
   args: {
     type: "heatmap",
+    data: weeklyHeatmapData,
     title: "Weekly Activity Heatmap",
     subtitle: "User activity density across days and time segments",
     height: 300,
@@ -432,6 +440,7 @@ export const Loading: Story = {
   ),
   args: {
     type: "line",
+    data: [],
     title: "Loading State Example",
     subtitle: "Displays animated skeleton placeholder",
     loading: true,
@@ -448,6 +457,7 @@ export const Empty: Story = {
   ),
   args: {
     type: "bar",
+    data: [],
     title: "Empty State Example",
     subtitle: "Displays placeholder when no dataset is provided",
     height: 300,

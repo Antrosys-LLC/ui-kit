@@ -617,6 +617,15 @@ export function ChartSuite({
         svgClone.setAttribute("width", `${width}`);
         svgClone.setAttribute("height", `${svgHeight}`);
 
+        // Resolve the theme background token to a concrete color — the exported
+        // SVG is detached from the document where CSS variables would resolve.
+        const resolvedBackground =
+          getComputedStyle(containerRef.current).getPropertyValue(
+            isDark
+              ? "--ant-color-neutral-900"
+              : "--ant-color-neutral-0"
+          ).trim() || "#FFFFFF";
+
         // Background rect to prevent transparent exports
         const bgRect = document.createElementNS(
           "http://www.w3.org/2000/svg",
@@ -624,7 +633,7 @@ export function ChartSuite({
         );
         bgRect.setAttribute("width", "100%");
         bgRect.setAttribute("height", "100%");
-        bgRect.setAttribute("fill", isDark ? "#0F172A" : "#FFFFFF");
+        bgRect.setAttribute("fill", resolvedBackground);
         svgClone.insertBefore(bgRect, svgClone.firstChild);
 
         const svgString = serializer.serializeToString(svgClone);
@@ -998,7 +1007,11 @@ export function ChartSuite({
                         <Cell
                           key={`cell-${index}`}
                           fill={chartColors[index % chartColors.length]}
-                          stroke={isDark ? "#0F172A" : "#FFFFFF"}
+                          stroke={
+                            isDark
+                              ? "var(--ant-color-neutral-900)"
+                              : "var(--ant-color-neutral-0)"
+                          }
                           strokeWidth={2}
                         />
                       ))}
