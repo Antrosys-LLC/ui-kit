@@ -171,6 +171,7 @@ interface CustomTooltipProps {
   label?: string | number;
   valueFormatter?: (val: number) => string;
   categoryFormatter?: (val: string | number) => string;
+  isDark?: boolean;
 }
 
 function UniformTooltip({
@@ -179,6 +180,7 @@ function UniformTooltip({
   label,
   valueFormatter,
   categoryFormatter,
+  isDark = false,
 }: CustomTooltipProps) {
   if (!active || !payload || payload.length === 0) return null;
 
@@ -193,14 +195,22 @@ function UniformTooltip({
     <div
       className={clsx(
         "rounded-[var(--ant-radius-lg)] p-[var(--ant-spacing-3)]",
-        "bg-[var(--ant-color-surface-bg-card)] text-[var(--ant-color-surface-text)]",
-        "border border-[var(--ant-color-surface-border)] shadow-[var(--ant-shadow-lg)]",
-        "min-w-[140px] text-[length:var(--ant-typography-fontSize-xs)] select-none",
+        isDark
+          ? "bg-[var(--ant-color-neutral-900)] text-[var(--ant-color-neutral-0)] border border-[var(--ant-color-neutral-700)]"
+          : "bg-[var(--ant-color-neutral-0)] text-[var(--ant-color-neutral-900)] border border-[var(--ant-color-neutral-200)]",
+        "shadow-[var(--ant-shadow-lg)] min-w-[140px] text-[length:var(--ant-typography-fontSize-xs)] select-none",
         "backdrop-blur-sm z-[var(--ant-zIndex-tooltip)]"
       )}
     >
       {displayLabel && (
-        <p className="font-semibold text-[var(--ant-color-surface-text)] pb-[var(--ant-spacing-1)] mb-[var(--ant-spacing-2)] border-b border-[var(--ant-color-surface-border)]">
+        <p
+          className={clsx(
+            "font-semibold pb-[var(--ant-spacing-1)] mb-[var(--ant-spacing-2)] border-b",
+            isDark
+              ? "text-[var(--ant-color-neutral-0)] border-[var(--ant-color-neutral-700)]"
+              : "text-[var(--ant-color-neutral-900)] border-[var(--ant-color-neutral-200)]"
+          )}
+        >
           {displayLabel}
         </p>
       )}
@@ -223,11 +233,24 @@ function UniformTooltip({
                   className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
                   style={{ backgroundColor: item.color || DEFAULT_CHART_COLORS[0] }}
                 />
-                <span className="text-[var(--ant-color-surface-text-sub)]">
+                <span
+                  className={clsx(
+                    isDark
+                      ? "text-[var(--ant-color-neutral-400)]"
+                      : "text-[var(--ant-color-neutral-500)]"
+                  )}
+                >
                   {item.name || item.dataKey || "Value"}
                 </span>
               </div>
-              <span className="font-semibold text-[var(--ant-color-surface-text)]">
+              <span
+                className={clsx(
+                  "font-semibold",
+                  isDark
+                    ? "text-[var(--ant-color-neutral-0)]"
+                    : "text-[var(--ant-color-neutral-900)]"
+                )}
+              >
                 {formattedVal}
                 {item.unit ? ` ${item.unit}` : ""}
               </span>
@@ -240,7 +263,13 @@ function UniformTooltip({
 }
 
 /** Loading Skeleton Component */
-function ChartLoadingSkeleton({ height = 320 }: { height: number }) {
+function ChartLoadingSkeleton({
+  height = 320,
+  isDark = false,
+}: {
+  height: number;
+  isDark?: boolean;
+}) {
   return (
     <div
       className="relative w-full flex flex-col justify-between p-[var(--ant-spacing-4)]"
@@ -251,28 +280,82 @@ function ChartLoadingSkeleton({ height = 320 }: { height: number }) {
       {/* Background skeleton structure */}
       <div className="w-full h-full flex flex-col justify-between animate-pulse opacity-50">
         <div className="flex items-center justify-between w-full mb-[var(--ant-spacing-3)]">
-          <div className="h-4 w-32 rounded-[var(--ant-radius-md)] bg-[var(--ant-color-surface-border)]" />
-          <div className="h-4 w-20 rounded-[var(--ant-radius-md)] bg-[var(--ant-color-surface-border)]" />
+          <div
+            className={clsx(
+              "h-4 w-32 rounded-[var(--ant-radius-md)]",
+              isDark
+                ? "bg-[var(--ant-color-neutral-700)]"
+                : "bg-[var(--ant-color-neutral-200)]"
+            )}
+          />
+          <div
+            className={clsx(
+              "h-4 w-20 rounded-[var(--ant-radius-md)]",
+              isDark
+                ? "bg-[var(--ant-color-neutral-700)]"
+                : "bg-[var(--ant-color-neutral-200)]"
+            )}
+          />
         </div>
         <div className="flex-1 w-full flex items-end gap-[var(--ant-spacing-3)] py-[var(--ant-spacing-4)]">
           {[40, 75, 55, 90, 65, 80, 45, 95].map((h, i) => (
             <div
               key={i}
-              className="flex-1 rounded-[var(--ant-radius-sm)] bg-[var(--ant-color-surface-border)]"
+              className={clsx(
+                "flex-1 rounded-[var(--ant-radius-sm)]",
+                isDark
+                  ? "bg-[var(--ant-color-neutral-700)]"
+                  : "bg-[var(--ant-color-neutral-200)]"
+              )}
               style={{ height: `${h}%` }}
             />
           ))}
         </div>
-        <div className="flex items-center justify-between w-full pt-[var(--ant-spacing-2)] border-t border-[var(--ant-color-surface-border)]">
-          <div className="h-3 w-16 rounded-[var(--ant-radius-sm)] bg-[var(--ant-color-surface-border)]" />
-          <div className="h-3 w-16 rounded-[var(--ant-radius-sm)] bg-[var(--ant-color-surface-border)]" />
-          <div className="h-3 w-16 rounded-[var(--ant-radius-sm)] bg-[var(--ant-color-surface-border)]" />
+        <div
+          className={clsx(
+            "flex items-center justify-between w-full pt-[var(--ant-spacing-2)] border-t",
+            isDark
+              ? "border-[var(--ant-color-neutral-700)]"
+              : "border-[var(--ant-color-neutral-200)]"
+          )}
+        >
+          <div
+            className={clsx(
+              "h-3 w-16 rounded-[var(--ant-radius-sm)]",
+              isDark
+                ? "bg-[var(--ant-color-neutral-700)]"
+                : "bg-[var(--ant-color-neutral-200)]"
+            )}
+          />
+          <div
+            className={clsx(
+              "h-3 w-16 rounded-[var(--ant-radius-sm)]",
+              isDark
+                ? "bg-[var(--ant-color-neutral-700)]"
+                : "bg-[var(--ant-color-neutral-200)]"
+            )}
+          />
+          <div
+            className={clsx(
+              "h-3 w-16 rounded-[var(--ant-radius-sm)]",
+              isDark
+                ? "bg-[var(--ant-color-neutral-700)]"
+                : "bg-[var(--ant-color-neutral-200)]"
+            )}
+          />
         </div>
       </div>
 
       {/* Central circular loading spinner */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-        <div className="flex items-center justify-center p-[var(--ant-spacing-3)] rounded-full bg-[var(--ant-color-surface-bg-card)]/90 backdrop-blur-xs shadow-[var(--ant-shadow-md)] border border-[var(--ant-color-surface-border)]">
+        <div
+          className={clsx(
+            "flex items-center justify-center p-[var(--ant-spacing-3)] rounded-full backdrop-blur-xs shadow-[var(--ant-shadow-md)]",
+            isDark
+              ? "bg-[var(--ant-color-neutral-800)]/90 border border-[var(--ant-color-neutral-700)]"
+              : "bg-[var(--ant-color-neutral-0)]/90 border border-[var(--ant-color-neutral-200)]"
+          )}
+        >
           <svg
             className="w-7 h-7 animate-spin text-[var(--ant-color-brand-primary)]"
             xmlns="http://www.w3.org/2000/svg"
@@ -313,6 +396,7 @@ interface HeatmapProps {
   showTooltip?: boolean;
   animated?: boolean;
   colors: string[];
+  isDark?: boolean;
 }
 
 function HeatmapChart({
@@ -327,6 +411,7 @@ function HeatmapChart({
   showTooltip = true,
   animated = true,
   colors,
+  isDark = false,
 }: HeatmapProps) {
   const [hoveredCell, setHoveredCell] = useState<{
     point: HeatmapDataPoint;
@@ -390,7 +475,14 @@ function HeatmapChart({
               className="flex items-center gap-[var(--ant-spacing-2)] w-full"
             >
               {/* Row Header */}
-              <span className="w-16 shrink-0 text-right truncate text-[length:var(--ant-typography-fontSize-xs)] text-[var(--ant-color-surface-text-sub)]">
+              <span
+                className={clsx(
+                  "w-16 shrink-0 text-right truncate text-[length:var(--ant-typography-fontSize-xs)]",
+                  isDark
+                    ? "text-[var(--ant-color-neutral-400)]"
+                    : "text-[var(--ant-color-neutral-500)]"
+                )}
+              >
                 {categoryFormatter ? categoryFormatter(rowLabel) : rowLabel}
               </span>
 
@@ -446,7 +538,12 @@ function HeatmapChart({
               {cols.map((colLabel) => (
                 <span
                   key={`col-${colLabel}`}
-                  className="flex-1 text-center truncate text-[length:var(--ant-typography-fontSize-xs)] text-[var(--ant-color-surface-text-sub)]"
+                  className={clsx(
+                    "flex-1 text-center truncate text-[length:var(--ant-typography-fontSize-xs)]",
+                    isDark
+                      ? "text-[var(--ant-color-neutral-400)]"
+                      : "text-[var(--ant-color-neutral-500)]"
+                  )}
                 >
                   {categoryFormatter ? categoryFormatter(colLabel) : colLabel}
                 </span>
@@ -457,7 +554,14 @@ function HeatmapChart({
       </div>
 
       {/* Heatmap Legend Bar */}
-      <div className="flex items-center justify-end gap-[var(--ant-spacing-2)] mt-[var(--ant-spacing-3)] pt-[var(--ant-spacing-2)] border-t border-[var(--ant-color-surface-border)] text-[length:var(--ant-typography-fontSize-xs)] text-[var(--ant-color-surface-text-sub)]">
+      <div
+        className={clsx(
+          "flex items-center justify-end gap-[var(--ant-spacing-2)] mt-[var(--ant-spacing-3)] pt-[var(--ant-spacing-2)] border-t text-[length:var(--ant-typography-fontSize-xs)]",
+          isDark
+            ? "border-[var(--ant-color-neutral-700)] text-[var(--ant-color-neutral-400)]"
+            : "border-[var(--ant-color-neutral-200)] text-[var(--ant-color-neutral-500)]"
+        )}
+      >
         <span>Less</span>
         <div className="flex items-center gap-1">
           {[0.15, 0.35, 0.55, 0.75, 1.0].map((op, idx) => (
@@ -488,6 +592,7 @@ function HeatmapChart({
               },
             ]}
             valueFormatter={valueFormatter}
+            isDark={isDark}
           />
         </div>
       )}
@@ -541,12 +646,22 @@ export function ChartSuite({
   const chartData = useMemo(() => data || [], [data]);
   const chartColors = useMemo(() => colors || DEFAULT_CHART_COLORS, [colors]);
   const containerRef = useRef<HTMLDivElement>(null);
-  const idPrefix = useId();
+  const rawId = useId();
+  const idPrefix = useMemo(
+    () => rawId.replace(/[^a-zA-Z0-9_-]/g, "_"),
+    [rawId]
+  );
   const themeCtx = useContext(ThemeContext);
 
-  // Active theme resolution
+  // Active theme resolution (supports prop override, ThemeContext, and DOM data-theme attribute)
   const activeTheme =
-    themeOverride || (themeCtx ? themeCtx.theme : "light");
+    themeOverride && themeOverride !== "auto"
+      ? themeOverride
+      : themeCtx?.theme ||
+        (typeof document !== "undefined" &&
+        document.documentElement.getAttribute("data-theme") === "dark"
+          ? "dark"
+          : "light");
   const isDark = activeTheme === "dark";
 
   // Derive active series list
@@ -624,7 +739,12 @@ export function ChartSuite({
         );
         bgRect.setAttribute("width", "100%");
         bgRect.setAttribute("height", "100%");
-        bgRect.setAttribute("fill", isDark ? "#0F172A" : "#FFFFFF");
+        bgRect.setAttribute(
+          "fill",
+          isDark
+            ? "var(--ant-color-neutral-900, #0F172A)"
+            : "var(--ant-color-neutral-0, #FFFFFF)"
+        );
         svgClone.insertBefore(bgRect, svgClone.firstChild);
 
         const svgString = serializer.serializeToString(svgClone);
@@ -669,13 +789,18 @@ export function ChartSuite({
   // Chart rendering logic
   const renderChart = () => {
     if (loading) {
-      return <ChartLoadingSkeleton height={height} />;
+      return <ChartLoadingSkeleton height={height} isDark={isDark} />;
     }
 
     if (!chartData || chartData.length === 0) {
       return (
         <div
-          className="flex flex-col items-center justify-center text-[var(--ant-color-surface-text-sub)] text-sm"
+          className={clsx(
+            "flex flex-col items-center justify-center text-sm",
+            isDark
+              ? "text-[var(--ant-color-neutral-400)]"
+              : "text-[var(--ant-color-neutral-500)]"
+          )}
           style={{ height }}
         >
           <svg
@@ -710,14 +835,17 @@ export function ChartSuite({
           showTooltip={showTooltip}
           animated={animated}
           colors={chartColors}
+          isDark={isDark}
         />
       );
     }
 
     const gridStroke = isDark
-      ? "var(--ant-color-neutral-700, #334155)"
-      : "var(--ant-color-surface-border, #E2E8F0)";
-    const axisTickStroke = "var(--ant-color-surface-text-sub, #64748B)";
+      ? "var(--ant-color-neutral-700)"
+      : "var(--ant-color-neutral-200)";
+    const axisTickStroke = isDark
+      ? "var(--ant-color-neutral-400)"
+      : "var(--ant-color-neutral-500)";
 
     return (
       <div
@@ -765,6 +893,7 @@ export function ChartSuite({
                           <UniformTooltip
                             valueFormatter={valueFormatter}
                             categoryFormatter={categoryFormatter}
+                            isDark={isDark}
                           />
                         }
                       />
@@ -774,7 +903,9 @@ export function ChartSuite({
                         wrapperStyle={{
                           paddingTop: 12,
                           fontSize: 12,
-                          color: "var(--ant-color-surface-text)",
+                          color: isDark
+                            ? "var(--ant-color-neutral-0)"
+                            : "var(--ant-color-neutral-900)",
                         }}
                       />
                     )}
@@ -838,6 +969,7 @@ export function ChartSuite({
                           <UniformTooltip
                             valueFormatter={valueFormatter}
                             categoryFormatter={categoryFormatter}
+                            isDark={isDark}
                           />
                         }
                       />
@@ -847,7 +979,9 @@ export function ChartSuite({
                         wrapperStyle={{
                           paddingTop: 12,
                           fontSize: 12,
-                          color: "var(--ant-color-surface-text)",
+                          color: isDark
+                            ? "var(--ant-color-neutral-0)"
+                            : "var(--ant-color-neutral-900)",
                         }}
                       />
                     )}
@@ -929,6 +1063,7 @@ export function ChartSuite({
                           <UniformTooltip
                             valueFormatter={valueFormatter}
                             categoryFormatter={categoryFormatter}
+                            isDark={isDark}
                           />
                         }
                       />
@@ -938,7 +1073,9 @@ export function ChartSuite({
                         wrapperStyle={{
                           paddingTop: 12,
                           fontSize: 12,
-                          color: "var(--ant-color-surface-text)",
+                          color: isDark
+                            ? "var(--ant-color-neutral-0)"
+                            : "var(--ant-color-neutral-900)",
                         }}
                       />
                     )}
@@ -969,6 +1106,7 @@ export function ChartSuite({
                           <UniformTooltip
                             valueFormatter={valueFormatter}
                             categoryFormatter={categoryFormatter}
+                            isDark={isDark}
                           />
                         }
                       />
@@ -978,7 +1116,9 @@ export function ChartSuite({
                         wrapperStyle={{
                           paddingTop: 12,
                           fontSize: 12,
-                          color: "var(--ant-color-surface-text)",
+                          color: isDark
+                            ? "var(--ant-color-neutral-0)"
+                            : "var(--ant-color-neutral-900)",
                         }}
                       />
                     )}
@@ -990,7 +1130,7 @@ export function ChartSuite({
                       cy="50%"
                       innerRadius={resolvedInnerRadius}
                       outerRadius={outerRadius}
-                      paddingAngle={3}
+                      paddingAngle={0}
                       isAnimationActive={animated}
                       animationDuration={animationDuration}
                     >
@@ -998,8 +1138,7 @@ export function ChartSuite({
                         <Cell
                           key={`cell-${index}`}
                           fill={chartColors[index % chartColors.length]}
-                          stroke={isDark ? "#0F172A" : "#FFFFFF"}
-                          strokeWidth={2}
+                          stroke="none"
                         />
                       ))}
                     </Pie>
@@ -1030,6 +1169,7 @@ export function ChartSuite({
                           <UniformTooltip
                             valueFormatter={valueFormatter}
                             categoryFormatter={categoryFormatter}
+                            isDark={isDark}
                           />
                         }
                       />
@@ -1039,7 +1179,9 @@ export function ChartSuite({
                         wrapperStyle={{
                           paddingTop: 12,
                           fontSize: 12,
-                          color: "var(--ant-color-surface-text)",
+                          color: isDark
+                            ? "var(--ant-color-neutral-0)"
+                            : "var(--ant-color-neutral-900)",
                         }}
                       />
                     )}
@@ -1073,12 +1215,26 @@ export function ChartSuite({
             }}
           >
             {centerValue && (
-              <span className="font-bold text-[length:var(--ant-typography-fontSize-2xl)] text-[var(--ant-color-surface-text)] leading-tight text-center">
+              <span
+                className={clsx(
+                  "font-bold text-[length:var(--ant-typography-fontSize-2xl)] leading-tight text-center",
+                  isDark
+                    ? "text-[var(--ant-color-neutral-0)]"
+                    : "text-[var(--ant-color-neutral-900)]"
+                )}
+              >
                 {centerValue}
               </span>
             )}
             {centerLabel && (
-              <span className="text-[length:var(--ant-typography-fontSize-xs)] text-[var(--ant-color-surface-text-sub)] leading-tight text-center mt-0.5">
+              <span
+                className={clsx(
+                  "text-[length:var(--ant-typography-fontSize-xs)] leading-tight text-center mt-0.5",
+                  isDark
+                    ? "text-[var(--ant-color-neutral-400)]"
+                    : "text-[var(--ant-color-neutral-500)]"
+                )}
+              >
                 {centerLabel}
               </span>
             )}
@@ -1094,25 +1250,47 @@ export function ChartSuite({
     <div
       ref={containerRef}
       className={clsx(
-        "flex flex-col w-full rounded-[var(--ant-radius-xl)]",
-        "bg-[var(--ant-color-surface-bg-card)] text-[var(--ant-color-surface-text)]",
-        "border border-[var(--ant-color-surface-border)] shadow-[var(--ant-shadow-sm)]",
-        "p-[var(--ant-spacing-4)] transition-all",
+        "flex flex-col w-full rounded-[var(--ant-radius-xl)] transition-all",
+        "p-[var(--ant-spacing-4)] shadow-[var(--ant-shadow-sm)]",
+        isDark
+          ? "bg-[var(--ant-color-neutral-900)] text-[var(--ant-color-neutral-0)] border border-[var(--ant-color-neutral-700)]"
+          : "bg-[var(--ant-color-neutral-0)] text-[var(--ant-color-neutral-900)] border border-[var(--ant-color-neutral-200)]",
         className
       )}
       {...props}
     >
       {/* Header section */}
       {hasHeader && (
-        <div className="flex items-start justify-between gap-[var(--ant-spacing-3)] mb-[var(--ant-spacing-4)] pb-[var(--ant-spacing-2)] border-b border-[var(--ant-color-surface-border)]">
+        <div
+          className={clsx(
+            "flex items-start justify-between gap-[var(--ant-spacing-3)] mb-[var(--ant-spacing-4)] pb-[var(--ant-spacing-2)] border-b",
+            isDark
+              ? "border-[var(--ant-color-neutral-700)]"
+              : "border-[var(--ant-color-neutral-200)]"
+          )}
+        >
           <div className="min-w-0 flex-1">
             {title && (
-              <h3 className="font-semibold text-[length:var(--ant-typography-fontSize-base)] text-[var(--ant-color-surface-text)] truncate">
+              <h3
+                className={clsx(
+                  "font-semibold text-[length:var(--ant-typography-fontSize-base)] truncate",
+                  isDark
+                    ? "text-[var(--ant-color-neutral-0)]"
+                    : "text-[var(--ant-color-neutral-900)]"
+                )}
+              >
                 {title}
               </h3>
             )}
             {subtitle && (
-              <p className="text-[length:var(--ant-typography-fontSize-xs)] text-[var(--ant-color-surface-text-sub)] mt-0.5">
+              <p
+                className={clsx(
+                  "text-[length:var(--ant-typography-fontSize-xs)] mt-0.5",
+                  isDark
+                    ? "text-[var(--ant-color-neutral-400)]"
+                    : "text-[var(--ant-color-neutral-500)]"
+                )}
+              >
                 {subtitle}
               </p>
             )}
@@ -1130,9 +1308,10 @@ export function ChartSuite({
                 className={clsx(
                   "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--ant-radius-md)]",
                   "text-[length:var(--ant-typography-fontSize-xs)] font-medium",
-                  "text-[var(--ant-color-surface-text)] bg-[var(--ant-color-surface-bg)]",
-                  "border border-[var(--ant-color-surface-border)]",
-                  "hover:bg-[var(--ant-color-neutral-100)] hover:text-[var(--ant-color-brand-primary)]",
+                  isDark
+                    ? "text-[var(--ant-color-neutral-0)] bg-[var(--ant-color-neutral-800)] border border-[var(--ant-color-neutral-700)] hover:bg-[var(--ant-color-neutral-700)]"
+                    : "text-[var(--ant-color-neutral-900)] bg-[var(--ant-color-neutral-50)] border border-[var(--ant-color-neutral-200)] hover:bg-[var(--ant-color-neutral-100)]",
+                  "hover:text-[var(--ant-color-brand-primary)]",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ant-color-brand-primary)]",
                   "transition-colors select-none cursor-pointer"
                 )}
@@ -1162,7 +1341,14 @@ export function ChartSuite({
 
       {/* Optional Footer */}
       {footer && (
-        <div className="mt-[var(--ant-spacing-3)] pt-[var(--ant-spacing-2)] border-t border-[var(--ant-color-surface-border)]">
+        <div
+          className={clsx(
+            "mt-[var(--ant-spacing-3)] pt-[var(--ant-spacing-2)] border-t",
+            isDark
+              ? "border-[var(--ant-color-neutral-700)]"
+              : "border-[var(--ant-color-neutral-200)]"
+          )}
+        >
           {footer}
         </div>
       )}
