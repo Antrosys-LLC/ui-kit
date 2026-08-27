@@ -210,23 +210,23 @@ export function MultiStepWizard<TData extends WizardValues>({
         width: '100%',
         maxWidth: '640px',
         border: `1px solid ${border}`,
-        borderRadius: '12px',
+        borderRadius: 'var(--ant-radius-xl)',
         backgroundColor: surface,
-        padding: '24px',
+        padding: 'var(--ant-spacing-6)',
         fontFamily: 'inherit',
         color: heading,
       }}
     >
       {showProgress && (
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: 'var(--ant-spacing-5)' }}>
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              fontSize: '12px',
+              fontSize: 'var(--ant-typography-fontSize-xs)',
               fontWeight: 500,
               color: metaText,
-              marginBottom: '6px',
+              marginBottom: 'var(--ant-spacing-2)',
             }}
           >
             <span>
@@ -236,7 +236,7 @@ export function MultiStepWizard<TData extends WizardValues>({
           </div>
           <div
             style={{
-              height: '4px',
+              height: 'var(--ant-spacing-1)',
               backgroundColor: progressTrack,
               width: '100%',
             }}
@@ -253,12 +253,12 @@ export function MultiStepWizard<TData extends WizardValues>({
         </div>
       )}
 
-      <div style={{ marginBottom: '16px' }}>
-        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 600, color: heading }}>
+      <div style={{ marginBottom: 'var(--ant-spacing-4)' }}>
+        <h3 style={{ margin: 0, fontSize: 'var(--ant-typography-fontSize-lg)', fontWeight: 600, color: heading }}>
           {currentStep.title}
         </h3>
         {currentStep.description && (
-          <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: muted }}>
+          <p style={{ margin: 'var(--ant-spacing-1) 0 0 0', fontSize: 'var(--ant-typography-fontSize-sm)', color: muted }}>
             {currentStep.description}
           </p>
         )}
@@ -268,7 +268,7 @@ export function MultiStepWizard<TData extends WizardValues>({
         key={currentStep.id}
         style={{
           minHeight: '160px',
-          padding: '8px 0',
+          padding: 'var(--ant-spacing-2) 0',
           animation: 'wizard-step-fade 220ms ease-out',
         }}
       >
@@ -292,9 +292,9 @@ export function MultiStepWizard<TData extends WizardValues>({
       {errorMsg && (
         <div
           style={{
-            marginTop: '12px',
-            padding: '8px 12px',
-            fontSize: '12px',
+            marginTop: 'var(--ant-spacing-3)',
+            padding: 'var(--ant-spacing-2) var(--ant-spacing-3)',
+            fontSize: 'var(--ant-typography-fontSize-xs)',
             backgroundColor: errorBg,
             color: errorText,
             border: `1px solid ${errorBorder}`,
@@ -308,8 +308,8 @@ export function MultiStepWizard<TData extends WizardValues>({
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          marginTop: '24px',
-          paddingTop: '16px',
+          marginTop: 'var(--ant-spacing-6)',
+          paddingTop: 'var(--ant-spacing-4)',
           borderTop: `1px solid ${divider}`,
         }}
       >
@@ -320,10 +320,10 @@ export function MultiStepWizard<TData extends WizardValues>({
           onBlur={() => setFocusedAction((prev: 'back' | 'next' | null) => (prev === 'back' ? null : prev))}
           disabled={isFirstStep || isValidating}
           style={{
-            padding: '8px 16px',
-            fontSize: '14px',
+            padding: 'var(--ant-spacing-2) var(--ant-spacing-4)',
+            fontSize: 'var(--ant-typography-fontSize-base)',
             fontWeight: 500,
-            borderRadius: '10px',
+            borderRadius: 'var(--ant-radius-lg)',
             border: `1px solid ${actionBorder}`,
             backgroundColor: actionBg,
             color: isFirstStep ? (isDark ? 'var(--ant-color-neutral-400)' : 'var(--ant-color-neutral-400)') : actionText,
@@ -341,10 +341,10 @@ export function MultiStepWizard<TData extends WizardValues>({
           onBlur={() => setFocusedAction((prev: 'back' | 'next' | null) => (prev === 'next' ? null : prev))}
           disabled={isValidating}
           style={{
-            padding: '8px 18px',
-            fontSize: '14px',
+            padding: 'var(--ant-spacing-2) var(--ant-spacing-4)',
+            fontSize: 'var(--ant-typography-fontSize-base)',
             fontWeight: 500,
-            borderRadius: '10px',
+            borderRadius: 'var(--ant-radius-lg)',
             border: `1px solid ${'var(--ant-color-brand-primary)'}`,
             backgroundColor: progressFill,
             color: 'var(--ant-color-neutral-0)',

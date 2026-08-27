@@ -42,7 +42,7 @@ const buildDemoSteps = (theme: 'light' | 'dark'): WizardStep[] => {
       component: ({ data, updateData }) => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px', color: labelColor }}>Username *</label>
+            <label style={{ display: 'block', fontSize: 'var(--ant-typography-fontSize-xs)', marginBottom: 'var(--ant-spacing-1)', color: labelColor }}>Username *</label>
             <input
               type="text"
               value={data.username || ''}
@@ -50,9 +50,9 @@ const buildDemoSteps = (theme: 'light' | 'dark'): WizardStep[] => {
               placeholder="e.g. jdoe"
               style={{
                 width: '100%',
-                padding: '8px 10px',
+                padding: 'var(--ant-spacing-2) var(--ant-spacing-3)',
                 border: `1px solid ${inputBorder}`,
-                borderRadius: '8px',
+                borderRadius: 'var(--ant-radius-lg)',
                 background: inputBg,
                 color: inputText,
                 outline: 'none',
@@ -60,7 +60,7 @@ const buildDemoSteps = (theme: 'light' | 'dark'): WizardStep[] => {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px', color: labelColor }}>Email Address *</label>
+            <label style={{ display: 'block', fontSize: 'var(--ant-typography-fontSize-xs)', marginBottom: 'var(--ant-spacing-1)', color: labelColor }}>Email Address *</label>
             <input
               type="email"
               value={data.email || ''}
@@ -68,9 +68,9 @@ const buildDemoSteps = (theme: 'light' | 'dark'): WizardStep[] => {
               placeholder="jdoe@example.com"
               style={{
                 width: '100%',
-                padding: '8px 10px',
+                padding: 'var(--ant-spacing-2) var(--ant-spacing-3)',
                 border: `1px solid ${inputBorder}`,
-                borderRadius: '8px',
+                borderRadius: 'var(--ant-radius-lg)',
                 background: inputBg,
                 color: inputText,
                 outline: 'none',
@@ -88,7 +88,7 @@ const buildDemoSteps = (theme: 'light' | 'dark'): WizardStep[] => {
       component: ({ data, updateData }) => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px', color: labelColor }}>Role / Title *</label>
+            <label style={{ display: 'block', fontSize: 'var(--ant-typography-fontSize-xs)', marginBottom: 'var(--ant-spacing-1)', color: labelColor }}>Role / Title *</label>
             <input
               type="text"
               value={data.role || ''}
@@ -96,9 +96,9 @@ const buildDemoSteps = (theme: 'light' | 'dark'): WizardStep[] => {
               placeholder="Frontend Developer"
               style={{
                 width: '100%',
-                padding: '8px 10px',
+                padding: 'var(--ant-spacing-2) var(--ant-spacing-3)',
                 border: `1px solid ${inputBorder}`,
-                borderRadius: '8px',
+                borderRadius: 'var(--ant-radius-lg)',
                 background: inputBg,
                 color: inputText,
                 outline: 'none',
