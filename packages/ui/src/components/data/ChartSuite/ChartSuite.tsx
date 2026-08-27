@@ -569,9 +569,10 @@ export function ChartSuite({
       ];
     }
     // Auto-discover numeric keys from first data item if none provided
-    if (chartData && chartData.length > 0 && typeof chartData[0] === "object") {
-      const keys = Object.keys(chartData[0]).filter(
-        (k) => k !== xAxisKey && typeof chartData[0][k] === "number"
+    if (chartData && chartData.length > 0 && typeof chartData[0] === "object" && chartData[0] !== null) {
+      const firstItem = chartData[0] as Record<string, unknown>;
+      const keys = Object.keys(firstItem).filter(
+        (k) => k !== xAxisKey && typeof firstItem[k] === "number"
       );
       if (keys.length > 0) {
         return keys.map((k, idx) => ({
