@@ -282,7 +282,7 @@ function ChartLoadingSkeleton({
         <div className="flex items-center justify-between w-full mb-[var(--ant-spacing-3)]">
           <div
             className={clsx(
-              "h-4 w-32 rounded-[var(--ant-radius-md)]",
+              "h-[var(--ant-spacing-4)] w-[var(--ant-spacing-24)] rounded-[var(--ant-radius-md)]",
               isDark
                 ? "bg-[var(--ant-color-neutral-700)]"
                 : "bg-[var(--ant-color-neutral-200)]"
@@ -290,7 +290,7 @@ function ChartLoadingSkeleton({
           />
           <div
             className={clsx(
-              "h-4 w-20 rounded-[var(--ant-radius-md)]",
+              "h-[var(--ant-spacing-4)] w-[var(--ant-spacing-20)] rounded-[var(--ant-radius-md)]",
               isDark
                 ? "bg-[var(--ant-color-neutral-700)]"
                 : "bg-[var(--ant-color-neutral-200)]"
@@ -321,7 +321,7 @@ function ChartLoadingSkeleton({
         >
           <div
             className={clsx(
-              "h-3 w-16 rounded-[var(--ant-radius-sm)]",
+              "h-[var(--ant-spacing-3)] w-[var(--ant-spacing-16)] rounded-[var(--ant-radius-sm)]",
               isDark
                 ? "bg-[var(--ant-color-neutral-700)]"
                 : "bg-[var(--ant-color-neutral-200)]"
@@ -329,7 +329,7 @@ function ChartLoadingSkeleton({
           />
           <div
             className={clsx(
-              "h-3 w-16 rounded-[var(--ant-radius-sm)]",
+              "h-[var(--ant-spacing-3)] w-[var(--ant-spacing-16)] rounded-[var(--ant-radius-sm)]",
               isDark
                 ? "bg-[var(--ant-color-neutral-700)]"
                 : "bg-[var(--ant-color-neutral-200)]"
@@ -337,7 +337,7 @@ function ChartLoadingSkeleton({
           />
           <div
             className={clsx(
-              "h-3 w-16 rounded-[var(--ant-radius-sm)]",
+              "h-[var(--ant-spacing-3)] w-[var(--ant-spacing-16)] rounded-[var(--ant-radius-sm)]",
               isDark
                 ? "bg-[var(--ant-color-neutral-700)]"
                 : "bg-[var(--ant-color-neutral-200)]"
@@ -477,7 +477,7 @@ function HeatmapChart({
               {/* Row Header */}
               <span
                 className={clsx(
-                  "w-16 shrink-0 text-right truncate text-[length:var(--ant-typography-fontSize-xs)]",
+                  "w-[var(--ant-spacing-16)] shrink-0 text-right truncate text-[length:var(--ant-typography-fontSize-xs)]",
                   isDark
                     ? "text-[var(--ant-color-neutral-400)]"
                     : "text-[var(--ant-color-neutral-500)]"
@@ -515,7 +515,7 @@ function HeatmapChart({
                         });
                       }}
                       className={clsx(
-                        "flex-1 h-8 rounded-[var(--ant-radius-sm)] transition-transform",
+                        "flex-1 h-[var(--ant-spacing-8)] rounded-[var(--ant-radius-sm)] transition-transform",
                         "hover:scale-105 hover:ring-2 hover:ring-[var(--ant-color-brand-primary)]",
                         "focus:outline-none focus:ring-2 focus:ring-[var(--ant-color-brand-primary)]",
                         animated && "transition-all duration-300"
@@ -533,7 +533,7 @@ function HeatmapChart({
 
           {/* Column Headers */}
           <div className="flex items-center gap-[var(--ant-spacing-2)] w-full mt-[var(--ant-spacing-1)]">
-            <span className="w-16 shrink-0" />
+            <span className="w-[var(--ant-spacing-16)] shrink-0" />
             <div className="flex-1 flex items-center gap-[var(--ant-spacing-1)]">
               {cols.map((colLabel) => (
                 <span
@@ -563,7 +563,7 @@ function HeatmapChart({
         )}
       >
         <span>Less</span>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-[var(--ant-spacing-1)]">
           {[0.15, 0.35, 0.55, 0.75, 1.0].map((op, idx) => (
             <span
               key={idx}
@@ -578,7 +578,7 @@ function HeatmapChart({
       {/* Interactive Tooltip Popover */}
       {showTooltip && hoveredCell && (
         <div
-          className="fixed pointer-events-none transform -translate-x-1/2 -translate-y-full mb-2 z-[var(--ant-zIndex-tooltip)]"
+          className="fixed pointer-events-none transform -translate-x-1/2 -translate-y-full mb-[var(--ant-spacing-2)] z-[var(--ant-zIndex-tooltip)]"
           style={{ left: hoveredCell.x, top: hoveredCell.y }}
         >
           <UniformTooltip
@@ -796,7 +796,7 @@ export function ChartSuite({
       return (
         <div
           className={clsx(
-            "flex flex-col items-center justify-center text-sm",
+            "flex flex-col items-center justify-center text-[length:var(--ant-typography-fontSize-sm)]",
             isDark
               ? "text-[var(--ant-color-neutral-400)]"
               : "text-[var(--ant-color-neutral-500)]"
@@ -804,7 +804,7 @@ export function ChartSuite({
           style={{ height }}
         >
           <svg
-            className="w-10 h-10 mb-2 opacity-40"
+            className="w-10 h-10 mb-[var(--ant-spacing-2)] opacity-40"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -1332,7 +1332,7 @@ export function ChartSuite({
                 aria-label="Export chart as PNG"
                 title="Export as PNG"
                 className={clsx(
-                  "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--ant-radius-md)]",
+                  "inline-flex items-center gap-[var(--ant-spacing-1)] px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] rounded-[var(--ant-radius-md)]",
                   "text-[length:var(--ant-typography-fontSize-xs)] font-medium",
                   isDark
                     ? "text-[var(--ant-color-neutral-0)] bg-[var(--ant-color-neutral-800)] border border-[var(--ant-color-neutral-700)] hover:bg-[var(--ant-color-neutral-700)]"
