@@ -147,14 +147,14 @@ export interface ChartSuiteProps extends HTMLAttributes<HTMLDivElement> {
 
 /** Theme token-based color palette */
 export const DEFAULT_CHART_COLORS = [
-  "var(--ant-color-brand-primary, #7C3AED)",
-  "var(--ant-color-brand-accent, #06B6D4)",
-  "var(--ant-color-semantic-success, #10B981)",
-  "var(--ant-color-semantic-warning, #F59E0B)",
-  "var(--ant-color-semantic-info, #3B82F6)",
-  "var(--ant-color-semantic-error, #EF4444)",
-  "var(--ant-color-brand-primary-dk, #5B21B6)",
-  "var(--ant-color-neutral-500, #64748B)",
+  "var(--ant-color-brand-primary)",
+  "var(--ant-color-brand-accent)",
+  "var(--ant-color-semantic-success)",
+  "var(--ant-color-semantic-warning)",
+  "var(--ant-color-semantic-info)",
+  "var(--ant-color-semantic-error)",
+  "var(--ant-color-brand-primary-dk)",
+  "var(--ant-color-neutral-500)",
 ];
 
 /** Custom Uniform Tooltip Component */
@@ -742,8 +742,8 @@ export function ChartSuite({
         bgRect.setAttribute(
           "fill",
           isDark
-            ? "var(--ant-color-neutral-900, #0F172A)"
-            : "var(--ant-color-neutral-0, #FFFFFF)"
+            ? "var(--ant-color-neutral-900)"
+            : "var(--ant-color-neutral-0)"
         );
         svgClone.insertBefore(bgRect, svgClone.firstChild);
 
@@ -872,7 +872,10 @@ export function ChartSuite({
                       <XAxis
                         dataKey={xAxisKey}
                         stroke={axisTickStroke}
-                        tick={{ fill: axisTickStroke, fontSize: 12 }}
+                        tick={{
+                          fill: axisTickStroke,
+                          fontSize: "var(--ant-typography-fontSize-xs)",
+                        }}
                         tickFormatter={categoryFormatter}
                         tickLine={false}
                         axisLine={{ stroke: gridStroke }}
@@ -881,7 +884,10 @@ export function ChartSuite({
                     {showYAxis && (
                       <YAxis
                         stroke={axisTickStroke}
-                        tick={{ fill: axisTickStroke, fontSize: 12 }}
+                        tick={{
+                          fill: axisTickStroke,
+                          fontSize: "var(--ant-typography-fontSize-xs)",
+                        }}
                         tickFormatter={valueFormatter}
                         tickLine={false}
                         axisLine={{ stroke: gridStroke }}
@@ -901,8 +907,8 @@ export function ChartSuite({
                     {showLegend && (
                       <RechartsLegend
                         wrapperStyle={{
-                          paddingTop: 12,
-                          fontSize: 12,
+                          paddingTop: "var(--ant-spacing-3)",
+                          fontSize: "var(--ant-typography-fontSize-xs)",
                           color: isDark
                             ? "var(--ant-color-neutral-0)"
                             : "var(--ant-color-neutral-900)",
@@ -948,7 +954,10 @@ export function ChartSuite({
                       <XAxis
                         dataKey={xAxisKey}
                         stroke={axisTickStroke}
-                        tick={{ fill: axisTickStroke, fontSize: 12 }}
+                        tick={{
+                          fill: axisTickStroke,
+                          fontSize: "var(--ant-typography-fontSize-xs)",
+                        }}
                         tickFormatter={categoryFormatter}
                         tickLine={false}
                         axisLine={{ stroke: gridStroke }}
@@ -957,7 +966,10 @@ export function ChartSuite({
                     {showYAxis && (
                       <YAxis
                         stroke={axisTickStroke}
-                        tick={{ fill: axisTickStroke, fontSize: 12 }}
+                        tick={{
+                          fill: axisTickStroke,
+                          fontSize: "var(--ant-typography-fontSize-xs)",
+                        }}
                         tickFormatter={valueFormatter}
                         tickLine={false}
                         axisLine={{ stroke: gridStroke }}
@@ -977,8 +989,8 @@ export function ChartSuite({
                     {showLegend && (
                       <RechartsLegend
                         wrapperStyle={{
-                          paddingTop: 12,
-                          fontSize: 12,
+                          paddingTop: "var(--ant-spacing-3)",
+                          fontSize: "var(--ant-typography-fontSize-xs)",
                           color: isDark
                             ? "var(--ant-color-neutral-0)"
                             : "var(--ant-color-neutral-900)",
@@ -1042,7 +1054,10 @@ export function ChartSuite({
                       <XAxis
                         dataKey={xAxisKey}
                         stroke={axisTickStroke}
-                        tick={{ fill: axisTickStroke, fontSize: 12 }}
+                        tick={{
+                          fill: axisTickStroke,
+                          fontSize: "var(--ant-typography-fontSize-xs)",
+                        }}
                         tickFormatter={categoryFormatter}
                         tickLine={false}
                         axisLine={{ stroke: gridStroke }}
@@ -1051,7 +1066,10 @@ export function ChartSuite({
                     {showYAxis && (
                       <YAxis
                         stroke={axisTickStroke}
-                        tick={{ fill: axisTickStroke, fontSize: 12 }}
+                        tick={{
+                          fill: axisTickStroke,
+                          fontSize: "var(--ant-typography-fontSize-xs)",
+                        }}
                         tickFormatter={valueFormatter}
                         tickLine={false}
                         axisLine={{ stroke: gridStroke }}
@@ -1071,8 +1089,8 @@ export function ChartSuite({
                     {showLegend && (
                       <RechartsLegend
                         wrapperStyle={{
-                          paddingTop: 12,
-                          fontSize: 12,
+                          paddingTop: "var(--ant-spacing-3)",
+                          fontSize: "var(--ant-typography-fontSize-xs)",
                           color: isDark
                             ? "var(--ant-color-neutral-0)"
                             : "var(--ant-color-neutral-900)",
@@ -1114,8 +1132,8 @@ export function ChartSuite({
                     {showLegend && (
                       <RechartsLegend
                         wrapperStyle={{
-                          paddingTop: 12,
-                          fontSize: 12,
+                          paddingTop: "var(--ant-spacing-3)",
+                          fontSize: "var(--ant-typography-fontSize-xs)",
                           color: isDark
                             ? "var(--ant-color-neutral-0)"
                             : "var(--ant-color-neutral-900)",
@@ -1157,11 +1175,17 @@ export function ChartSuite({
                     <PolarAngleAxis
                       dataKey={xAxisKey}
                       stroke={axisTickStroke}
-                      tick={{ fill: axisTickStroke, fontSize: 11 }}
+                      tick={{
+                        fill: axisTickStroke,
+                        fontSize: "var(--ant-typography-fontSize-xs)",
+                      }}
                     />
                     <PolarRadiusAxis
                       stroke={gridStroke}
-                      tick={{ fill: axisTickStroke, fontSize: 10 }}
+                      tick={{
+                        fill: axisTickStroke,
+                        fontSize: "var(--ant-typography-fontSize-xs)",
+                      }}
                     />
                     {showTooltip && (
                       <RechartsTooltip
@@ -1177,8 +1201,8 @@ export function ChartSuite({
                     {showLegend && (
                       <RechartsLegend
                         wrapperStyle={{
-                          paddingTop: 12,
-                          fontSize: 12,
+                          paddingTop: "var(--ant-spacing-3)",
+                          fontSize: "var(--ant-typography-fontSize-xs)",
                           color: isDark
                             ? "var(--ant-color-neutral-0)"
                             : "var(--ant-color-neutral-900)",
@@ -1211,7 +1235,9 @@ export function ChartSuite({
           <div
             className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none"
             style={{
-              paddingBottom: showLegend ? 24 : 0,
+              paddingBottom: showLegend
+                ? "var(--ant-spacing-6)"
+                : "var(--ant-spacing-0)",
             }}
           >
             {centerValue && (
