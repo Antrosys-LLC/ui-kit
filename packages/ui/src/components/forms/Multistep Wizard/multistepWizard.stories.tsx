@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { MultiStepWizard, WizardStep } from './MultiStepWizard';
+import { MultiStepWizard, WizardStep } from './multistepWizard';
 
 const meta = {
   title: 'Forms/MultiStepWizard',
