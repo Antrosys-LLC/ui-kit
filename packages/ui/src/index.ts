@@ -34,6 +34,15 @@ export type {
   ButtonSize,
 } from "./components/feedback/Button";
 
+// ── Forms ────────────────────────────────────────────────────────────────────
+
+export { MultiStepWizard } from "./components/forms/Multistep Wizard";
+
+export type {
+  MultiStepWizardProps,
+  WizardStep,
+} from "./components/forms/Multistep Wizard";
+
 // ── Media ────────────────────────────────────────────────────────────────────
 
 export { Lightbox } from "./components/media/Lightbox";
