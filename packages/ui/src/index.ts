@@ -60,6 +60,15 @@ export type {
   SocialLink,
 } from "./components/data/AvatarUserCard";
 
+export { ChartSuite, DEFAULT_CHART_COLORS } from "./components/data/ChartSuite";
+
+export type {
+  ChartSuiteProps,
+  ChartType,
+  ChartSeries,
+  HeatmapDataPoint,
+} from "./components/data/ChartSuite";
+
 // ── Media ────────────────────────────────────────────────────────────────────
 
 export { ImageCarousel } from "./components/media/ImageCarousel";
