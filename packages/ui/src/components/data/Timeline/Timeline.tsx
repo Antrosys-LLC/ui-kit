@@ -140,7 +140,7 @@ function DefaultNodeIcon({
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={3}
+            strokeWidth={2}
             d="M5 13l4 4L19 7"
           />
         </svg>
@@ -166,7 +166,7 @@ function DefaultNodeIcon({
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2.5}
+            strokeWidth={2}
             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
           />
         </svg>
@@ -184,7 +184,7 @@ function DefaultNodeIcon({
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={3}
+            strokeWidth={2}
             d="M6 18L18 6M6 6l12 12"
           />
         </svg>
@@ -245,7 +245,7 @@ function TimelineLoadingSkeleton({
             cy="12"
             r="10"
             stroke="currentColor"
-            strokeWidth="3"
+            strokeWidth="2"
           />
           <path
             className="opacity-90"
@@ -266,7 +266,7 @@ function TimelineLoadingSkeleton({
           aria-label="Loading timeline"
         >
           {skeletonItems.map((_, idx) => (
-            <div key={idx} className="flex flex-col gap-[var(--ant-spacing-3)] w-64 shrink-0">
+            <div key={idx} className="flex flex-col gap-[var(--ant-spacing-3)] w-[calc(var(--ant-spacing-24)*3)] shrink-0">
               <div className="flex items-center gap-[var(--ant-spacing-2)]">
                 <div
                   className={clsx(
@@ -279,10 +279,10 @@ function TimelineLoadingSkeleton({
                 {idx < count - 1 && (
                   <div
                     className={clsx(
-                      "flex-1 h-0.5",
+                      "flex-1 border-t-2 border-solid",
                       isDark
-                        ? "bg-[var(--ant-color-neutral-700)]"
-                        : "bg-[var(--ant-color-neutral-200)]"
+                        ? "border-[var(--ant-color-neutral-700)]"
+                        : "border-[var(--ant-color-neutral-200)]"
                     )}
                   />
                 )}
@@ -297,7 +297,7 @@ function TimelineLoadingSkeleton({
               />
               <div
                 className={clsx(
-                  "h-[var(--ant-spacing-4)] w-3/4 rounded-[var(--ant-radius-md)]",
+                  "h-[var(--ant-spacing-4)] w-[calc(var(--ant-spacing-24)*2)] rounded-[var(--ant-radius-md)]",
                   isDark
                     ? "bg-[var(--ant-color-neutral-700)]"
                     : "bg-[var(--ant-color-neutral-200)]"
@@ -331,13 +331,13 @@ function TimelineLoadingSkeleton({
       {/* Central or side track line */}
       <div
         className={clsx(
-          "absolute top-[var(--ant-spacing-4)] bottom-[var(--ant-spacing-4)] w-0.5",
+          "absolute top-[var(--ant-spacing-4)] bottom-[var(--ant-spacing-4)] border-l-2 border-solid pointer-events-none",
           alternating
             ? "left-[var(--ant-spacing-4)] md:left-1/2 md:-translate-x-1/2"
             : "left-[var(--ant-spacing-4)]",
           isDark
-            ? "bg-[var(--ant-color-neutral-700)]"
-            : "bg-[var(--ant-color-neutral-200)]"
+            ? "border-[var(--ant-color-neutral-700)]"
+            : "border-[var(--ant-color-neutral-200)]"
         )}
       />
 
@@ -385,7 +385,7 @@ function TimelineLoadingSkeleton({
               />
               <div
                 className={clsx(
-                  "h-[var(--ant-spacing-4)] w-1/2 rounded-[var(--ant-radius-md)]",
+                  "h-[var(--ant-spacing-4)] w-[calc(var(--ant-spacing-24)*2)] rounded-[var(--ant-radius-md)]",
                   isDark
                     ? "bg-[var(--ant-color-neutral-700)]"
                     : "bg-[var(--ant-color-neutral-200)]"
@@ -714,7 +714,7 @@ function VerticalTimelineItemView({
       className={clsx(
         "relative flex items-start gap-[var(--ant-spacing-4)] transition-all duration-[var(--ant-motion-duration-slower)]",
         alternating && "md:gap-0",
-        animated && (isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"),
+        animated && (isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[var(--ant-spacing-4)]"),
         item.disabled && "opacity-50 pointer-events-none"
       )}
       aria-current={status === "current" ? "step" : undefined}
@@ -727,7 +727,7 @@ function VerticalTimelineItemView({
           alternating
             ? "ml-0 md:ml-0 md:absolute md:left-1/2 md:-translate-x-1/2 md:top-[var(--ant-spacing-2)]"
             : "mt-[var(--ant-spacing-1)]",
-          status === "current" && "scale-105"
+          status === "current" && "scale-[1.05]"
         )}
       >
         {item.icon ? (
@@ -875,8 +875,8 @@ function HorizontalTimelineItemView({
     <li
       ref={ref}
       className={clsx(
-        "flex flex-col gap-[var(--ant-spacing-3)] w-72 shrink-0 transition-all duration-[var(--ant-motion-duration-slower)]",
-        animated && (isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"),
+        "flex flex-col gap-[var(--ant-spacing-3)] w-[calc(var(--ant-spacing-24)*3)] shrink-0 transition-all duration-[var(--ant-motion-duration-slower)]",
+        animated && (isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[var(--ant-spacing-4)]"),
         item.disabled && "opacity-50 pointer-events-none"
       )}
       aria-current={status === "current" ? "step" : undefined}
@@ -887,7 +887,7 @@ function HorizontalTimelineItemView({
           className={clsx(
             "flex items-center justify-center w-[var(--ant-spacing-8)] h-[var(--ant-spacing-8)] rounded-[var(--ant-radius-full)] shrink-0 z-[var(--ant-zIndex-raised)] shadow-[var(--ant-shadow-sm)]",
             nodeStyles,
-            status === "current" && "scale-105"
+            status === "current" && "scale-[1.05]"
           )}
         >
           {item.icon ? (

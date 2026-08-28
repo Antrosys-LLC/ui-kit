@@ -70,6 +70,8 @@ export type {
   HeatmapDataPoint,
 } from "./components/data/ChartSuite";
 
+export * from "./components/data/Timeline";
+
 // ── Media ────────────────────────────────────────────────────────────────────
 
 export { ImageCarousel } from "./components/media/ImageCarousel";

@@ -366,17 +366,17 @@ export const CustomContent: Story = {
         content: (
           <div className="flex flex-col gap-[var(--ant-spacing-2)] mt-[var(--ant-spacing-2)]">
             <div className="grid grid-cols-2 gap-[var(--ant-spacing-2)]">
-              <div className="p-[var(--ant-spacing-2)] rounded-[var(--ant-radius-md)] bg-[var(--ant-color-neutral-100)] dark:bg-[var(--ant-color-neutral-800)] border border-[var(--ant-color-neutral-200)] dark:border-[var(--ant-color-neutral-700)] text-[length:var(--ant-typography-fontSize-xs)]">
-                <span className="text-[var(--ant-color-neutral-500)] dark:text-[var(--ant-color-neutral-400)] block">Duration</span>
+              <div className="p-[var(--ant-spacing-2)] rounded-[var(--ant-radius-md)] bg-[var(--ant-color-surface-bg)] border border-[var(--ant-color-surface-border)] text-[length:var(--ant-typography-fontSize-xs)]">
+                <span className="text-[var(--ant-color-surface-text-sub)] block">Duration</span>
                 <span className="font-semibold text-[var(--ant-color-semantic-success)]">1m 42s</span>
               </div>
-              <div className="p-[var(--ant-spacing-2)] rounded-[var(--ant-radius-md)] bg-[var(--ant-color-neutral-100)] dark:bg-[var(--ant-color-neutral-800)] border border-[var(--ant-color-neutral-200)] dark:border-[var(--ant-color-neutral-700)] text-[length:var(--ant-typography-fontSize-xs)]">
-                <span className="text-[var(--ant-color-neutral-500)] dark:text-[var(--ant-color-neutral-400)] block">Coverage</span>
+              <div className="p-[var(--ant-spacing-2)] rounded-[var(--ant-radius-md)] bg-[var(--ant-color-surface-bg)] border border-[var(--ant-color-surface-border)] text-[length:var(--ant-typography-fontSize-xs)]">
+                <span className="text-[var(--ant-color-surface-text-sub)] block">Coverage</span>
                 <span className="font-semibold text-[var(--ant-color-brand-primary)]">98.4%</span>
               </div>
             </div>
-            <div className="flex items-center justify-between pt-[var(--ant-spacing-1)] text-[length:var(--ant-typography-fontSize-xs)] text-[var(--ant-color-neutral-500)] dark:text-[var(--ant-color-neutral-400)]">
-              <span>Commit: <code className="px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] rounded-[var(--ant-radius-sm)] bg-[var(--ant-color-neutral-200)] dark:bg-[var(--ant-color-neutral-700)] text-[var(--ant-color-neutral-800)] dark:text-[var(--ant-color-neutral-200)] font-mono">v2.4.0-rc3</code></span>
+            <div className="flex items-center justify-between pt-[var(--ant-spacing-1)] text-[length:var(--ant-typography-fontSize-xs)] text-[var(--ant-color-surface-text-sub)]">
+              <span>Commit: <code className="px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] rounded-[var(--ant-radius-sm)] bg-[var(--ant-color-surface-bg)] text-[var(--ant-color-surface-text)] font-mono border border-[var(--ant-color-surface-border)]">v2.4.0-rc3</code></span>
               <span className="font-medium text-[var(--ant-color-brand-primary)] cursor-pointer hover:underline">View Logs →</span>
             </div>
           </div>
@@ -444,7 +444,7 @@ export const Disabled: Story = {
         status: "upcoming",
         disabled: true,
         tag: (
-          <span className="px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] rounded-[var(--ant-radius-full)] bg-[var(--ant-color-neutral-200)] dark:bg-[var(--ant-color-neutral-700)] text-[var(--ant-color-neutral-600)] dark:text-[var(--ant-color-neutral-300)] font-medium text-[length:var(--ant-typography-fontSize-xs)]">
+          <span className="px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] rounded-[var(--ant-radius-full)] bg-[var(--ant-color-surface-bg)] text-[var(--ant-color-surface-text-sub)] border border-[var(--ant-color-surface-border)] font-medium text-[length:var(--ant-typography-fontSize-xs)]">
             Locked
           </span>
         ),
