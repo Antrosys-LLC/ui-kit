@@ -69,8 +69,15 @@
     "clsx": "^2.1.1",
     "focus-trap-react": "^12.0.3",
     "framer-motion": "^13.1.1",
+<<<<<<< HEAD
     "swiper": "^14.1.0",
     "tiptap-markdown": "^0.8.10",
     "yjs": "^13.6.23"
+=======
+    "react-hook-form": "^7.16.0",
+    "recharts": "^3.10.1",
+    "swiper": "^14.1.0",
+    "zod": "^3.23.8"
+>>>>>>> 220985120a466deb857206956b4642c115b80ec7
   }
 }

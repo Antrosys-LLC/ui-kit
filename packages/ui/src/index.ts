@@ -34,6 +34,16 @@ export type {
   ButtonSize,
 } from "./components/feedback/Button";
 
+// ── Forms ────────────────────────────────────────────────────────────────────
+
+export { MultiStepWizard } from "./components/forms/MultistepWizard";
+
+export type {
+  MultiStepWizardProps,
+  WizardValues,
+  WizardStep,
+} from "./components/forms/MultistepWizard";
+
 // ── Media ────────────────────────────────────────────────────────────────────
 
 export { Lightbox } from "./components/media/Lightbox";
@@ -50,6 +60,15 @@ export type {
   AvatarUserCardStatus,
   SocialLink,
 } from "./components/data/AvatarUserCard";
+
+export { ChartSuite, DEFAULT_CHART_COLORS } from "./components/data/ChartSuite";
+
+export type {
+  ChartSuiteProps,
+  ChartType,
+  ChartSeries,
+  HeatmapDataPoint,
+} from "./components/data/ChartSuite";
 
 // ── Media ────────────────────────────────────────────────────────────────────
 
