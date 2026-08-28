@@ -27,7 +27,12 @@ export type {
   SocialLink,
 } from "./components/data/AvatarUserCard";
 
+// ── Navigation ───────────────────────────────────────────────────────────────
+export { Tabs } from "./components/navigation/Tabs";
+export type { TabsProps, Tab } from "./components/navigation/Tabs";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Add new component exports here as they are built.
 // Convention: keep alphabetical within each category group.
 // ─────────────────────────────────────────────────────────────────────────────
+
