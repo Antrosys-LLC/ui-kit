@@ -1,6 +1,6 @@
 # ChartSuite
 
-`ChartSuite` is a flexible, theme-adaptive, responsive charting component for dashboards and analytical views. Built on top of Recharts, it supports 6 core visualization types, animated transitions, custom design-token tooltips, light/dark mode support, and one-click PNG exports.
+`ChartSuite` is a flexible, theme-adaptive, responsive charting component for dashboards and analytical views. Built on top of Recharts, it supports 7 core visualization types, animated transitions, custom design-token tooltips, light/dark mode support, and one-click PNG exports.
 
 ## Supported Chart Types
 
