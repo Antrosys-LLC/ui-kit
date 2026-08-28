@@ -276,16 +276,14 @@ function TimelineLoadingSkeleton({
                       : "bg-[var(--ant-color-neutral-200)]"
                   )}
                 />
-                {idx < count - 1 && (
-                  <div
-                    className={clsx(
-                      "flex-1 border-t-2 border-solid",
-                      isDark
-                        ? "border-[var(--ant-color-neutral-700)]"
-                        : "border-[var(--ant-color-neutral-200)]"
-                    )}
-                  />
-                )}
+                <div
+                  className={clsx(
+                    "flex-1 border-t-2 border-solid",
+                    isDark
+                      ? "border-[var(--ant-color-neutral-700)]"
+                      : "border-[var(--ant-color-neutral-200)]"
+                  )}
+                />
               </div>
               <div
                 className={clsx(
@@ -897,20 +895,18 @@ function HorizontalTimelineItemView({
           )}
         </div>
 
-        {/* Track Line to next node */}
-        {!isLast && (
-          <div
-            className={clsx(
-              "flex-1 h-0",
-              lineVariant === "dashed" && "border-t-2 border-dashed",
-              lineVariant === "dotted" && "border-t-2 border-dotted",
-              lineVariant === "solid" && "border-t-2 border-solid",
-              isDark
-                ? "border-[var(--ant-color-neutral-700)]"
-                : "border-[var(--ant-color-neutral-200)]"
-            )}
-          />
-        )}
+        {/* Track Line across the top of the box */}
+        <div
+          className={clsx(
+            "flex-1 h-0",
+            lineVariant === "dashed" && "border-t-2 border-dashed",
+            lineVariant === "dotted" && "border-t-2 border-dotted",
+            lineVariant === "solid" && "border-t-2 border-solid",
+            isDark
+              ? "border-[var(--ant-color-neutral-700)]"
+              : "border-[var(--ant-color-neutral-200)]"
+          )}
+        />
       </div>
 
       {/* Card Body */}
