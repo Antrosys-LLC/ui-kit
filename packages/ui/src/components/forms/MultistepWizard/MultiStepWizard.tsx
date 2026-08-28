@@ -246,7 +246,7 @@ export function MultiStepWizard<TData extends WizardValues>({
                 height: '100%',
                 width: `${progressPercent}%`,
                 backgroundColor: progressFill,
-                transition: 'width 0.3s ease',
+                transition: 'width var(--ant-motion-duration-slow) var(--ant-motion-easing-default)',
               }}
             />
           </div>
@@ -269,7 +269,7 @@ export function MultiStepWizard<TData extends WizardValues>({
         style={{
           minHeight: '160px',
           padding: 'var(--ant-spacing-2) 0',
-          animation: 'wizard-step-fade 220ms ease-out',
+          animation: 'wizard-step-fade var(--ant-motion-duration-normal) var(--ant-motion-easing-out)',
         }}
       >
         {typeof currentStep.component === 'function'

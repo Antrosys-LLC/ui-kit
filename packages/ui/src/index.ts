@@ -36,12 +36,13 @@ export type {
 
 // ── Forms ────────────────────────────────────────────────────────────────────
 
-export { MultiStepWizard } from "./components/forms/Multistep Wizard";
+export { MultiStepWizard } from "./components/forms/MultistepWizard";
 
 export type {
   MultiStepWizardProps,
+  WizardValues,
   WizardStep,
-} from "./components/forms/Multistep Wizard";
+} from "./components/forms/MultistepWizard";
 
 // ── Media ────────────────────────────────────────────────────────────────────
 

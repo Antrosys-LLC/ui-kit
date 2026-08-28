@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { MultiStepWizard, WizardStep } from './multistepWizard';
+import { MultiStepWizard, type WizardStep } from './MultiStepWizard';
 
 const meta = {
   title: 'Forms/MultiStepWizard',
@@ -40,7 +40,7 @@ const buildDemoSteps = (theme: 'light' | 'dark'): WizardStep[] => {
       description: 'Provide your core identity details.',
       validate: (data) => Boolean(data.username && data.email),
       component: ({ data, updateData }) => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--ant-spacing-3)' }}>
           <div>
             <label style={{ display: 'block', fontSize: 'var(--ant-typography-fontSize-xs)', marginBottom: 'var(--ant-spacing-1)', color: labelColor }}>Username *</label>
             <input
@@ -86,7 +86,7 @@ const buildDemoSteps = (theme: 'light' | 'dark'): WizardStep[] => {
       description: 'Customize your role and preferences.',
       validate: (data) => Boolean(data.role),
       component: ({ data, updateData }) => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--ant-spacing-3)' }}>
           <div>
             <label style={{ display: 'block', fontSize: 'var(--ant-typography-fontSize-xs)', marginBottom: 'var(--ant-spacing-1)', color: labelColor }}>Role / Title *</label>
             <input
@@ -113,7 +113,7 @@ const buildDemoSteps = (theme: 'light' | 'dark'): WizardStep[] => {
       title: 'Review & Submit',
       description: 'Verify your submitted info before finalizing.',
       component: ({ data }) => (
-        <div style={{ fontSize: '13px', lineHeight: 1.6, color: labelColor }}>
+        <div style={{ fontSize: 'var(--ant-typography-fontSize-sm)', lineHeight: 1.6, color: labelColor }}>
           <p><strong>Username:</strong> {data.username || '—'}</p>
           <p><strong>Email:</strong> {data.email || '—'}</p>
           <p><strong>Role:</strong> {data.role || '—'}</p>
@@ -136,7 +136,7 @@ export const Default: Story = {
   args: commonArgs,
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: '680px', margin: '0 auto', padding: '24px' }}>
+      <div style={{ maxWidth: '680px', margin: '0 auto', padding: 'var(--ant-spacing-6)' }}>
         <Story />
       </div>
     ),
@@ -154,7 +154,7 @@ export const WithDraftSaving: Story = {
   },
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: '680px', margin: '0 auto', padding: '24px' }}>
+      <div style={{ maxWidth: '680px', margin: '0 auto', padding: 'var(--ant-spacing-6)' }}>
         <Story />
       </div>
     ),
@@ -172,7 +172,7 @@ export const DarkMode: Story = {
   },
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: '680px', margin: '0 auto', padding: '24px' }}>
+      <div style={{ maxWidth: '680px', margin: '0 auto', padding: 'var(--ant-spacing-6)' }}>
         <Story />
       </div>
     ),
@@ -192,7 +192,7 @@ export const DarkModeWithDraftSaving: Story = {
   },
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: '680px', margin: '0 auto', padding: '24px' }}>
+      <div style={{ maxWidth: '680px', margin: '0 auto', padding: 'var(--ant-spacing-6)' }}>
         <Story />
       </div>
     ),
