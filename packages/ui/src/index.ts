@@ -73,6 +73,16 @@ export type {
 export { Video } from "./components/media/Video";
 export type { VideoProps, CaptionTrack, VideoVariant, VideoSize } from "./components/media/Video";
 
+// ── Forms ────────────────────────────────────────────────────────────────────
+
+export { RichTextEditor } from "./components/forms/RichTextEditor";
+
+export type {
+  RichTextEditorProps,
+  ToolbarItem,
+  OutputFormat,
+} from "./components/forms/RichTextEditor";
+
 // ── Navigation ───────────────────────────────────────────────────────────────
 export { Breadcrumb } from "./components/navigation/Breadcrumb";
 export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
