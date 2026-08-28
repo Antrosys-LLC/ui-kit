@@ -198,7 +198,7 @@ function UniformTooltip({
         isDark
           ? "bg-[var(--ant-color-neutral-900)] text-[var(--ant-color-neutral-0)] border border-[var(--ant-color-neutral-700)]"
           : "bg-[var(--ant-color-neutral-0)] text-[var(--ant-color-neutral-900)] border border-[var(--ant-color-neutral-200)]",
-        "shadow-[var(--ant-shadow-lg)] min-w-[140px] text-[length:var(--ant-typography-fontSize-xs)] select-none",
+        "shadow-[var(--ant-shadow-lg)] min-w-36 text-[length:var(--ant-typography-fontSize-xs)] select-none",
         "backdrop-blur-sm z-[var(--ant-zIndex-tooltip)]"
       )}
     >
