@@ -49,6 +49,28 @@ export const MultiSelectWithChips: Story = {
   },
 };
 
+export const InsideCard: Story = {
+  name: 'Inside Card Layout',
+  args: {
+    options: standardOptions,
+    placeholder: 'Select a framework...',
+    clearable: true,
+  },
+  render: (args) => (
+    <div className="p-4">
+      <div className="relative w-[360px] rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 p-5 shadow-sm">
+        <h4 className="mb-1 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+          Project Configuration
+        </h4>
+        <p className="mb-3 text-xs text-neutral-500">
+          Select the primary framework for your application. The dropdown list pops over the card content.
+        </p>
+        <Combobox {...args} />
+      </div>
+    </div>
+  ),
+};
+
 export const AsyncLoading: Story = {
   args: {
     options: [],

@@ -1,4 +1,4 @@
-import React, { useId, useRef } from 'react';
+import React, { useId, useRef, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -148,10 +148,27 @@ export function RichTextEditor({
       : []),
   ];
 
+  const isHtml = (str: string) => /^\s*<[\s\S]*>/m.test(str);
+
   const editor = useEditor({
     extensions,
-    content: initialContent,
+    content: initialContent && isHtml(initialContent) ? initialContent : undefined,
     editable: !disabled,
+    onCreate: ({ editor: currentEditor }) => {
+      if (initialContent && !isHtml(initialContent)) {
+        try {
+          const markdownStorage = (currentEditor.storage as any)?.markdown;
+          if (markdownStorage?.parser) {
+            const parsed = markdownStorage.parser.parse(initialContent);
+            currentEditor.commands.setContent(parsed, false);
+          } else {
+            currentEditor.commands.setContent(initialContent, false);
+          }
+        } catch {
+          currentEditor.commands.setContent(initialContent, false);
+        }
+      }
+    },
     onUpdate: ({ editor: currentEditor }) => {
       if (!onChange) return;
       if (outputFormat === 'markdown') {
@@ -169,6 +186,25 @@ export function RichTextEditor({
       }
     },
   });
+
+  useEffect(() => {
+    if (!editor || editor.isDestroyed) return;
+    const currentMarkdown = (editor.storage as any)?.markdown?.getMarkdown?.();
+    const currentHtml = editor.getHTML();
+    if (initialContent && initialContent !== currentMarkdown && initialContent !== currentHtml && editor.isEmpty) {
+      if (isHtml(initialContent)) {
+        editor.commands.setContent(initialContent, false);
+      } else {
+        const markdownStorage = (editor.storage as any)?.markdown;
+        if (markdownStorage?.parser) {
+          const parsed = markdownStorage.parser.parse(initialContent);
+          editor.commands.setContent(parsed, false);
+        } else {
+          editor.commands.setContent(initialContent, false);
+        }
+      }
+    }
+  }, [initialContent, editor]);
 
   const handleHeadingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (!editor) return;
@@ -282,21 +318,44 @@ export function RichTextEditor({
           '[&_.ProseMirror_blockquote]:text-neutral-300',
         ],
         '[&_.ProseMirror_pre]:bg-neutral-950 [&_.ProseMirror_pre]:text-neutral-50 [&_.ProseMirror_pre]:p-3 [&_.ProseMirror_pre]:my-3 [&_.ProseMirror_pre]:overflow-x-auto [&_.ProseMirror_pre]:font-mono [&_.ProseMirror_pre]:text-xs',
-        '[&_.ProseMirror_img.ant-rte-image]:max-w-full [&_.ProseMirror_img.ant-rte-image]:h-auto [&_.ProseMirror_img.ant-rte-image]:my-2 [&_.ProseMirror_img.ant-rte-image]:block',
-        '[&_.ProseMirror_table.ant-rte-table]:w-full [&_.ProseMirror_table.ant-rte-table]:border-collapse [&_.ProseMirror_table.ant-rte-table]:table-fixed [&_.ProseMirror_table.ant-rte-table]:my-3',
-        '[&_.ProseMirror_table.ant-rte-table_td]:border [&_.ProseMirror_table.ant-rte-table_td]:p-2 [&_.ProseMirror_table.ant-rte-table_td]:align-top',
-        '[&_.ProseMirror_table.ant-rte-table_th]:border [&_.ProseMirror_table.ant-rte-table_th]:p-2 [&_.ProseMirror_table.ant-rte-table_th]:font-semibold [&_.ProseMirror_table.ant-rte-table_th]:text-left',
+        
+        // Image Elements
+        '[&_.ProseMirror_img]:max-w-full [&_.ProseMirror_img]:h-auto [&_.ProseMirror_img]:my-3 [&_.ProseMirror_img]:rounded-md [&_.ProseMirror_img]:border [&_.ProseMirror_img]:border-[var(--ant-color-surface-border,#cbd5e1)] dark:[&_.ProseMirror_img]:border-neutral-700 [&_.ProseMirror_img]:shadow-sm [&_.ProseMirror_img]:block',
+        '[&_.ProseMirror_img.ProseMirror-selectednode]:ring-2 [&_.ProseMirror_img.ProseMirror-selectednode]:ring-blue-500 [&_.ProseMirror_img.ProseMirror-selectednode]:ring-offset-2 dark:[&_.ProseMirror_img.ProseMirror-selectednode]:ring-offset-neutral-900',
+
+        // Table & Wrapper Elements
+        '[&_.ProseMirror_.tableWrapper]:overflow-x-auto [&_.ProseMirror_.tableWrapper]:my-4 [&_.ProseMirror_.tableWrapper]:w-full',
+        '[&_.ProseMirror_table]:w-full [&_.ProseMirror_table]:border-collapse [&_.ProseMirror_table]:table-fixed [&_.ProseMirror_table]:my-2 [&_.ProseMirror_table]:overflow-hidden',
+        
+        // Table Cells (td & th)
+        '[&_.ProseMirror_td]:border [&_.ProseMirror_td]:p-2.5 [&_.ProseMirror_td]:align-top [&_.ProseMirror_td]:relative [&_.ProseMirror_td]:box-border [&_.ProseMirror_td]:min-w-[90px]',
+        '[&_.ProseMirror_th]:border [&_.ProseMirror_th]:p-2.5 [&_.ProseMirror_th]:align-top [&_.ProseMirror_th]:font-semibold [&_.ProseMirror_th]:text-left [&_.ProseMirror_th]:relative [&_.ProseMirror_th]:box-border [&_.ProseMirror_th]:min-w-[90px]',
+        
+        // Inside cell typography
+        '[&_.ProseMirror_td>p]:my-0 [&_.ProseMirror_td>p]:leading-normal',
+        '[&_.ProseMirror_th>p]:my-0 [&_.ProseMirror_th>p]:leading-normal',
+
+        // Light Theme Table Borders & Headers
         !isDark && [
-          '[&_.ProseMirror_table.ant-rte-table_td]:border-[var(--ant-color-surface-border,#cbd5e1)]',
-          '[&_.ProseMirror_table.ant-rte-table_th]:border-[var(--ant-color-surface-border,#cbd5e1)]',
-          '[&_.ProseMirror_table.ant-rte-table_th]:bg-[var(--ant-color-neutral-100,#f1f5f9)]',
+          '[&_.ProseMirror_td]:border-[var(--ant-color-surface-border,#cbd5e1)]',
+          '[&_.ProseMirror_th]:border-[var(--ant-color-surface-border,#cbd5e1)]',
+          '[&_.ProseMirror_th]:bg-[var(--ant-color-neutral-100,#f1f5f9)]',
         ],
+
+        // Dark Theme Table Borders & Headers
         isDark && [
-          '[&_.ProseMirror_table.ant-rte-table_td]:border-neutral-700',
-          '[&_.ProseMirror_table.ant-rte-table_th]:border-neutral-700',
-          '[&_.ProseMirror_table.ant-rte-table_th]:bg-neutral-800',
+          '[&_.ProseMirror_td]:border-neutral-700',
+          '[&_.ProseMirror_th]:border-neutral-700',
+          '[&_.ProseMirror_th]:bg-neutral-800',
         ],
-        '[&_.ProseMirror_table.ant-rte-table_.selectedCell:after]:bg-[var(--ant-color-brand-primary-lt,#dbeafe)] [&_.ProseMirror_table.ant-rte-table_.selectedCell:after]:opacity-35',
+
+        // Selected Cell Highlight
+        '[&_.ProseMirror_.selectedCell]:bg-blue-50/80 dark:[&_.ProseMirror_.selectedCell]:bg-blue-950/60',
+        '[&_.ProseMirror_.selectedCell:after]:absolute [&_.ProseMirror_.selectedCell:after]:inset-0 [&_.ProseMirror_.selectedCell:after]:bg-blue-500/20 [&_.ProseMirror_.selectedCell:after]:pointer-events-none [&_.ProseMirror_.selectedCell:after]:content-[\'\']',
+
+        // Column Resize Handle
+        '[&_.ProseMirror_.column-resize-handle]:absolute [&_.ProseMirror_.column-resize-handle]:-right-[2px] [&_.ProseMirror_.column-resize-handle]:top-0 [&_.ProseMirror_.column-resize-handle]:bottom-[-2px] [&_.ProseMirror_.column-resize-handle]:w-[4px] [&_.ProseMirror_.column-resize-handle]:bg-blue-500 [&_.ProseMirror_.column-resize-handle]:pointer-events-none',
+
         '[&_.ProseMirror_p.is-editor-empty:first-child::before]:text-[var(--ant-color-neutral-400,#94a3b8)]',
         '[&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]',
         '[&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left',
@@ -515,7 +574,7 @@ export function RichTextEditor({
         )}
 
         {toolbar.includes('image') && (
-          <>
+          <div className="inline-flex items-center">
             <input
               ref={fileInputRef}
               type="file"
@@ -528,25 +587,39 @@ export function RichTextEditor({
             />
             <button
               type="button"
-              aria-label="Insert image"
+              aria-label="Insert image from file"
               disabled={disabled || !editor}
               onClick={() => {
-                if (onImageUpload) {
-                  fileInputRef.current?.click();
-                  return;
+                if (fileInputRef.current) {
+                  fileInputRef.current.click();
+                } else {
+                  handleInsertImageUrl();
                 }
-                handleInsertImageUrl();
               }}
-              title="Insert Image"
+              title="Upload Image"
               className={cn(
                 'border px-2 py-1 text-xs font-medium transition-all disabled:cursor-not-allowed',
                 !isDark && 'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
                 isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
               )}
             >
-              Image
+              🖼 Image
             </button>
-          </>
+            <button
+              type="button"
+              aria-label="Insert image from URL"
+              disabled={disabled || !editor}
+              onClick={handleInsertImageUrl}
+              title="Insert Image by URL"
+              className={cn(
+                'border-y border-r px-1.5 py-1 text-[11px] font-medium transition-all disabled:cursor-not-allowed',
+                !isDark && 'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900',
+                isDark && 'border-neutral-600 bg-neutral-900 text-neutral-300 hover:bg-neutral-800 hover:text-white'
+              )}
+            >
+              URL
+            </button>
+          </div>
         )}
 
         {toolbar.includes('table') && (
@@ -556,7 +629,7 @@ export function RichTextEditor({
             aria-pressed={isTableActive}
             disabled={disabled || !editor}
             onClick={handleInsertTable}
-            title="Insert Table"
+            title="Insert Table (3x3 with headers)"
             className={cn(
               'border px-2 py-1 text-xs font-medium transition-all disabled:cursor-not-allowed',
               isTableActive
@@ -611,46 +684,86 @@ export function RichTextEditor({
         <div
           data-testid="table-controls"
           className={cn(
-            'flex flex-wrap items-center gap-1.5 border-b px-2.5 py-1 text-xs',
-            !isDark && 'border-[var(--ant-color-surface-border,#cbd5e1)] bg-[var(--ant-color-neutral-100,#f1f5f9)]',
-            isDark && 'border-neutral-700 bg-neutral-800/80 text-neutral-200'
+            'flex flex-wrap items-center gap-1.5 border-b px-2.5 py-1.5 text-xs transition-colors',
+            !isDark && 'border-[var(--ant-color-surface-border,#cbd5e1)] bg-[var(--ant-color-neutral-100,#f1f5f9)] text-neutral-800',
+            isDark && 'border-neutral-700 bg-neutral-800 text-neutral-200'
           )}
         >
-          <span className="mr-1 font-semibold text-neutral-500 dark:text-neutral-400">
+          <span className="mr-1 font-semibold text-neutral-600 dark:text-neutral-300">
             Table:
           </span>
           <button
             type="button"
-            onClick={() => editor?.chain().focus().addRowAfter().run()}
-            className="border border-neutral-300 bg-white px-1.5 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200"
+            onClick={() => editor?.chain().focus().addRowBefore().run()}
+            title="Add Row Above"
+            className="rounded border border-neutral-300 bg-white px-2 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200 transition-colors"
           >
-            + Row
+            + Row Above
+          </button>
+          <button
+            type="button"
+            onClick={() => editor?.chain().focus().addRowAfter().run()}
+            title="Add Row Below"
+            className="rounded border border-neutral-300 bg-white px-2 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200 transition-colors"
+          >
+            + Row Below
           </button>
           <button
             type="button"
             onClick={() => editor?.chain().focus().deleteRow().run()}
-            className="border border-neutral-300 bg-white px-1.5 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200"
+            title="Delete Current Row"
+            className="rounded border border-neutral-300 bg-white px-2 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200 transition-colors"
           >
             - Row
+          </button>
+          <div className="h-3.5 w-px bg-neutral-300 dark:bg-neutral-600 mx-0.5" />
+          <button
+            type="button"
+            onClick={() => editor?.chain().focus().addColumnBefore().run()}
+            title="Add Column to Left"
+            className="rounded border border-neutral-300 bg-white px-2 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200 transition-colors"
+          >
+            + Col Left
           </button>
           <button
             type="button"
             onClick={() => editor?.chain().focus().addColumnAfter().run()}
-            className="border border-neutral-300 bg-white px-1.5 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200"
+            title="Add Column to Right"
+            className="rounded border border-neutral-300 bg-white px-2 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200 transition-colors"
           >
-            + Col
+            + Col Right
           </button>
           <button
             type="button"
             onClick={() => editor?.chain().focus().deleteColumn().run()}
-            className="border border-neutral-300 bg-white px-1.5 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200"
+            title="Delete Current Column"
+            className="rounded border border-neutral-300 bg-white px-2 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200 transition-colors"
           >
             - Col
           </button>
+          <div className="h-3.5 w-px bg-neutral-300 dark:bg-neutral-600 mx-0.5" />
+          <button
+            type="button"
+            onClick={() => editor?.chain().focus().toggleHeaderRow().run()}
+            title="Toggle Header Row"
+            className="rounded border border-neutral-300 bg-white px-2 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200 transition-colors"
+          >
+            Header Row
+          </button>
+          <button
+            type="button"
+            onClick={() => editor?.chain().focus().mergeOrSplit().run()}
+            title="Merge or Split Selected Cells"
+            className="rounded border border-neutral-300 bg-white px-2 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200 transition-colors"
+          >
+            Merge / Split
+          </button>
+          <div className="h-3.5 w-px bg-neutral-300 dark:bg-neutral-600 mx-0.5" />
           <button
             type="button"
             onClick={() => editor?.chain().focus().deleteTable().run()}
-            className="border border-rose-300 bg-rose-50 px-1.5 py-0.5 text-xs font-medium text-rose-600 hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-400"
+            title="Delete entire table"
+            className="rounded border border-rose-300 bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-600 hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-400 transition-colors"
           >
             Delete Table
           </button>
