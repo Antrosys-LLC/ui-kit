@@ -36,6 +36,10 @@ export type {
 
 // ── Forms ────────────────────────────────────────────────────────────────────
 
+export { Combobox } from "./components/forms/ComboBox";
+
+export type { ComboboxProps, ComboboxOption } from "./components/forms/ComboBox";
+
 export { MultiStepWizard } from "./components/forms/MultistepWizard";
 
 export type {
