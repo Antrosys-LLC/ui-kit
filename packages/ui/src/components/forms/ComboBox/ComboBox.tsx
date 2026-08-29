@@ -3,29 +3,14 @@ import React, {
   useRef,
   useEffect,
   useId,
-  createContext,
-  useContext,
 } from 'react';
+import { ThemeContext } from "../../../providers/ThemeProvider";
+import { useTheme } from "../../../hooks/useTheme";
 import { clsx, type ClassValue } from 'clsx';
 
 export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
 }
-
-// ---------------------------------------------------------------------------
-// Rule 3: Theme Resolution via React Context (ThemeProvider)
-// ---------------------------------------------------------------------------
-export interface ThemeContextValue {
-  theme?: 'light' | 'dark' | string;
-  isDark?: boolean;
-}
-
-export const ThemeContext = createContext<ThemeContextValue>({
-  theme: 'light',
-  isDark: false,
-});
-
-export const useTheme = () => useContext(ThemeContext);
 
 // ---------------------------------------------------------------------------
 // Component Interfaces
@@ -80,7 +65,7 @@ export function Combobox({
   const activeTheme = propTheme ?? context.theme ?? 'light';
   const isDark = propTheme
     ? propTheme === 'dark'
-    : Boolean(context.isDark || activeTheme === 'dark');
+    : activeTheme === 'dark';
 
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');

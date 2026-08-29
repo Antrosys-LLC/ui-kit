@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
-import { Combobox, ComboboxOption, ThemeContext } from './ComboBox';
+import { Combobox, ComboboxOption } from './ComboBox';
+import { ThemeContext } from '../../../providers/ThemeProvider';
 
 const meta = {
   title: 'Forms/Combobox',
@@ -63,7 +64,7 @@ export const ScopedDarkMode: Story = {
     clearable: true,
   },
   render: (args) => (
-    <ThemeContext.Provider value={{ theme: 'dark', isDark: true }}>
+    <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: () => {}, setTheme: () => {} }}>
       <div className="rounded-lg bg-neutral-950 p-6">
         <Combobox {...args} />
       </div>
