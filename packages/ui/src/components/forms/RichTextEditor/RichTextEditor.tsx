@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useId, useRef, createContext, useContext } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -10,8 +10,31 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Collaboration from '@tiptap/extension-collaboration';
 import { Markdown } from 'tiptap-markdown';
 import type * as Y from 'yjs';
-import { clsx } from 'clsx';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+// ---------------------------------------------------------------------------
+// Rule 3: Theme Context & Hook for Scoped Dark Mode
+// ---------------------------------------------------------------------------
+export interface ThemeContextValue {
+  theme?: 'light' | 'dark' | string;
+  isDark?: boolean;
+}
+
+export const ThemeContext = createContext<ThemeContextValue>({
+  theme: 'light',
+  isDark: false,
+});
+
+export const useTheme = () => useContext(ThemeContext);
+
+// ---------------------------------------------------------------------------
+// Component Interfaces
+// ---------------------------------------------------------------------------
 export type ToolbarItem =
   | 'bold'
   | 'italic'
@@ -50,6 +73,8 @@ export interface RichTextEditorProps {
   className?: string;
   /** Minimum height of the editor area (default '200px') */
   minHeight?: string | number;
+  /** Direct theme override prop ('light' | 'dark') */
+  theme?: 'light' | 'dark';
 }
 
 const defaultToolbar: ToolbarItem[] = [
@@ -76,33 +101,23 @@ export function RichTextEditor({
   onImageUpload,
   className,
   minHeight = '200px',
+  theme: propTheme,
 }: RichTextEditorProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const headingSelectId = useId();
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
 
-  useEffect(() => {
-    const updateDarkTheme = () => {
-      const theme = document.documentElement.getAttribute('data-theme');
-      setIsDarkTheme(theme === 'dark');
-    };
-
-    updateDarkTheme();
-    const observer = new MutationObserver(updateDarkTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-theme'],
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  // Rule 3: Direct Context resolution without DOM MutationObserver
+  const context = useTheme();
+  const activeTheme = propTheme ?? context.theme ?? 'light';
+  const isDark = propTheme
+    ? propTheme === 'dark'
+    : Boolean(context.isDark || activeTheme === 'dark');
 
   const extensions = [
     StarterKit.configure({
       heading: {
         levels: [1, 2, 3],
       },
-      // When Yjs collaboration is enabled, StarterKit history is disabled (Yjs manages history)
       history: collaborative && ydoc ? false : undefined,
     }),
     Image.configure({
@@ -151,8 +166,14 @@ export function RichTextEditor({
     onUpdate: ({ editor: currentEditor }) => {
       if (!onChange) return;
       if (outputFormat === 'markdown') {
-        const markdownStorage = (currentEditor.storage as unknown as { markdown?: { getMarkdown: () => string } }).markdown;
-        const markdownOutput = markdownStorage?.getMarkdown ? markdownStorage.getMarkdown() : currentEditor.getText();
+        const markdownStorage = (
+          currentEditor.storage as unknown as {
+            markdown?: { getMarkdown: () => string };
+          }
+        ).markdown;
+        const markdownOutput = markdownStorage?.getMarkdown
+          ? markdownStorage.getMarkdown()
+          : currentEditor.getText();
         onChange(markdownOutput);
       } else {
         onChange(currentEditor.getHTML());
@@ -189,7 +210,11 @@ export function RichTextEditor({
         const reader = new FileReader();
         reader.onload = () => {
           if (typeof reader.result === 'string') {
-            editor.chain().focus().setImage({ src: reader.result, alt: file.name }).run();
+            editor
+              .chain()
+              .focus()
+              .setImage({ src: reader.result, alt: file.name })
+              .run();
           }
         };
         reader.readAsDataURL(file);
@@ -232,80 +257,84 @@ export function RichTextEditor({
 
   return (
     <div
-      className={clsx('ant-rich-text-editor', className)}
-      data-theme-dark={isDarkTheme ? 'true' : 'false'}
-      style={{
-        width: '100%',
-        border: '1px solid var(--ant-color-surface-border)',
-        borderRadius: 'var(--ant-radius-md)',
-        backgroundColor: isDarkTheme ? 'var(--ant-color-neutral-900)' : 'var(--ant-color-neutral-0)',
-        fontFamily: 'var(--ant-typography-fontFamily-sans)',
-        overflow: 'hidden',
-        boxShadow: 'var(--ant-shadow-sm)',
-      }}
+      data-theme={activeTheme}
+      className={cn(
+        // Rule 1: Tailwind utility classes + design token mapping
+        'ant-rich-text-editor relative w-full overflow-hidden border shadow-sm transition-colors',
+        'font-[var(--ant-typography-fontFamily-sans,sans-serif)]',
+        
+        // Light & Dark Frame Tokens
+        !isDark && [
+          'border-[var(--ant-color-surface-border,#cbd5e1)]',
+          'bg-[var(--ant-color-surface-base,#ffffff)]',
+          'text-[var(--ant-color-surface-text,#0f172a)]',
+        ],
+        isDark && 'border-neutral-700 bg-neutral-900 text-neutral-100',
+
+        // Rule 2: Pure Tailwind Arbitrary Variants replacing raw <style> block
+        '[&_.ProseMirror]:outline-none',
+        '[&_.ProseMirror]:p-3',
+        '[&_.ProseMirror:focus-visible]:ring-2 [&_.ProseMirror:focus-visible]:ring-[var(--ant-color-brand-primary,#2563eb)]',
+        '[&_.ProseMirror_p]:my-2',
+        '[&_.ProseMirror_h1]:text-2xl [&_.ProseMirror_h1]:font-bold [&_.ProseMirror_h1]:my-3',
+        '[&_.ProseMirror_h2]:text-xl [&_.ProseMirror_h2]:font-semibold [&_.ProseMirror_h2]:my-2.5',
+        '[&_.ProseMirror_h3]:text-lg [&_.ProseMirror_h3]:font-semibold [&_.ProseMirror_h3]:my-2',
+        '[&_.ProseMirror_ul]:list-disc [&_.ProseMirror_ul]:pl-6 [&_.ProseMirror_ul]:my-2',
+        '[&_.ProseMirror_ol]:list-decimal [&_.ProseMirror_ol]:pl-6 [&_.ProseMirror_ol]:my-2',
+        '[&_.ProseMirror_li]:my-0.5',
+        '[&_.ProseMirror_blockquote]:border-l-4 [&_.ProseMirror_blockquote]:border-[var(--ant-color-brand-primary,#2563eb)]',
+        '[&_.ProseMirror_blockquote]:my-3 [&_.ProseMirror_blockquote]:p-3 [&_.ProseMirror_blockquote]:italic',
+        !isDark && [
+          '[&_.ProseMirror_blockquote]:bg-[var(--ant-color-surface-bg,#f8fafc)]',
+          '[&_.ProseMirror_blockquote]:text-[var(--ant-color-neutral-600,#475569)]',
+        ],
+        isDark && [
+          '[&_.ProseMirror_blockquote]:bg-neutral-800/60',
+          '[&_.ProseMirror_blockquote]:text-neutral-300',
+        ],
+        '[&_.ProseMirror_pre]:bg-neutral-950 [&_.ProseMirror_pre]:text-neutral-50 [&_.ProseMirror_pre]:p-3 [&_.ProseMirror_pre]:my-3 [&_.ProseMirror_pre]:overflow-x-auto [&_.ProseMirror_pre]:font-mono [&_.ProseMirror_pre]:text-xs',
+        '[&_.ProseMirror_img.ant-rte-image]:max-w-full [&_.ProseMirror_img.ant-rte-image]:h-auto [&_.ProseMirror_img.ant-rte-image]:my-2 [&_.ProseMirror_img.ant-rte-image]:block',
+        '[&_.ProseMirror_table.ant-rte-table]:w-full [&_.ProseMirror_table.ant-rte-table]:border-collapse [&_.ProseMirror_table.ant-rte-table]:table-fixed [&_.ProseMirror_table.ant-rte-table]:my-3',
+        '[&_.ProseMirror_table.ant-rte-table_td]:border [&_.ProseMirror_table.ant-rte-table_td]:p-2 [&_.ProseMirror_table.ant-rte-table_td]:align-top',
+        '[&_.ProseMirror_table.ant-rte-table_th]:border [&_.ProseMirror_table.ant-rte-table_th]:p-2 [&_.ProseMirror_table.ant-rte-table_th]:font-semibold [&_.ProseMirror_table.ant-rte-table_th]:text-left',
+        !isDark && [
+          '[&_.ProseMirror_table.ant-rte-table_td]:border-[var(--ant-color-surface-border,#cbd5e1)]',
+          '[&_.ProseMirror_table.ant-rte-table_th]:border-[var(--ant-color-surface-border,#cbd5e1)]',
+          '[&_.ProseMirror_table.ant-rte-table_th]:bg-[var(--ant-color-neutral-100,#f1f5f9)]',
+        ],
+        isDark && [
+          '[&_.ProseMirror_table.ant-rte-table_td]:border-neutral-700',
+          '[&_.ProseMirror_table.ant-rte-table_th]:border-neutral-700',
+          '[&_.ProseMirror_table.ant-rte-table_th]:bg-neutral-800',
+        ],
+        '[&_.ProseMirror_table.ant-rte-table_.selectedCell:after]:bg-[var(--ant-color-brand-primary-lt,#dbeafe)] [&_.ProseMirror_table.ant-rte-table_.selectedCell:after]:opacity-35',
+        '[&_.ProseMirror_p.is-editor-empty:first-child::before]:text-[var(--ant-color-neutral-400,#94a3b8)]',
+        '[&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]',
+        '[&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left',
+        '[&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0',
+        '[&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none',
+        className
+      )}
     >
-      {/* Collaborative Mode Banner */}
+      {/* Collaborative Banner */}
       {collaborative && (
         <div
           data-testid="collaborative-banner"
-          style={{
-            padding: 'var(--ant-spacing-2) var(--ant-spacing-3)',
-            fontSize: '12px',
-            fontWeight: 500,
-            backgroundColor: 'var(--ant-color-brand-primary-lt)',
-            color: 'var(--ant-color-brand-primary)',
-            borderBottom: '1px solid var(--ant-color-surface-border)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 'var(--ant-spacing-2)',
-          }}
+          className={cn(
+            'flex items-center justify-between gap-2 border-b px-3 py-2 text-xs font-medium',
+            !isDark && 'border-[var(--ant-color-surface-border,#cbd5e1)] bg-blue-50 text-blue-700',
+            isDark && 'border-neutral-700 bg-blue-950/40 text-blue-300'
+          )}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--ant-spacing-2)' }}>
-            <span
-              style={{
-                display: 'inline-block',
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--ant-color-semantic-success)',
-                boxShadow: '0 0 0 2px var(--ant-color-semantic-success)',
-                opacity: 0.25,
-              }}
-            />
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.3)]" />
             <span>Collaborative Mode Active (Yjs Enabled)</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--ant-color-brand-primary)',
-                color: 'var(--ant-color-neutral-0)',
-                fontSize: '10px',
-                fontWeight: 700,
-              }}
-            >
+          <div className="flex items-center gap-1">
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
               U1
             </span>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--ant-color-semantic-info)',
-                color: 'var(--ant-color-neutral-0)',
-                fontSize: '10px',
-                fontWeight: 700,
-              }}
-            >
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">
               U2
             </span>
           </div>
@@ -316,28 +345,22 @@ export function RichTextEditor({
       <div
         role="toolbar"
         aria-label="Editor formatting toolbar"
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          gap: '4px',
-          padding: '8px 10px',
-          backgroundColor: isDarkTheme ? 'var(--ant-color-neutral-800)' : 'var(--ant-color-surface-bg)',
-          borderBottom: '1px solid var(--ant-color-surface-border)',
-        }}
+        className={cn(
+          'flex flex-wrap items-center gap-1 border-b px-2.5 py-2',
+          !isDark && 'border-[var(--ant-color-surface-border,#cbd5e1)] bg-[var(--ant-color-surface-bg,#f8fafc)]',
+          isDark && 'border-neutral-700 bg-neutral-800'
+        )}
       >
-        {/* Headings Selector */}
+        {/* Heading Dropdown */}
         {toolbar.includes('heading') && (
-          <>
+          <div className="mr-1 flex items-center gap-1.5">
             <label
               htmlFor={headingSelectId}
               id={`${headingSelectId}-label`}
-              style={{
-                fontSize: '12px',
-                fontWeight: 600,
-                color: isDarkTheme ? 'var(--ant-color-neutral-100)' : 'var(--ant-color-surface-text)',
-                marginRight: '4px',
-              }}
+              className={cn(
+                'text-xs font-semibold',
+                !isDark ? 'text-[var(--ant-color-surface-text,#0f172a)]' : 'text-neutral-300'
+              )}
             >
               Heading
             </label>
@@ -349,27 +372,27 @@ export function RichTextEditor({
               value={getActiveHeading()}
               onChange={handleHeadingChange}
               disabled={disabled || !editor}
-              style={{
-                fontSize: '13px',
-                fontWeight: 500,
-                padding: '4px 8px',
-                border: '1px solid var(--ant-color-surface-border)',
-                borderRadius: 'var(--ant-radius-sm)',
-                backgroundColor: 'var(--ant-color-neutral-0)',
-                color: 'var(--ant-color-surface-text)',
-                cursor: disabled ? 'not-allowed' : 'pointer',
-                outline: 'none',
-              }}
+              className={cn(
+                'border px-2 py-1 text-xs font-medium outline-none transition-colors disabled:cursor-not-allowed',
+                !isDark && [
+                  'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-900',
+                  'hover:border-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500',
+                ],
+                isDark && [
+                  'border-neutral-600 bg-neutral-900 text-neutral-100',
+                  'hover:border-neutral-500 focus-visible:ring-2 focus-visible:ring-blue-500',
+                ]
+              )}
             >
               <option value="p">Paragraph</option>
               <option value="h1">Heading 1</option>
               <option value="h2">Heading 2</option>
               <option value="h3">Heading 3</option>
             </select>
-          </>
+          </div>
         )}
 
-        {/* Bold Button */}
+        {/* Toolbar Buttons */}
         {toolbar.includes('bold') && (
           <button
             type="button"
@@ -378,24 +401,20 @@ export function RichTextEditor({
             disabled={disabled || !editor}
             onClick={() => editor?.chain().focus().toggleBold().run()}
             title="Bold (Ctrl+B)"
-            style={{
-              padding: '4px 8px',
-              fontSize: '13px',
-              fontWeight: 700,
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid',
-              borderColor: editor?.isActive('bold') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-border)',
-              backgroundColor: editor?.isActive('bold') ? 'var(--ant-color-brand-primary-lt)' : 'var(--ant-color-neutral-0)',
-              color: editor?.isActive('bold') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-text)',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              transition: 'all 150ms ease',
-            }}
+            className={cn(
+              'border px-2 py-1 text-xs font-bold transition-all disabled:cursor-not-allowed',
+              editor?.isActive('bold')
+                ? 'border-blue-600 bg-blue-50 text-blue-600 dark:border-blue-500 dark:bg-blue-950 dark:text-blue-400'
+                : cn(
+                    'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
+                    isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
+                  )
+            )}
           >
             B
           </button>
         )}
 
-        {/* Italic Button */}
         {toolbar.includes('italic') && (
           <button
             type="button"
@@ -404,26 +423,20 @@ export function RichTextEditor({
             disabled={disabled || !editor}
             onClick={() => editor?.chain().focus().toggleItalic().run()}
             title="Italic (Ctrl+I)"
-            style={{
-              padding: '4px 8px',
-              fontSize: '13px',
-              fontStyle: 'italic',
-              fontFamily: 'serif',
-              fontWeight: 600,
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid',
-              borderColor: editor?.isActive('italic') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-border)',
-              backgroundColor: editor?.isActive('italic') ? 'var(--ant-color-brand-primary-lt)' : 'var(--ant-color-neutral-0)',
-              color: editor?.isActive('italic') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-text)',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              transition: 'all 150ms ease',
-            }}
+            className={cn(
+              'border px-2 py-1 font-serif text-xs font-semibold italic transition-all disabled:cursor-not-allowed',
+              editor?.isActive('italic')
+                ? 'border-blue-600 bg-blue-50 text-blue-600 dark:border-blue-500 dark:bg-blue-950 dark:text-blue-400'
+                : cn(
+                    'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
+                    isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
+                  )
+            )}
           >
             I
           </button>
         )}
 
-        {/* Bullet List */}
         {toolbar.includes('bulletList') && (
           <button
             type="button"
@@ -432,24 +445,20 @@ export function RichTextEditor({
             disabled={disabled || !editor}
             onClick={() => editor?.chain().focus().toggleBulletList().run()}
             title="Bullet List"
-            style={{
-              padding: '4px 8px',
-              fontSize: '13px',
-              fontWeight: 500,
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid',
-              borderColor: editor?.isActive('bulletList') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-border)',
-              backgroundColor: editor?.isActive('bulletList') ? 'var(--ant-color-brand-primary-lt)' : 'var(--ant-color-neutral-0)',
-              color: editor?.isActive('bulletList') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-text)',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              transition: 'all 150ms ease',
-            }}
+            className={cn(
+              'border px-2 py-1 text-xs font-medium transition-all disabled:cursor-not-allowed',
+              editor?.isActive('bulletList')
+                ? 'border-blue-600 bg-blue-50 text-blue-600 dark:border-blue-500 dark:bg-blue-950 dark:text-blue-400'
+                : cn(
+                    'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
+                    isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
+                  )
+            )}
           >
             • List
           </button>
         )}
 
-        {/* Ordered List */}
         {toolbar.includes('orderedList') && (
           <button
             type="button"
@@ -458,24 +467,20 @@ export function RichTextEditor({
             disabled={disabled || !editor}
             onClick={() => editor?.chain().focus().toggleOrderedList().run()}
             title="Numbered List"
-            style={{
-              padding: '4px 8px',
-              fontSize: '13px',
-              fontWeight: 500,
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid',
-              borderColor: editor?.isActive('orderedList') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-border)',
-              backgroundColor: editor?.isActive('orderedList') ? 'var(--ant-color-brand-primary-lt)' : 'var(--ant-color-neutral-0)',
-              color: editor?.isActive('orderedList') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-text)',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              transition: 'all 150ms ease',
-            }}
+            className={cn(
+              'border px-2 py-1 text-xs font-medium transition-all disabled:cursor-not-allowed',
+              editor?.isActive('orderedList')
+                ? 'border-blue-600 bg-blue-50 text-blue-600 dark:border-blue-500 dark:bg-blue-950 dark:text-blue-400'
+                : cn(
+                    'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
+                    isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
+                  )
+            )}
           >
             1. List
           </button>
         )}
 
-        {/* Blockquote */}
         {toolbar.includes('blockquote') && (
           <button
             type="button"
@@ -484,24 +489,20 @@ export function RichTextEditor({
             disabled={disabled || !editor}
             onClick={() => editor?.chain().focus().toggleBlockquote().run()}
             title="Blockquote"
-            style={{
-              padding: '4px 8px',
-              fontSize: '13px',
-              fontWeight: 500,
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid',
-              borderColor: editor?.isActive('blockquote') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-border)',
-              backgroundColor: editor?.isActive('blockquote') ? 'var(--ant-color-brand-primary-lt)' : 'var(--ant-color-neutral-0)',
-              color: editor?.isActive('blockquote') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-text)',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              transition: 'all 150ms ease',
-            }}
+            className={cn(
+              'border px-2 py-1 text-xs font-medium transition-all disabled:cursor-not-allowed',
+              editor?.isActive('blockquote')
+                ? 'border-blue-600 bg-blue-50 text-blue-600 dark:border-blue-500 dark:bg-blue-950 dark:text-blue-400'
+                : cn(
+                    'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
+                    isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
+                  )
+            )}
           >
             “ Quote
           </button>
         )}
 
-        {/* Code Block */}
         {toolbar.includes('codeBlock') && (
           <button
             type="button"
@@ -510,25 +511,20 @@ export function RichTextEditor({
             disabled={disabled || !editor}
             onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
             title="Code Block"
-            style={{
-              padding: '4px 8px',
-              fontSize: '12px',
-              fontFamily: 'monospace',
-              fontWeight: 600,
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid',
-              borderColor: editor?.isActive('codeBlock') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-border)',
-              backgroundColor: editor?.isActive('codeBlock') ? 'var(--ant-color-brand-primary-lt)' : 'var(--ant-color-neutral-0)',
-              color: editor?.isActive('codeBlock') ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-text)',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              transition: 'all 150ms ease',
-            }}
+            className={cn(
+              'border px-2 py-1 font-mono text-xs font-semibold transition-all disabled:cursor-not-allowed',
+              editor?.isActive('codeBlock')
+                ? 'border-blue-600 bg-blue-50 text-blue-600 dark:border-blue-500 dark:bg-blue-950 dark:text-blue-400'
+                : cn(
+                    'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
+                    isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
+                  )
+            )}
           >
             &lt;/&gt;
           </button>
         )}
 
-        {/* Image Insert */}
         {toolbar.includes('image') && (
           <>
             <input
@@ -537,7 +533,7 @@ export function RichTextEditor({
               accept="image/*"
               aria-label="Select image file"
               title="Select image file"
-              style={{ display: 'none' }}
+              className="hidden"
               onChange={handleImageFileSelected}
               disabled={disabled}
             />
@@ -553,23 +549,17 @@ export function RichTextEditor({
                 handleInsertImageUrl();
               }}
               title="Insert Image"
-              style={{
-                padding: '4px 8px',
-                fontSize: '13px',
-                fontWeight: 500,
-                borderRadius: 'var(--ant-radius-sm)',
-                border: '1px solid var(--ant-color-surface-border)',
-                backgroundColor: 'var(--ant-color-neutral-0)',
-                color: 'var(--ant-color-surface-text)',
-                cursor: disabled ? 'not-allowed' : 'pointer',
-              }}
+              className={cn(
+                'border px-2 py-1 text-xs font-medium transition-all disabled:cursor-not-allowed',
+                !isDark && 'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
+                isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
+              )}
             >
               Image
             </button>
           </>
         )}
 
-        {/* Table Insertion */}
         {toolbar.includes('table') && (
           <button
             type="button"
@@ -578,24 +568,20 @@ export function RichTextEditor({
             disabled={disabled || !editor}
             onClick={handleInsertTable}
             title="Insert Table"
-            style={{
-              padding: '4px 8px',
-              fontSize: '13px',
-              fontWeight: 500,
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid',
-              borderColor: isTableActive ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-border)',
-              backgroundColor: isTableActive ? 'var(--ant-color-brand-primary-lt)' : 'var(--ant-color-neutral-0)',
-              color: isTableActive ? 'var(--ant-color-brand-primary)' : 'var(--ant-color-surface-text)',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              transition: 'all 150ms ease',
-            }}
+            className={cn(
+              'border px-2 py-1 text-xs font-medium transition-all disabled:cursor-not-allowed',
+              isTableActive
+                ? 'border-blue-600 bg-blue-50 text-blue-600 dark:border-blue-500 dark:bg-blue-950 dark:text-blue-400'
+                : cn(
+                    'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
+                    isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
+                  )
+            )}
           >
             ⊞ Table
           </button>
         )}
 
-        {/* Undo / Redo */}
         {toolbar.includes('undo') && (
           <button
             type="button"
@@ -603,16 +589,11 @@ export function RichTextEditor({
             disabled={disabled || !editor || !editor.can().undo()}
             onClick={() => editor?.chain().focus().undo().run()}
             title="Undo (Ctrl+Z)"
-            style={{
-              padding: '4px 8px',
-              fontSize: '13px',
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid var(--ant-color-surface-border)',
-              backgroundColor: 'var(--ant-color-neutral-0)',
-              color: 'var(--ant-color-surface-text)',
-              cursor: disabled || !editor?.can().undo() ? 'not-allowed' : 'pointer',
-              opacity: editor?.can().undo() ? 1 : 0.5,
-            }}
+            className={cn(
+              'border px-2 py-1 text-xs transition-all disabled:cursor-not-allowed disabled:opacity-40',
+              !isDark && 'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
+              isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
+            )}
           >
             ↺
           </button>
@@ -625,114 +606,62 @@ export function RichTextEditor({
             disabled={disabled || !editor || !editor.can().redo()}
             onClick={() => editor?.chain().focus().redo().run()}
             title="Redo (Ctrl+Y)"
-            style={{
-              padding: '4px 8px',
-              fontSize: '13px',
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid var(--ant-color-surface-border)',
-              backgroundColor: 'var(--ant-color-neutral-0)',
-              color: 'var(--ant-color-surface-text)',
-              cursor: disabled || !editor?.can().redo() ? 'not-allowed' : 'pointer',
-              opacity: editor?.can().redo() ? 1 : 0.5,
-            }}
+            className={cn(
+              'border px-2 py-1 text-xs transition-all disabled:cursor-not-allowed disabled:opacity-40',
+              !isDark && 'border-[var(--ant-color-surface-border,#cbd5e1)] bg-white text-neutral-700 hover:bg-neutral-50',
+              isDark && 'border-neutral-600 bg-neutral-900 text-neutral-200 hover:bg-neutral-800'
+            )}
           >
             ↻
           </button>
         )}
       </div>
 
-      {/* Table Context Controls (Appears when cursor is inside a table) */}
+      {/* Table Context Controls */}
       {isTableActive && !disabled && (
         <div
           data-testid="table-controls"
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            gap: '4px',
-            padding: '4px 10px',
-            backgroundColor: 'var(--ant-color-neutral-100)',
-            borderBottom: '1px solid var(--ant-color-surface-border)',
-            fontSize: '12px',
-          }}
+          className={cn(
+            'flex flex-wrap items-center gap-1.5 border-b px-2.5 py-1 text-xs',
+            !isDark && 'border-[var(--ant-color-surface-border,#cbd5e1)] bg-[var(--ant-color-neutral-100,#f1f5f9)]',
+            isDark && 'border-neutral-700 bg-neutral-800/80 text-neutral-200'
+          )}
         >
-          <span style={{ fontWeight: 600, color: 'var(--ant-color-neutral-600)', marginRight: '4px' }}>
+          <span className="mr-1 font-semibold text-neutral-500 dark:text-neutral-400">
             Table:
           </span>
           <button
             type="button"
-            aria-label="Add row to table"
-            title="Add row to table"
             onClick={() => editor?.chain().focus().addRowAfter().run()}
-            style={{
-              padding: '2px 6px',
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid var(--ant-color-surface-border)',
-              backgroundColor: 'var(--ant-color-neutral-0)',
-              cursor: 'pointer',
-            }}
+            className="border border-neutral-300 bg-white px-1.5 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200"
           >
             + Row
           </button>
           <button
             type="button"
-            aria-label="Delete row from table"
-            title="Delete row from table"
             onClick={() => editor?.chain().focus().deleteRow().run()}
-            style={{
-              padding: '2px 6px',
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid var(--ant-color-surface-border)',
-              backgroundColor: 'var(--ant-color-neutral-0)',
-              cursor: 'pointer',
-            }}
+            className="border border-neutral-300 bg-white px-1.5 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200"
           >
             - Row
           </button>
           <button
             type="button"
-            aria-label="Add column to table"
-            title="Add column to table"
             onClick={() => editor?.chain().focus().addColumnAfter().run()}
-            style={{
-              padding: '2px 6px',
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid var(--ant-color-surface-border)',
-              backgroundColor: 'var(--ant-color-neutral-0)',
-              cursor: 'pointer',
-            }}
+            className="border border-neutral-300 bg-white px-1.5 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200"
           >
             + Col
           </button>
           <button
             type="button"
-            aria-label="Delete column from table"
-            title="Delete column from table"
             onClick={() => editor?.chain().focus().deleteColumn().run()}
-            style={{
-              padding: '2px 6px',
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid var(--ant-color-surface-border)',
-              backgroundColor: 'var(--ant-color-neutral-0)',
-              cursor: 'pointer',
-            }}
+            className="border border-neutral-300 bg-white px-1.5 py-0.5 text-xs hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200"
           >
             - Col
           </button>
           <button
             type="button"
-            aria-label="Delete table"
-            title="Delete table"
             onClick={() => editor?.chain().focus().deleteTable().run()}
-            style={{
-              padding: '2px 6px',
-              borderRadius: 'var(--ant-radius-sm)',
-              border: '1px solid var(--ant-color-semantic-error)',
-              backgroundColor: 'var(--ant-color-neutral-0)',
-              color: 'var(--ant-color-semantic-error)',
-              cursor: 'pointer',
-              fontWeight: 500,
-            }}
+            className="border border-rose-300 bg-rose-50 px-1.5 py-0.5 text-xs font-medium text-rose-600 hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-400"
           >
             Delete Table
           </button>
@@ -741,16 +670,13 @@ export function RichTextEditor({
 
       {/* Editor Content Area */}
       <div
-        className="ant-rte-container"
-        style={{
-          minHeight,
-          padding: '12px 16px',
-          cursor: disabled ? 'not-allowed' : 'text',
-          backgroundColor: isDarkTheme ? 'var(--ant-color-neutral-900)' : disabled ? 'var(--ant-color-surface-bg)' : 'transparent',
-          fontSize: '14px',
-          lineHeight: '1.6',
-          color: isDarkTheme ? 'var(--ant-color-neutral-100)' : 'var(--ant-color-surface-text)',
-        }}
+        className={cn(
+          'ant-rte-container w-full p-3 text-sm leading-relaxed transition-colors',
+          disabled ? 'cursor-not-allowed opacity-75' : 'cursor-text',
+          !isDark && disabled && 'bg-[var(--ant-color-surface-bg,#f8fafc)]',
+          isDark && 'bg-neutral-900 text-neutral-100'
+        )}
+        style={{ minHeight: typeof minHeight === 'number' ? `${minHeight}px` : minHeight }}
         onClick={() => {
           if (!editor?.isFocused && !disabled) {
             editor?.chain().focus().run();
@@ -759,136 +685,6 @@ export function RichTextEditor({
       >
         <EditorContent editor={editor} />
       </div>
-
-      <style>{`
-        .ant-rich-text-editor[data-theme-dark="true"] [role="toolbar"] button,
-        .ant-rich-text-editor[data-theme-dark="true"] [role="toolbar"] select,
-        .ant-rich-text-editor[data-theme-dark="true"] [role="toolbar"] input {
-          background-color: var(--ant-color-neutral-800) !important;
-          color: var(--ant-color-neutral-100) !important;
-          border-color: var(--ant-color-neutral-600) !important;
-        }
-
-        .ant-rich-text-editor[data-theme-dark="true"] [role="toolbar"] button:focus-visible,
-        .ant-rich-text-editor[data-theme-dark="true"] [role="toolbar"] select:focus-visible,
-        .ant-rich-text-editor[data-theme-dark="true"] [role="toolbar"] input:focus-visible {
-          outline: 2px solid var(--ant-color-brand-primary);
-          outline-offset: 2px;
-        }
-
-        .ant-rich-text-editor .ProseMirror {
-          outline: none;
-          min-height: ${typeof minHeight === 'number' ? `${minHeight}px` : minHeight};
-          background: ${isDarkTheme ? 'var(--ant-color-neutral-900)' : 'transparent'};
-          color: ${isDarkTheme ? 'var(--ant-color-neutral-100)' : 'var(--ant-color-surface-text)'};
-        }
-        .ant-rich-text-editor .ProseMirror p {
-          margin: 0.5em 0;
-          color: ${isDarkTheme ? 'var(--ant-color-neutral-100)' : 'var(--ant-color-surface-text)'};
-        }
-        .ant-rich-text-editor .ProseMirror h1 {
-          font-size: 1.75em;
-          font-weight: 700;
-          margin: 0.8em 0 0.4em 0;
-          line-height: 1.25;
-        }
-        .ant-rich-text-editor .ProseMirror h2 {
-          font-size: 1.4em;
-          font-weight: 600;
-          margin: 0.7em 0 0.35em 0;
-          line-height: 1.3;
-        }
-        .ant-rich-text-editor .ProseMirror h3 {
-          font-size: 1.15em;
-          font-weight: 600;
-          margin: 0.6em 0 0.3em 0;
-          line-height: 1.4;
-        }
-        .ant-rich-text-editor .ProseMirror ul {
-          list-style-type: disc;
-          padding-left: 1.5em;
-          margin: 0.5em 0;
-        }
-        .ant-rich-text-editor .ProseMirror ol {
-          list-style-type: decimal;
-          padding-left: 1.5em;
-          margin: 0.5em 0;
-        }
-        .ant-rich-text-editor .ProseMirror li {
-          margin: 0.2em 0;
-        }
-        .ant-rich-text-editor .ProseMirror blockquote {
-          border-left: 3px solid var(--ant-color-brand-primary);
-          padding-left: 12px;
-          margin: 0.8em 0;
-          font-style: italic;
-          color: ${isDarkTheme ? 'var(--ant-color-neutral-200)' : 'var(--ant-color-neutral-600)'};
-          background-color: ${isDarkTheme ? 'var(--ant-color-neutral-900)' : 'var(--ant-color-surface-bg)'};
-          padding: 8px 12px;
-          border-radius: 0 var(--ant-radius-sm) var(--ant-radius-sm) 0;
-        }
-        .ant-rich-text-editor .ProseMirror pre {
-          background: var(--ant-color-neutral-900);
-          color: var(--ant-color-neutral-50);
-          font-family: var(--ant-typography-fontFamily-mono);
-          padding: 10px 14px;
-          border-radius: var(--ant-radius-sm);
-          margin: 0.8em 0;
-          overflow-x: auto;
-          font-size: 13px;
-        }
-        .ant-rich-text-editor .ProseMirror pre code {
-          background: none;
-          color: inherit;
-          font-size: inherit;
-          padding: 0;
-        }
-        .ant-rich-text-editor .ProseMirror img.ant-rte-image {
-          max-width: 100%;
-          height: auto;
-          border-radius: var(--ant-radius-sm);
-          margin: 8px 0;
-          display: block;
-        }
-        .ant-rich-text-editor .ProseMirror table.ant-rte-table {
-          border-collapse: collapse;
-          table-layout: fixed;
-          width: 100%;
-          margin: 12px 0;
-          overflow: hidden;
-        }
-        .ant-rich-text-editor .ProseMirror table.ant-rte-table td,
-        .ant-rich-text-editor .ProseMirror table.ant-rte-table th {
-          min-width: 1em;
-          border: 1px solid var(--ant-color-surface-border);
-          padding: 6px 10px;
-          vertical-align: top;
-          box-sizing: border-box;
-          position: relative;
-        }
-        .ant-rich-text-editor .ProseMirror table.ant-rte-table th {
-          font-weight: 600;
-          text-align: left;
-          background-color: var(--ant-color-neutral-100);
-        }
-        .ant-rich-text-editor .ProseMirror table.ant-rte-table .selectedCell:after {
-          z-index: 2;
-          position: absolute;
-          content: "";
-          left: 0; right: 0; top: 0; bottom: 0;
-          background: var(--ant-color-brand-primary-lt);
-          opacity: 0.35;
-          pointer-events: none;
-        }
-        .ant-rich-text-editor .ProseMirror p.is-editor-empty:first-child::before {
-          color: var(--ant-color-neutral-400);
-          content: attr(data-placeholder);
-          float: left;
-          height: 0;
-          pointer-events: none;
-        }
-      `}</style>
     </div>
   );
 }
-
