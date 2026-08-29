@@ -1,4 +1,4 @@
-import React, { useId, useRef, createContext, useContext } from 'react';
+import React, { useId, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -17,20 +17,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// ---------------------------------------------------------------------------
-// Rule 3: Theme Context & Hook for Scoped Dark Mode
-// ---------------------------------------------------------------------------
-export interface ThemeContextValue {
-  theme?: 'light' | 'dark' | string;
-  isDark?: boolean;
-}
+import { ThemeContext } from "../../../providers/ThemeProvider";
+import { useTheme } from "../../../hooks/useTheme";
 
-export const ThemeContext = createContext<ThemeContextValue>({
-  theme: 'light',
-  isDark: false,
-});
-
-export const useTheme = () => useContext(ThemeContext);
 
 // ---------------------------------------------------------------------------
 // Component Interfaces
@@ -111,7 +100,7 @@ export function RichTextEditor({
   const activeTheme = propTheme ?? context.theme ?? 'light';
   const isDark = propTheme
     ? propTheme === 'dark'
-    : Boolean(context.isDark || activeTheme === 'dark');
+    : activeTheme === 'dark';
 
   const extensions = [
     StarterKit.configure({
