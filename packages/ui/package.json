@@ -56,6 +56,7 @@
     "vite": "^5.4.0"
   },
   "dependencies": {
+    "@radix-ui/react-tabs": "^1.1.21",
     "@tiptap/extension-collaboration": "^2.11.5",
     "@tiptap/extension-image": "^2.11.5",
     "@tiptap/extension-placeholder": "^2.11.5",

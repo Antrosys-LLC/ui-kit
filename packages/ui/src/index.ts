@@ -48,11 +48,35 @@ export type {
   WizardStep,
 } from "./components/forms/MultistepWizard";
 
+export { RichTextEditor } from "./components/forms/RichTextEditor";
+
+export type {
+  RichTextEditorProps,
+  ToolbarItem,
+  OutputFormat,
+} from "./components/forms/RichTextEditor";
+
 // ── Media ────────────────────────────────────────────────────────────────────
+
+export { ImageCarousel } from "./components/media/ImageCarousel";
+
+export type {
+  CarouselImage,
+  ImageCarouselProps,
+} from "./components/media/ImageCarousel";
 
 export { Lightbox } from "./components/media/Lightbox";
 
 export type { LightboxProps } from "./components/media/Lightbox";
+
+export { Video } from "./components/media/Video";
+
+export type {
+  VideoProps,
+  CaptionTrack,
+  VideoVariant,
+  VideoSize,
+} from "./components/media/Video";
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
@@ -76,16 +100,14 @@ export type {
 
 export * from "./components/data/Timeline";
 
-// ── Media ────────────────────────────────────────────────────────────────────
+// ── Navigation ───────────────────────────────────────────────────────────────
 
-export { ImageCarousel } from "./components/media/ImageCarousel";
+export { Breadcrumb } from "./components/navigation/Breadcrumb";
 
 export type {
-  CarouselImage,
-  ImageCarouselProps,
-} from "./components/media/ImageCarousel";
-
-// ── Navigation ───────────────────────────────────────────────────────────────
+  BreadcrumbProps,
+  BreadcrumbItem,
+} from "./components/navigation/Breadcrumb";
 
 export { Navbar } from "./components/navigation/Navbar";
 
@@ -95,38 +117,18 @@ export type {
   NavbarProps,
 } from "./components/navigation/Navbar";
 
-export { Video } from "./components/media/Video";
-export type { VideoProps, CaptionTrack, VideoVariant, VideoSize } from "./components/media/Video";
-
-// ── Forms ────────────────────────────────────────────────────────────────────
-
-export { RichTextEditor } from "./components/forms/RichTextEditor";
-
-export type {
-  RichTextEditorProps,
-  ToolbarItem,
-  OutputFormat,
-} from "./components/forms/RichTextEditor";
-
-// ── Navigation ───────────────────────────────────────────────────────────────
-export { Breadcrumb } from "./components/navigation/Breadcrumb";
-export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
 export { Pagination } from "./components/navigation/Pagination";
 
 export type { PaginationProps } from "./components/navigation/Pagination";
 
-// ─────────────────────────────────────────────────────────────────────────────
-
-// Add new component exports here as they are built.
-
-// Convention: keep alphabetical within each category group.
-
-// ─────────────────────────────────────────────────────────────────────────────
-
-// Navigation
 export { Sidebar } from "./components/navigation/Sidebar";
+
 export type {
   SidebarProps,
   SidebarItem,
   SidebarUserProfile,
 } from "./components/navigation/Sidebar";
+
+export { Tabs } from "./components/navigation/Tabs";
+
+export type { TabsProps, Tab } from "./components/navigation/Tabs";
