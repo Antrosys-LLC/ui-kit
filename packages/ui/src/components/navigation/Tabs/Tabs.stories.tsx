@@ -2,25 +2,84 @@ import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Tabs } from "./Tabs";
 import type { Tab } from "./Tabs";
+import { ThemeContext } from "../../../providers/ThemeProvider";
+
+const InfoIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className="h-4 w-4 shrink-0"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
+    <path d="M12 8h.01M12 12v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+);
+
+const LayersIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className="h-4 w-4 shrink-0"
+    aria-hidden="true"
+  >
+    <path
+      d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const CreditCardIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className="h-4 w-4 shrink-0"
+    aria-hidden="true"
+  >
+    <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2" />
+    <path d="M2 10h20" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
+const MessageSquareIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className="h-4 w-4 shrink-0"
+    aria-hidden="true"
+  >
+    <path
+      d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 const sampleTabs: Tab[] = [
   {
     value: "overview",
     label: "Overview",
     content: (
-      <div className="space-y-[var(--ant-spacing-3)] p-[var(--ant-spacing-4)] rounded-[var(--ant-radius-lg)] border border-[var(--ant-color-surface-border)] bg-[var(--ant-color-surface-bg-card)] [data-theme=dark]:bg-[var(--ant-color-neutral-800)] dark:bg-[var(--ant-color-neutral-800)]">
-        <h3 className="text-[length:var(--ant-typography-fontSize-lg)] font-semibold text-[var(--ant-color-surface-text)] [data-theme=dark]:text-[var(--ant-color-neutral-0)] dark:text-[var(--ant-color-neutral-0)]">
+      <div className="space-y-[var(--ant-spacing-3)] p-[var(--ant-spacing-4)] rounded-[var(--ant-radius-lg)] border border-[var(--ant-color-surface-border)] bg-[var(--ant-color-surface-bg-card)]">
+        <h3 className="text-[length:var(--ant-typography-fontSize-lg)] font-semibold text-[var(--ant-color-surface-text)]">
           Antrosys Design System
         </h3>
-        <p className="text-[length:var(--ant-typography-fontSize-base)] text-[var(--ant-color-surface-text-sub)] [data-theme=dark]:text-[var(--ant-color-neutral-300)] dark:text-[var(--ant-color-neutral-300)]">
+        <p className="text-[length:var(--ant-typography-fontSize-base)] text-[var(--ant-color-surface-text-sub)]">
           A scalable, token-driven component architecture built for modern enterprise web applications.
           Seamlessly integrates accessible primitives, smooth micro-interactions, and multi-theme adaptability.
         </p>
         <div className="flex gap-[var(--ant-spacing-2)] pt-[var(--ant-spacing-2)]">
-          <span className="px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] rounded-[var(--ant-radius-sm)] text-[length:var(--ant-typography-fontSize-xs)] font-medium bg-[var(--ant-color-brand-primary-lt)] text-[var(--ant-color-brand-primary-dk)] [data-theme=dark]:bg-[var(--ant-color-brand-primary-dk)] [data-theme=dark]:text-[var(--ant-color-brand-primary-lt)] dark:bg-[var(--ant-color-brand-primary-dk)] dark:text-[var(--ant-color-brand-primary-lt)]">
+          <span className="px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] rounded-[var(--ant-radius-sm)] text-[length:var(--ant-typography-fontSize-xs)] font-medium bg-[var(--ant-color-brand-primary-lt)] text-[var(--ant-color-brand-primary-dk)]">
             v0.1.0
           </span>
-          <span className="px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] rounded-[var(--ant-radius-sm)] text-[length:var(--ant-typography-fontSize-xs)] font-medium bg-[var(--ant-color-neutral-100)] text-[var(--ant-color-surface-text)] [data-theme=dark]:bg-[var(--ant-color-neutral-700)] [data-theme=dark]:text-[var(--ant-color-neutral-100)] dark:bg-[var(--ant-color-neutral-700)] dark:text-[var(--ant-color-neutral-100)]">
+          <span className="px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] rounded-[var(--ant-radius-sm)] text-[length:var(--ant-typography-fontSize-xs)] font-medium bg-[var(--ant-color-neutral-100)] text-[var(--ant-color-surface-text)]">
             WAI-ARIA Compliant
           </span>
         </div>
@@ -31,11 +90,11 @@ const sampleTabs: Tab[] = [
     value: "features",
     label: "Features",
     content: (
-      <div className="space-y-[var(--ant-spacing-3)] p-[var(--ant-spacing-4)] rounded-[var(--ant-radius-lg)] border border-[var(--ant-color-surface-border)] bg-[var(--ant-color-surface-bg-card)] [data-theme=dark]:bg-[var(--ant-color-neutral-800)] dark:bg-[var(--ant-color-neutral-800)]">
-        <h3 className="text-[length:var(--ant-typography-fontSize-lg)] font-semibold text-[var(--ant-color-surface-text)] [data-theme=dark]:text-[var(--ant-color-neutral-0)] dark:text-[var(--ant-color-neutral-0)]">
+      <div className="space-y-[var(--ant-spacing-3)] p-[var(--ant-spacing-4)] rounded-[var(--ant-radius-lg)] border border-[var(--ant-color-surface-border)] bg-[var(--ant-color-surface-bg-card)]">
+        <h3 className="text-[length:var(--ant-typography-fontSize-lg)] font-semibold text-[var(--ant-color-surface-text)]">
           Core Capabilities
         </h3>
-        <ul className="space-y-[var(--ant-spacing-2)] text-[length:var(--ant-typography-fontSize-sm)] text-[var(--ant-color-surface-text)] [data-theme=dark]:text-[var(--ant-color-neutral-200)] dark:text-[var(--ant-color-neutral-200)] list-disc list-inside">
+        <ul className="space-y-[var(--ant-spacing-2)] text-[length:var(--ant-typography-fontSize-sm)] text-[var(--ant-color-surface-text)] list-disc list-inside">
           <li>Accessible Radix UI keyboard navigation (Arrow keys, Home, End)</li>
           <li>Hardware-accelerated CSS animated active-tab indicator</li>
           <li>Responsive horizontal overflow with scroll-into-view behavior</li>
@@ -48,18 +107,18 @@ const sampleTabs: Tab[] = [
     value: "pricing",
     label: "Pricing",
     content: (
-      <div className="space-y-[var(--ant-spacing-3)] p-[var(--ant-spacing-4)] rounded-[var(--ant-radius-lg)] border border-[var(--ant-color-surface-border)] bg-[var(--ant-color-surface-bg-card)] [data-theme=dark]:bg-[var(--ant-color-neutral-800)] dark:bg-[var(--ant-color-neutral-800)]">
-        <h3 className="text-[length:var(--ant-typography-fontSize-lg)] font-semibold text-[var(--ant-color-surface-text)] [data-theme=dark]:text-[var(--ant-color-neutral-0)] dark:text-[var(--ant-color-neutral-0)]">
+      <div className="space-y-[var(--ant-spacing-3)] p-[var(--ant-spacing-4)] rounded-[var(--ant-radius-lg)] border border-[var(--ant-color-surface-border)] bg-[var(--ant-color-surface-bg-card)]">
+        <h3 className="text-[length:var(--ant-typography-fontSize-lg)] font-semibold text-[var(--ant-color-surface-text)]">
           Subscription Tiers
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--ant-spacing-3)]">
           <div className="p-[var(--ant-spacing-3)] rounded-[var(--ant-radius-md)] border border-[var(--ant-color-surface-border)]">
-            <h4 className="font-semibold text-[var(--ant-color-brand-primary)] [data-theme=dark]:text-[var(--ant-color-brand-primary-lt)] dark:text-[var(--ant-color-brand-primary-lt)]">Community</h4>
-            <p className="text-[length:var(--ant-typography-fontSize-sm)] text-[var(--ant-color-surface-text-sub)] [data-theme=dark]:text-[var(--ant-color-neutral-300)] dark:text-[var(--ant-color-neutral-300)]">Free forever for open-source and individual projects.</p>
+            <h4 className="font-semibold text-[var(--ant-color-brand-primary)]">Community</h4>
+            <p className="text-[length:var(--ant-typography-fontSize-sm)] text-[var(--ant-color-surface-text-sub)]">Free forever for open-source and individual projects.</p>
           </div>
-          <div className="p-[var(--ant-spacing-3)] rounded-[var(--ant-radius-md)] border border-[var(--ant-color-brand-primary)] bg-[var(--ant-color-brand-primary-lt)] [data-theme=dark]:bg-[var(--ant-color-neutral-700)] dark:bg-[var(--ant-color-neutral-700)]">
-            <h4 className="font-semibold text-[var(--ant-color-brand-primary-dk)] [data-theme=dark]:text-[var(--ant-color-brand-primary-lt)] dark:text-[var(--ant-color-brand-primary-lt)]">Enterprise</h4>
-            <p className="text-[length:var(--ant-typography-fontSize-sm)] text-[var(--ant-color-surface-text)] [data-theme=dark]:text-[var(--ant-color-neutral-200)] dark:text-[var(--ant-color-neutral-200)]">Dedicated support, SLAs, and custom token pipelines.</p>
+          <div className="p-[var(--ant-spacing-3)] rounded-[var(--ant-radius-md)] border border-[var(--ant-color-brand-primary)] bg-[var(--ant-color-brand-primary-lt)]">
+            <h4 className="font-semibold text-[var(--ant-color-brand-primary-dk)]">Enterprise</h4>
+            <p className="text-[length:var(--ant-typography-fontSize-sm)] text-[var(--ant-color-surface-text)]">Dedicated support, SLAs, and custom token pipelines.</p>
           </div>
         </div>
       </div>
@@ -69,11 +128,11 @@ const sampleTabs: Tab[] = [
     value: "reviews",
     label: "Reviews",
     content: (
-      <div className="space-y-[var(--ant-spacing-3)] p-[var(--ant-spacing-4)] rounded-[var(--ant-radius-lg)] border border-[var(--ant-color-surface-border)] bg-[var(--ant-color-surface-bg-card)] [data-theme=dark]:bg-[var(--ant-color-neutral-800)] dark:bg-[var(--ant-color-neutral-800)]">
-        <h3 className="text-[length:var(--ant-typography-fontSize-lg)] font-semibold text-[var(--ant-color-surface-text)] [data-theme=dark]:text-[var(--ant-color-neutral-0)] dark:text-[var(--ant-color-neutral-0)]">
+      <div className="space-y-[var(--ant-spacing-3)] p-[var(--ant-spacing-4)] rounded-[var(--ant-radius-lg)] border border-[var(--ant-color-surface-border)] bg-[var(--ant-color-surface-bg-card)]">
+        <h3 className="text-[length:var(--ant-typography-fontSize-lg)] font-semibold text-[var(--ant-color-surface-text)]">
           Developer Feedback
         </h3>
-        <blockquote className="border-l-2 border-[var(--ant-color-brand-primary)] [data-theme=dark]:border-[var(--ant-color-brand-accent)] dark:border-[var(--ant-color-brand-accent)] pl-[var(--ant-spacing-3)] italic text-[length:var(--ant-typography-fontSize-sm)] text-[var(--ant-color-surface-text-sub)] [data-theme=dark]:text-[var(--ant-color-neutral-300)] dark:text-[var(--ant-color-neutral-300)]">
+        <blockquote className="border-l-2 border-[var(--ant-color-brand-primary)] pl-[var(--ant-spacing-3)] italic text-[length:var(--ant-typography-fontSize-sm)] text-[var(--ant-color-surface-text-sub)]">
           &ldquo;The Tabs component makes keyboard interaction effortless while keeping animations buttery smooth across viewport sizes.&rdquo;
         </blockquote>
       </div>
@@ -139,7 +198,7 @@ export const Vertical: Story = {
   },
   decorators: [
     (Story) => (
-      <div className="max-w-[700px]">
+      <div className="max-w-2xl">
         <Story />
       </div>
     ),
@@ -147,7 +206,45 @@ export const Vertical: Story = {
 };
 
 /**
- * 4. ManyTabs: Demonstrates responsive horizontal scrolling overflow on compact screens.
+ * 4. WithIcons: Demonstrates tabs containing icons alongside text labels.
+ */
+const iconTabs: Tab[] = [
+  {
+    value: "overview",
+    label: "Overview",
+    icon: <InfoIcon />,
+    content: sampleTabs[0].content,
+  },
+  {
+    value: "features",
+    label: "Features",
+    icon: <LayersIcon />,
+    content: sampleTabs[1].content,
+  },
+  {
+    value: "pricing",
+    label: "Pricing",
+    icon: <CreditCardIcon />,
+    content: sampleTabs[2].content,
+  },
+  {
+    value: "reviews",
+    label: "Reviews",
+    icon: <MessageSquareIcon />,
+    content: sampleTabs[3].content,
+  },
+];
+
+export const WithIcons: Story = {
+  args: {
+    tabs: iconTabs,
+    defaultTab: "overview",
+    orientation: "horizontal",
+  },
+};
+
+/**
+ * 5. ManyTabs: Demonstrates responsive horizontal scrolling overflow on compact screens.
  */
 const overflowTabs: Tab[] = [
   { value: "overview", label: "Overview", content: <div className="p-4 border border-[var(--ant-color-surface-border)] rounded-[var(--ant-radius-md)] bg-[var(--ant-color-surface-bg-card)]">Overview panel content</div> },
@@ -171,9 +268,9 @@ export const ManyTabs: Story = {
   },
   decorators: [
     (Story) => (
-      <div className="max-w-[480px] p-[var(--ant-spacing-4)] border border-dashed border-[var(--ant-color-surface-border)] rounded-[var(--ant-radius-lg)]">
+      <div className="max-w-lg p-[var(--ant-spacing-4)] border border-dashed border-[var(--ant-color-surface-border)] rounded-[var(--ant-radius-lg)]">
         <div className="mb-[var(--ant-spacing-2)] text-[length:var(--ant-typography-fontSize-xs)] text-[var(--ant-color-surface-text-sub)]">
-          Container constrained to 480px to demonstrate mobile scroll overflow:
+          Container constrained to demonstrate mobile scroll overflow:
         </div>
         <Story />
       </div>
@@ -182,7 +279,7 @@ export const ManyTabs: Story = {
 };
 
 /**
- * 5. Lazy: Demonstrates lazy-mounting of tab content. Panels are only mounted when first activated.
+ * 6. Lazy: Demonstrates lazy-mounting of tab content. Panels are only mounted when first activated.
  */
 function LazyDemoPanel({ name }: { name: string }) {
   const [mountedAt] = useState(() => new Date().toLocaleTimeString());
@@ -215,7 +312,7 @@ export const Lazy: Story = {
 };
 
 /**
- * 6. Dark Theme: Verifies that design tokens adapt automatically in dark theme.
+ * 7. Dark Theme: Verifies that design tokens adapt automatically in dark theme.
  */
 export const DarkTheme: Story = {
   args: {
@@ -227,18 +324,22 @@ export const DarkTheme: Story = {
   },
   decorators: [
     (Story) => (
-      <div
-        data-theme="dark"
-        className="p-[var(--ant-spacing-6)] rounded-[var(--ant-radius-xl)] bg-[var(--ant-color-neutral-900)] text-[var(--ant-color-neutral-100)] dark"
+      <ThemeContext.Provider
+        value={{ theme: "dark", toggleTheme: () => {}, setTheme: () => {} }}
       >
-        <Story />
-      </div>
+        <div
+          data-theme="dark"
+          className="p-[var(--ant-spacing-6)] rounded-[var(--ant-radius-xl)] bg-[var(--ant-color-neutral-900)] text-[var(--ant-color-neutral-100)]"
+        >
+          <Story />
+        </div>
+      </ThemeContext.Provider>
     ),
   ],
 };
 
 /**
- * 7. Keyboard Accessibility: Demonstrates full WAI-ARIA keyboard navigation and disabled tab handling.
+ * 8. Keyboard Accessibility: Demonstrates full WAI-ARIA keyboard navigation and disabled tab handling.
  */
 const a11yTabs: Tab[] = [
   {

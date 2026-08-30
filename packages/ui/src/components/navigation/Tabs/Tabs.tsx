@@ -4,9 +4,11 @@ import React, {
   useRef,
   useCallback,
   useId,
+  useContext,
 } from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { clsx } from "clsx";
+import { ThemeContext } from "../../../providers/ThemeProvider";
 
 /**
  * Definition for an individual tab item.
@@ -70,6 +72,9 @@ export function Tabs({
   className,
   "aria-label": ariaLabel = "Tabs",
 }: TabsProps) {
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx?.theme === "dark";
+
   const generatedId = useId();
   const firstEnabledTab = tabs.find((t) => !t.disabled)?.value ?? tabs[0]?.value ?? "";
   const initialTab = controlledValue ?? defaultTab ?? firstEnabledTab;
@@ -187,8 +192,13 @@ export function Tabs({
       onValueChange={handleTabChange}
       orientation={orientation}
       className={clsx(
-        "w-full text-[var(--ant-color-surface-text)] [[data-theme=dark]_&]:text-[var(--ant-color-neutral-100)] [.dark_&]:text-[var(--ant-color-neutral-100)] dark:text-[var(--ant-color-neutral-100)] font-[family-name:var(--ant-typography-fontFamily-sans)]",
-        isVertical ? "flex flex-col sm:flex-row gap-[var(--ant-spacing-6)] items-start" : "flex flex-col gap-[var(--ant-spacing-4)]",
+        "w-full font-[family-name:var(--ant-typography-fontFamily-sans)]",
+        isDark
+          ? "text-[var(--ant-color-neutral-100)]"
+          : "text-[var(--ant-color-surface-text)]",
+        isVertical
+          ? "flex flex-col sm:flex-row gap-[var(--ant-spacing-6)] items-start"
+          : "flex flex-col gap-[var(--ant-spacing-4)]",
         className
       )}
     >
@@ -199,7 +209,7 @@ export function Tabs({
         className={clsx(
           "relative",
           isVertical
-            ? "flex flex-col shrink-0 min-w-[180px] sm:min-w-[200px] border-r border-[var(--ant-color-surface-border)] gap-[var(--ant-spacing-1)] pr-[var(--ant-spacing-2)]"
+            ? "flex flex-col shrink-0 w-48 sm:w-52 border-r border-[var(--ant-color-surface-border)] gap-[var(--ant-spacing-1)] pr-[var(--ant-spacing-2)]"
             : "flex items-center border-b border-[var(--ant-color-surface-border)] gap-[var(--ant-spacing-2)] overflow-x-auto scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex-nowrap"
         )}
       >
@@ -224,16 +234,24 @@ export function Tabs({
                 "group relative inline-flex items-center gap-[var(--ant-spacing-2)] transition-colors select-none",
                 "text-[length:var(--ant-typography-fontSize-sm)] leading-[var(--ant-typography-lineHeight-normal)]",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ant-color-brand-primary)] focus-visible:ring-offset-2",
-                "focus-visible:ring-offset-[var(--ant-color-neutral-0)] [[data-theme=dark]_&]:focus-visible:ring-offset-[var(--ant-color-neutral-900)] [.dark_&]:focus-visible:ring-offset-[var(--ant-color-neutral-900)] dark:focus-visible:ring-offset-[var(--ant-color-neutral-900)]",
+                isDark
+                  ? "focus-visible:ring-offset-[var(--ant-color-neutral-900)]"
+                  : "focus-visible:ring-offset-[var(--ant-color-neutral-0)]",
                 "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
                 isVertical
                   ? "w-full text-left px-[var(--ant-spacing-3)] py-[var(--ant-spacing-2)] rounded-[var(--ant-radius-md)]"
                   : "shrink-0 whitespace-nowrap px-[var(--ant-spacing-3)] py-[var(--ant-spacing-2)] pb-[var(--ant-spacing-3)] rounded-t-[var(--ant-radius-sm)]",
                 isActive
                   ? isVertical
-                    ? "font-semibold text-[var(--ant-color-brand-primary-dk)] [[data-theme=dark]_&]:text-[var(--ant-color-brand-primary-lt)] [.dark_&]:text-[var(--ant-color-brand-primary-lt)] dark:text-[var(--ant-color-brand-primary-lt)] bg-[var(--ant-color-brand-primary-lt)] [[data-theme=dark]_&]:bg-[var(--ant-color-neutral-800)] [.dark_&]:bg-[var(--ant-color-neutral-800)] dark:bg-[var(--ant-color-neutral-800)]"
-                    : "font-semibold text-[var(--ant-color-brand-primary-dk)] [[data-theme=dark]_&]:text-[var(--ant-color-brand-primary-lt)] [.dark_&]:text-[var(--ant-color-brand-primary-lt)] dark:text-[var(--ant-color-brand-primary-lt)]"
-                  : "font-medium text-[var(--ant-color-neutral-600)] [[data-theme=dark]_&]:text-[var(--ant-color-neutral-300)] [.dark_&]:text-[var(--ant-color-neutral-300)] dark:text-[var(--ant-color-neutral-300)] hover:text-[var(--ant-color-surface-text)] [[data-theme=dark]_&]:hover:text-[var(--ant-color-neutral-0)] [.dark_&]:hover:text-[var(--ant-color-neutral-0)] dark:hover:text-[var(--ant-color-neutral-0)] hover:bg-[var(--ant-color-neutral-100)] [[data-theme=dark]_&]:hover:bg-[var(--ant-color-neutral-800)] [.dark_&]:hover:bg-[var(--ant-color-neutral-800)] dark:hover:bg-[var(--ant-color-neutral-800)]"
+                    ? isDark
+                      ? "font-semibold text-[var(--ant-color-brand-primary-lt)] bg-[var(--ant-color-neutral-800)]"
+                      : "font-semibold text-[var(--ant-color-brand-primary-dk)] bg-[var(--ant-color-brand-primary-lt)]"
+                    : isDark
+                      ? "font-semibold text-[var(--ant-color-brand-primary-lt)]"
+                      : "font-semibold text-[var(--ant-color-brand-primary-dk)]"
+                  : isDark
+                    ? "font-medium text-[var(--ant-color-neutral-300)] hover:text-[var(--ant-color-neutral-0)] hover:bg-[var(--ant-color-neutral-800)]"
+                    : "font-medium text-[var(--ant-color-neutral-600)] hover:text-[var(--ant-color-surface-text)] hover:bg-[var(--ant-color-neutral-100)]"
               )}
             >
               {tab.icon && (
@@ -241,8 +259,12 @@ export function Tabs({
                   className={clsx(
                     "inline-flex shrink-0 items-center justify-center transition-colors",
                     isActive
-                      ? "text-[var(--ant-color-brand-primary-dk)] [[data-theme=dark]_&]:text-[var(--ant-color-brand-primary-lt)] [.dark_&]:text-[var(--ant-color-brand-primary-lt)] dark:text-[var(--ant-color-brand-primary-lt)]"
-                      : "text-[var(--ant-color-neutral-600)] [[data-theme=dark]_&]:text-[var(--ant-color-neutral-300)] [.dark_&]:text-[var(--ant-color-neutral-300)] dark:text-[var(--ant-color-neutral-300)] group-hover:text-[var(--ant-color-surface-text)] [[data-theme=dark]_&]:group-hover:text-[var(--ant-color-neutral-0)] [.dark_&]:group-hover:text-[var(--ant-color-neutral-0)] dark:group-hover:text-[var(--ant-color-neutral-0)]"
+                      ? isDark
+                        ? "text-[var(--ant-color-brand-primary-lt)]"
+                        : "text-[var(--ant-color-brand-primary-dk)]"
+                      : isDark
+                        ? "text-[var(--ant-color-neutral-300)] group-hover:text-[var(--ant-color-neutral-0)]"
+                        : "text-[var(--ant-color-neutral-600)] group-hover:text-[var(--ant-color-surface-text)]"
                   )}
                   aria-hidden="true"
                 >
@@ -258,9 +280,14 @@ export function Tabs({
         <span
           aria-hidden="true"
           className={clsx(
-            "absolute pointer-events-none bg-[var(--ant-color-brand-primary)] [[data-theme=dark]_&]:bg-[var(--ant-color-brand-accent)] [.dark_&]:bg-[var(--ant-color-brand-accent)] dark:bg-[var(--ant-color-brand-accent)] z-10 transition-all motion-reduce:transition-none",
+            "absolute pointer-events-none z-10 transition-all motion-reduce:transition-none",
+            isDark
+              ? "bg-[var(--ant-color-brand-accent)]"
+              : "bg-[var(--ant-color-brand-primary)]",
             "duration-[var(--ant-motion-duration-normal)] ease-[var(--ant-motion-easing-default)]",
-            isVertical ? "right-[-1px] w-[2px] rounded-r-[var(--ant-radius-full)]" : "bottom-[-1px] h-[2px] rounded-t-[var(--ant-radius-full)]"
+            isVertical
+              ? "-right-px w-0.5 rounded-r-[var(--ant-radius-full)]"
+              : "-bottom-px h-0.5 rounded-t-[var(--ant-radius-full)]"
           )}
           style={{
             ...(isVertical
@@ -292,9 +319,11 @@ export function Tabs({
               id={`tab-panel-${generatedId}-${tab.value}`}
               aria-labelledby={`tab-trigger-${generatedId}-${tab.value}`}
               className={clsx(
-                "w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ant-color-brand-primary)] focus-visible:ring-offset-2",
-                "focus-visible:ring-offset-[var(--ant-color-neutral-0)] [[data-theme=dark]_&]:focus-visible:ring-offset-[var(--ant-color-neutral-900)] [.dark_&]:focus-visible:ring-offset-[var(--ant-color-neutral-900)] dark:focus-visible:ring-offset-[var(--ant-color-neutral-900)] rounded-[var(--ant-radius-md)]",
-                "text-[length:var(--ant-typography-fontSize-base)] text-[var(--ant-color-surface-text)] [[data-theme=dark]_&]:text-[var(--ant-color-neutral-100)] [.dark_&]:text-[var(--ant-color-neutral-100)] dark:text-[var(--ant-color-neutral-100)]",
+                "w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ant-color-brand-primary)] focus-visible:ring-offset-2 rounded-[var(--ant-radius-md)]",
+                "text-[length:var(--ant-typography-fontSize-base)]",
+                isDark
+                  ? "focus-visible:ring-offset-[var(--ant-color-neutral-900)] text-[var(--ant-color-neutral-100)]"
+                  : "focus-visible:ring-offset-[var(--ant-color-neutral-0)] text-[var(--ant-color-surface-text)]",
                 "data-[state=inactive]:hidden"
               )}
             >
