@@ -98,6 +98,10 @@ export type {
   HeatmapDataPoint,
 } from "./components/data/ChartSuite";
 
+export { StatCard } from "./components/data/StatCard";
+
+export type { StatCardProps } from "./components/data/StatCard";
+
 export * from "./components/data/Timeline";
 
 // ── Navigation ───────────────────────────────────────────────────────────────
