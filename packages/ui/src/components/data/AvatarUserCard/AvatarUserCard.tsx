@@ -1,5 +1,6 @@
-import React, { useState, HTMLAttributes, ReactNode } from "react";
+import React, { useState, useContext, HTMLAttributes, ReactNode } from "react";
 import { clsx } from "clsx";
+import { ThemeContext } from "../../../providers/ThemeProvider";
 
 export type AvatarUserCardSize = "sm" | "md" | "lg";
 export type AvatarUserCardStatus = "online" | "offline";
@@ -43,33 +44,33 @@ const rootSizes: Record<AvatarUserCardSize, string> = {
 };
 
 const avatarSizes: Record<AvatarUserCardSize, string> = {
-  sm: "h-8 w-8 text-[length:var(--ant-typography-fontsize-xs)]",
-  md: "h-10 w-10 text-[length:var(--ant-typography-fontsize-sm)]",
-  lg: "h-14 w-14 text-[length:var(--ant-typography-fontsize-lg)]",
+  sm: "h-[var(--ant-spacing-8)] w-[var(--ant-spacing-8)] text-[length:var(--ant-typography-fontSize-xs)]",
+  md: "h-[var(--ant-spacing-10)] w-[var(--ant-spacing-10)] text-[length:var(--ant-typography-fontSize-sm)]",
+  lg: "h-14 w-14 text-[length:var(--ant-typography-fontSize-lg)]",
 };
 
 const statusSizes: Record<AvatarUserCardSize, string> = {
-  sm: "h-2 w-2",
+  sm: "h-[var(--ant-spacing-2)] w-[var(--ant-spacing-2)]",
   md: "h-2.5 w-2.5",
   lg: "h-3.5 w-3.5",
 };
 
 const nameSizes: Record<AvatarUserCardSize, string> = {
-  sm: "text-[length:var(--ant-typography-fontsize-sm)]",
-  md: "text-[length:var(--ant-typography-fontsize-base)]",
-  lg: "text-[length:var(--ant-typography-fontsize-md)]",
+  sm: "text-[length:var(--ant-typography-fontSize-sm)]",
+  md: "text-[length:var(--ant-typography-fontSize-base)]",
+  lg: "text-[length:var(--ant-typography-fontSize-md)]",
 };
 
 const roleSizes: Record<AvatarUserCardSize, string> = {
-  sm: "text-[length:var(--ant-typography-fontsize-xs)]",
-  md: "text-[length:var(--ant-typography-fontsize-sm)]",
-  lg: "text-[length:var(--ant-typography-fontsize-base)]",
+  sm: "text-[length:var(--ant-typography-fontSize-xs)]",
+  md: "text-[length:var(--ant-typography-fontSize-sm)]",
+  lg: "text-[length:var(--ant-typography-fontSize-base)]",
 };
 
 const socialSizes: Record<AvatarUserCardSize, string> = {
-  sm: "h-6 w-6 text-[length:var(--ant-typography-fontsize-xs)]",
-  md: "h-7 w-7 text-[length:var(--ant-typography-fontsize-sm)]",
-  lg: "h-8 w-8 text-[length:var(--ant-typography-fontsize-base)]",
+  sm: "h-[var(--ant-spacing-6)] w-[var(--ant-spacing-6)] text-[length:var(--ant-typography-fontSize-xs)]",
+  md: "h-7 w-7 text-[length:var(--ant-typography-fontSize-sm)]",
+  lg: "h-[var(--ant-spacing-8)] w-[var(--ant-spacing-8)] text-[length:var(--ant-typography-fontSize-base)]",
 };
 
 const statusColors: Record<AvatarUserCardStatus, string> = {
@@ -88,6 +89,9 @@ export function AvatarUserCard({
   ...props
 }: AvatarUserCardProps) {
   const [imageFailed, setImageFailed] = useState(false);
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx?.theme === "dark";
+
   const showImage = Boolean(image) && !imageFailed;
   const initials = getInitials(name);
   const hasSocials = Boolean(socials && socials.length > 0);
@@ -105,9 +109,11 @@ export function AvatarUserCard({
       <div className="relative shrink-0">
         <div
           className={clsx(
-            "flex items-center justify-center overflow-hidden rounded-full",
-            "font-semibold select-none",
-            "bg-[var(--ant-color-brand-primary-lt)] text-[var(--ant-color-brand-primary-dk)]",
+            "flex items-center justify-center overflow-hidden rounded-[var(--ant-radius-full)]",
+            "font-semibold select-none transition-colors",
+            isDark
+              ? "bg-[var(--ant-color-brand-primary-dk)] text-[var(--ant-color-brand-primary-lt)]"
+              : "bg-[var(--ant-color-brand-primary-lt)] text-[var(--ant-color-brand-primary-dk)]",
             avatarSizes[size],
           )}
           aria-hidden={showImage ? undefined : true}
@@ -126,8 +132,11 @@ export function AvatarUserCard({
 
         <span
           className={clsx(
-            "absolute bottom-0 right-0 rounded-full",
-            "ring-2 ring-[var(--ant-color-neutral-0)]",
+            "absolute bottom-0 right-0 rounded-[var(--ant-radius-full)]",
+            "ring-2 transition-colors",
+            isDark
+              ? "ring-[var(--ant-color-neutral-900)]"
+              : "ring-[var(--ant-color-neutral-0)]",
             statusSizes[size],
             statusColors[status],
           )}
@@ -141,8 +150,10 @@ export function AvatarUserCard({
         <div className="min-w-0">
           <p
             className={clsx(
-              "truncate font-semibold leading-tight",
-              "text-[var(--ant-color-surface-text)]",
+              "truncate font-semibold leading-tight transition-colors",
+              isDark
+                ? "text-[var(--ant-color-neutral-0)]"
+                : "text-[var(--ant-color-neutral-900)]",
               nameSizes[size],
             )}
           >
@@ -150,8 +161,10 @@ export function AvatarUserCard({
           </p>
           <p
             className={clsx(
-              "truncate leading-tight",
-              "text-[var(--ant-color-surface-text-sub)]",
+              "truncate leading-tight transition-colors",
+              isDark
+                ? "text-[var(--ant-color-neutral-400)]"
+                : "text-[var(--ant-color-neutral-500)]",
               roleSizes[size],
             )}
           >
@@ -173,12 +186,23 @@ export function AvatarUserCard({
                   aria-label={`${name} on ${social.platform}`}
                   className={clsx(
                     "inline-flex items-center justify-center rounded-[var(--ant-radius-md)]",
-                    "text-[var(--ant-color-brand-primary)]",
-                    "bg-[var(--ant-color-brand-primary-lt)]",
-                    "hover:bg-[var(--ant-color-brand-primary)] hover:text-[var(--ant-color-neutral-0)]",
-                    "focus-visible:outline-none focus-visible:ring-2",
-                    "focus-visible:ring-[var(--ant-color-brand-primary)] focus-visible:ring-offset-2",
                     "transition-colors",
+                    "focus-visible:outline-none focus-visible:ring-2",
+                    "focus-visible:ring-[var(--ant-color-brand-primary)]",
+                    "focus-visible:ring-offset-2",
+                    isDark
+                      ? [
+                          "text-[var(--ant-color-brand-primary-lt)]",
+                          "bg-[var(--ant-color-neutral-800)]",
+                          "hover:bg-[var(--ant-color-brand-primary)] hover:text-[var(--ant-color-neutral-0)]",
+                          "focus-visible:ring-offset-[var(--ant-color-neutral-900)]",
+                        ]
+                      : [
+                          "text-[var(--ant-color-brand-primary)]",
+                          "bg-[var(--ant-color-brand-primary-lt)]",
+                          "hover:bg-[var(--ant-color-brand-primary)] hover:text-[var(--ant-color-neutral-0)]",
+                          "focus-visible:ring-offset-[var(--ant-color-neutral-0)]",
+                        ],
                     socialSizes[size],
                   )}
                 >
