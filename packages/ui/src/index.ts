@@ -56,6 +56,23 @@ export type {
   OutputFormat,
 } from "./components/forms/RichTextEditor";
 
+export {
+  FileUploader,
+  FilePreviewItem,
+  formatBytes,
+  getFileIcon,
+} from "./components/forms/FileUploader";
+
+export type {
+  UploadFile,
+  FileStatus,
+  FileUploaderVariant,
+  FilePreviewLayout,
+  FilePreviewItemProps,
+  DropzoneRenderProps,
+  FileUploaderProps,
+} from "./components/forms/FileUploader";
+
 // ── Media ────────────────────────────────────────────────────────────────────
 
 export { ImageCarousel } from "./components/media/ImageCarousel";
@@ -99,6 +116,46 @@ export type {
 } from "./components/data/ChartSuite";
 
 export * from "./components/data/Timeline";
+
+export {
+  DataTable,
+  DataTableToolbar,
+  DataTablePagination,
+  DataTableCellEditor,
+  DataCardView,
+  exportToCSV,
+  exportToExcel,
+  extractTableData,
+} from "./components/data/DataTable";
+
+export type {
+  DataTableProps,
+  DataTableColumnDef,
+  DataTableColumnMeta,
+  TableDensity,
+  TableExportOptions,
+} from "./components/data/DataTable";
+
+export {
+  KanbanBoard,
+  KanbanColumn,
+  KanbanCard,
+  KanbanToolbar,
+  KanbanCardModal,
+  KanbanCardQuickAdd,
+} from "./components/data/KanbanBoard";
+
+export type {
+  KanbanBoardProps,
+  KanbanColumnType,
+  KanbanCardType,
+  KanbanLabel,
+  KanbanAssignee,
+  KanbanPriority,
+  KanbanChecklistItem,
+  CardMoveEvent,
+  CardTemplateProps,
+} from "./components/data/KanbanBoard";
 
 // ── Navigation ───────────────────────────────────────────────────────────────
 
