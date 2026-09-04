@@ -50,6 +50,15 @@ export { Combobox } from "./components/forms/ComboBox";
 
 export type { ComboboxProps, ComboboxOption } from "./components/forms/ComboBox";
 
+export { DatePicker } from "./components/forms/DatePicker";
+
+export type {
+  DatePickerProps,
+  DatePickerMode,
+  DateRange,
+  DisabledDateRule,
+} from "./components/forms/DatePicker";
+
 export { MultiStepWizard } from "./components/forms/MultistepWizard";
 
 export type {
