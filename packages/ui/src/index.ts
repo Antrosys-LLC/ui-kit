@@ -24,6 +24,16 @@ export { Grid } from "./primitives/Grid";
 
 export { Cluster } from "./primitives/Cluster";
 
+// ── Animation ────────────────────────────────────────────────────────────────
+
+export { Slideshow } from "./components/animation/Slideshow";
+
+export type {
+  SlideshowProps,
+  SlideData,
+  SlideshowTransition,
+} from "./components/animation/Slideshow";
+
 // ── Feedback ─────────────────────────────────────────────────────────────────
 
 export { Button } from "./components/feedback/Button";
@@ -39,6 +49,15 @@ export type {
 export { Combobox } from "./components/forms/ComboBox";
 
 export type { ComboboxProps, ComboboxOption } from "./components/forms/ComboBox";
+
+export { DatePicker } from "./components/forms/DatePicker";
+
+export type {
+  DatePickerProps,
+  DatePickerMode,
+  DateRange,
+  DisabledDateRule,
+} from "./components/forms/DatePicker";
 
 export { MultiStepWizard } from "./components/forms/MultistepWizard";
 
@@ -97,6 +116,10 @@ export type {
   ChartSeries,
   HeatmapDataPoint,
 } from "./components/data/ChartSuite";
+
+export { StatCard } from "./components/data/StatCard";
+
+export type { StatCardProps } from "./components/data/StatCard";
 
 export * from "./components/data/Timeline";
 
