@@ -24,6 +24,16 @@ export { Grid } from "./primitives/Grid";
 
 export { Cluster } from "./primitives/Cluster";
 
+// ── Animation ────────────────────────────────────────────────────────────────
+
+export { Slideshow } from "./components/animation/Slideshow";
+
+export type {
+  SlideshowProps,
+  SlideData,
+  SlideshowTransition,
+} from "./components/animation/Slideshow";
+
 // ── Feedback ─────────────────────────────────────────────────────────────────
 
 export { Button } from "./components/feedback/Button";
@@ -97,6 +107,10 @@ export type {
   ChartSeries,
   HeatmapDataPoint,
 } from "./components/data/ChartSuite";
+
+export { StatCard } from "./components/data/StatCard";
+
+export type { StatCardProps } from "./components/data/StatCard";
 
 export * from "./components/data/Timeline";
 
