@@ -199,12 +199,12 @@ export function Combobox({
       ref={containerRef}
       data-theme={activeTheme}
       className={cn(
-        // Rule 1: Tailwind layout and design tokens; fully overridable via incoming className
+        // Parent wrapper has relative positioning without any overflow: hidden restrictions
         'ant-combobox relative w-full max-w-[380px] font-sans text-sm',
         className
       )}
     >
-      {/* Combobox Trigger Box (Rule 2: Pseudo-states via Tailwind variants, no raw <style>) */}
+      {/* Combobox Trigger Box */}
       <div
         onClick={() => {
           if (!disabled) {
@@ -222,7 +222,7 @@ export function Combobox({
               ? 'cursor-not-allowed bg-[var(--ant-color-neutral-100,#f3f4f6)] opacity-70'
               : 'cursor-text hover:border-[var(--ant-color-neutral-400,#9ca3af)]'
           ],
-          // Rule 3: Scoped Dark Mode
+          // Dark Mode
           isDark && [
             'border-neutral-700 bg-neutral-900',
             'focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500',
@@ -272,6 +272,7 @@ export function Combobox({
           role="combobox"
           aria-expanded={isOpen}
           aria-controls={listboxId}
+          aria-haspopup="listbox"
           aria-autocomplete="list"
           disabled={disabled}
           placeholder={selected.length === 0 ? placeholder : ''}
@@ -323,14 +324,14 @@ export function Combobox({
         )}
       </div>
 
-      {/* Popover Dropdown */}
+      {/* Dropdown List Container (Absolute positioning, top-full, z-50) */}
       {isOpen && (
         <ul
           ref={listboxRef}
           id={listboxId}
           role="listbox"
           className={cn(
-            'absolute left-0 right-0 top-[calc(100%+4px)] z-50 m-0 max-h-[220px] list-none overflow-y-auto border py-1 shadow-lg',
+            'absolute left-0 right-0 top-full z-50 mt-1 max-h-[220px] list-none overflow-y-auto border py-1 shadow-lg',
             isDark
               ? 'border-neutral-700 bg-neutral-900 text-neutral-100'
               : 'border-[var(--ant-color-neutral-300,#d1d5db)] bg-[var(--ant-color-surface-base,#ffffff)] text-[var(--ant-color-neutral-900,#111827)]'
