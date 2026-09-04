@@ -1,0 +1,6 @@
+{
+  "buildCommand": "pnpm build",
+  "outputDirectory": "packages/ui/storybook-static",
+  "installCommand": "corepack enable && pnpm install",
+  "framework": null
+}
