@@ -56,6 +56,23 @@ export type {
   OutputFormat,
 } from "./components/forms/RichTextEditor";
 
+export {
+  FileUploader,
+  FilePreviewItem,
+  formatBytes,
+  getFileIcon,
+} from "./components/forms/FileUploader";
+
+export type {
+  UploadFile,
+  FileStatus,
+  FileUploaderVariant,
+  FilePreviewLayout,
+  FilePreviewItemProps,
+  DropzoneRenderProps,
+  FileUploaderProps,
+} from "./components/forms/FileUploader";
+
 // ── Media ────────────────────────────────────────────────────────────────────
 
 export { ImageCarousel } from "./components/media/ImageCarousel";
@@ -98,7 +115,51 @@ export type {
   HeatmapDataPoint,
 } from "./components/data/ChartSuite";
 
+export { StatCard } from "./components/data/StatCard";
+
+export type { StatCardProps } from "./components/data/StatCard";
+
 export * from "./components/data/Timeline";
+
+export {
+  DataTable,
+  DataTableToolbar,
+  DataTablePagination,
+  DataTableCellEditor,
+  DataCardView,
+  exportToCSV,
+  exportToExcel,
+  extractTableData,
+} from "./components/data/DataTable";
+
+export type {
+  DataTableProps,
+  DataTableColumnDef,
+  DataTableColumnMeta,
+  TableDensity,
+  TableExportOptions,
+} from "./components/data/DataTable";
+
+export {
+  KanbanBoard,
+  KanbanColumn,
+  KanbanCard,
+  KanbanToolbar,
+  KanbanCardModal,
+  KanbanCardQuickAdd,
+} from "./components/data/KanbanBoard";
+
+export type {
+  KanbanBoardProps,
+  KanbanColumnType,
+  KanbanCardType,
+  KanbanLabel,
+  KanbanAssignee,
+  KanbanPriority,
+  KanbanChecklistItem,
+  CardMoveEvent,
+  CardTemplateProps,
+} from "./components/data/KanbanBoard";
 
 // ── Navigation ───────────────────────────────────────────────────────────────
 
@@ -132,3 +193,13 @@ export type {
 export { Tabs } from "./components/navigation/Tabs";
 
 export type { TabsProps, Tab } from "./components/navigation/Tabs";
+
+// ── Utility ──────────────────────────────────────────────────────────────────
+
+export { CommandPalette } from "./components/utility/CommandPalette";
+
+export type {
+  CommandPaletteProps,
+  CommandItem,
+  CommandGroup,
+} from "./components/utility/CommandPalette";
