@@ -56,6 +56,14 @@ export type {
   PromiseData,
 } from "./components/feedback/Toast";
 
+export { Modal } from "./components/feedback/Modal";
+
+export type {
+  ModalProps,
+  ModalSize,
+  ModalVariant,
+} from "./components/feedback/Modal";
+
 // ── Forms ────────────────────────────────────────────────────────────────────
 
 export { Combobox } from "./components/forms/ComboBox";
