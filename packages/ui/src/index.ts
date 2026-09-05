@@ -132,3 +132,14 @@ export type {
 export { Tabs } from "./components/navigation/Tabs";
 
 export type { TabsProps, Tab } from "./components/navigation/Tabs";
+
+// ── Utility ──────────────────────────────────────────────────────────────────
+
+export { CommandPalette } from "./components/utility/CommandPalette";
+
+export type {
+  CommandPaletteProps,
+  CommandItem,
+  CommandGroup,
+} from "./components/utility/CommandPalette";
+
