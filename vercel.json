@@ -1,6 +1,6 @@
 {
-  "buildCommand": "pnpm --filter @antrosys/ui storybook:build",
-  "outputDirectory": "packages/ui",
-  "installCommand": "corepack enable && pnpm install",
-  "framework": null
+  "framework": null,
+  "buildCommand": "pnpm storybook:build",
+  "outputDirectory": "packages/ui/storybook-static",
+  "installCommand": "pnpm install"
 }
