@@ -132,3 +132,9 @@ export type {
 export { Tabs } from "./components/navigation/Tabs";
 
 export type { TabsProps, Tab } from "./components/navigation/Tabs";
+
+// ── Utility ──────────────────────────────────────────────────────────────────
+
+export { CopyButton } from "./components/utility/copytoclipboard";
+
+export type { CopyButtonProps } from "./components/utility/copytoclipboard";
