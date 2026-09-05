@@ -116,3 +116,14 @@ export type {
   SidebarItem,
   SidebarUserProfile,
 } from "./components/navigation/Sidebar";
+
+// ── Utility ──────────────────────────────────────────────────────────────────
+
+export { CommandPalette } from "./components/utility/CommandPalette";
+
+export type {
+  CommandPaletteProps,
+  CommandItem,
+  CommandGroup,
+} from "./components/utility/CommandPalette";
+
