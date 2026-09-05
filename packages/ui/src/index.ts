@@ -6,7 +6,7 @@ export { ThemeProvider, ThemeContext } from "./providers/ThemeProvider";
 
 export { ToastProvider, ToastContext, useToast } from "./providers/ToastProvider";
 
-export type { Toast, ToastType } from "./providers/ToastProvider";
+export type { Toast as ToastItem, ToastType } from "./providers/ToastProvider";
 
 // ── Hooks ────────────────────────────────────────────────────────────────────
 
@@ -24,6 +24,16 @@ export { Grid } from "./primitives/Grid";
 
 export { Cluster } from "./primitives/Cluster";
 
+// ── Animation ────────────────────────────────────────────────────────────────
+
+export { Slideshow } from "./components/animation/Slideshow";
+
+export type {
+  SlideshowProps,
+  SlideData,
+  SlideshowTransition,
+} from "./components/animation/Slideshow";
+
 // ── Feedback ─────────────────────────────────────────────────────────────────
 
 export { Button } from "./components/feedback/Button";
@@ -34,11 +44,40 @@ export type {
   ButtonSize,
 } from "./components/feedback/Button";
 
+export { Toast, Toaster, toast } from "./components/feedback/Toast";
+
+export type {
+  ToastProps,
+  ToasterProps,
+  ToastPosition,
+  ToastVariant,
+  ToastAction,
+  ToastOptions,
+  PromiseData,
+} from "./components/feedback/Toast";
+
+export { Modal } from "./components/feedback/Modal";
+
+export type {
+  ModalProps,
+  ModalSize,
+  ModalVariant,
+} from "./components/feedback/Modal";
+
 // ── Forms ────────────────────────────────────────────────────────────────────
 
 export { Combobox } from "./components/forms/ComboBox";
 
 export type { ComboboxProps, ComboboxOption } from "./components/forms/ComboBox";
+
+export { DatePicker } from "./components/forms/DatePicker";
+
+export type {
+  DatePickerProps,
+  DatePickerMode,
+  DateRange,
+  DisabledDateRule,
+} from "./components/forms/DatePicker";
 
 export { MultiStepWizard } from "./components/forms/MultistepWizard";
 
@@ -97,6 +136,10 @@ export type {
   ChartSeries,
   HeatmapDataPoint,
 } from "./components/data/ChartSuite";
+
+export { StatCard } from "./components/data/StatCard";
+
+export type { StatCardProps } from "./components/data/StatCard";
 
 export * from "./components/data/Timeline";
 
