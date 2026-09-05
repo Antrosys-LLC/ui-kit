@@ -132,3 +132,9 @@ export type {
 export { Tabs } from "./components/navigation/Tabs";
 
 export type { TabsProps, Tab } from "./components/navigation/Tabs";
+
+// ── Utility ──────────────────────────────────────────────────────────────────
+
+export { ThemeToggle } from "./components/utility/ThemeToggle";
+
+export type { ThemeToggleProps } from "./components/utility/ThemeToggle";
