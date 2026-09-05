@@ -218,3 +218,11 @@ export type { TabsProps, Tab } from "./components/navigation/Tabs";
 export { CopyButton } from "./components/utility/copytoclipboard";
 
 export type { CopyButtonProps } from "./components/utility/copytoclipboard";
+
+export { CommandPalette } from "./components/utility/CommandPalette";
+
+export type {
+  CommandPaletteProps,
+  CommandItem,
+  CommandGroup,
+} from "./components/utility/CommandPalette";
