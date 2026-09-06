@@ -34,6 +34,14 @@ export type {
   SlideshowTransition,
 } from "./components/animation/Slideshow";
 
+export { AnimatedCounter } from "./components/animation/AnimatedCounter";
+
+export type {
+  AnimatedCounterProps,
+  AnimatedCounterSize,
+  AnimatedCounterColor,
+} from "./components/animation/AnimatedCounter";
+
 // ── Feedback ─────────────────────────────────────────────────────────────────
 
 export { Button } from "./components/feedback/Button";
