@@ -193,3 +193,13 @@ export type {
 export { Tabs } from "./components/navigation/Tabs";
 
 export type { TabsProps, Tab } from "./components/navigation/Tabs";
+
+// ── Animation ────────────────────────────────────────────────────────────────
+
+export { AnimatedCounter } from "./components/animation/AnimatedCounter";
+
+export type {
+  AnimatedCounterProps,
+  AnimatedCounterSize,
+  AnimatedCounterColor,
+} from "./components/animation/AnimatedCounter";
