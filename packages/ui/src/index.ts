@@ -193,3 +193,13 @@ export type {
 export { Tabs } from "./components/navigation/Tabs";
 
 export type { TabsProps, Tab } from "./components/navigation/Tabs";
+
+// ── Animation ────────────────────────────────────────────────────────────────
+
+export { Typewriter } from "./components/animation/Typewriter";
+
+export type {
+  TypewriterProps,
+  TypewriterSize,
+  TypewriterColor,
+} from "./components/animation/Typewriter";
