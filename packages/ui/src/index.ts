@@ -193,3 +193,13 @@ export type {
 export { Tabs } from "./components/navigation/Tabs";
 
 export type { TabsProps, Tab } from "./components/navigation/Tabs";
+
+// ── Animation ────────────────────────────────────────────────────────────────
+
+export { ParallaxSection } from "./components/animation/ParallaxSection";
+
+export type {
+  ParallaxSectionProps,
+  ParallaxLayer,
+} from "./components/animation/ParallaxSection";
+
