@@ -34,6 +34,13 @@ export type {
   SlideshowTransition,
 } from "./components/animation/Slideshow";
 
+export { ParallaxSection } from "./components/animation/ParallaxSection";
+
+export type {
+  ParallaxSectionProps,
+  ParallaxLayer,
+} from "./components/animation/ParallaxSection";
+
 // ── Feedback ─────────────────────────────────────────────────────────────────
 
 export { Button } from "./components/feedback/Button";
