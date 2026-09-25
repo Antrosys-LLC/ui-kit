@@ -9,19 +9,25 @@ const preview: Preview = {
     (Story, context) => {
       const bg = context.globals.backgrounds?.value;
       const isDark = bg === "#0F172A";
-      const theme = isDark ? "dark" : "light";
+      const theme: "light" | "dark" = isDark ? "dark" : "light";
+
+      const [localTheme, setLocalTheme] = React.useState<"light" | "dark">(theme);
 
       useEffect(() => {
-        document.documentElement.setAttribute("data-theme", theme);
+        setLocalTheme(theme);
       }, [theme]);
+
+      useEffect(() => {
+        document.documentElement.setAttribute("data-theme", localTheme);
+      }, [localTheme]);
 
       return React.createElement(
         ThemeContext.Provider,
         {
           value: {
-            theme,
-            toggleTheme: () => {},
-            setTheme: () => {},
+            theme: localTheme,
+            toggleTheme: () => setLocalTheme(prev => prev === "light" ? "dark" : "light"),
+            setTheme: (t) => setLocalTheme(t),
           },
         },
         React.createElement(Story, null)
