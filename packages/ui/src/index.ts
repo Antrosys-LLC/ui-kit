@@ -6,7 +6,7 @@ export { ThemeProvider, ThemeContext } from "./providers/ThemeProvider";
 
 export { ToastProvider, ToastContext, useToast } from "./providers/ToastProvider";
 
-export type { Toast, ToastType } from "./providers/ToastProvider";
+export type { Toast as ToastItem, ToastType } from "./providers/ToastProvider";
 
 // ── Hooks ────────────────────────────────────────────────────────────────────
 
@@ -51,6 +51,26 @@ export type {
   ButtonVariant,
   ButtonSize,
 } from "./components/feedback/Button";
+
+export { Toast, Toaster, toast } from "./components/feedback/Toast";
+
+export type {
+  ToastProps,
+  ToasterProps,
+  ToastPosition,
+  ToastVariant,
+  ToastAction,
+  ToastOptions,
+  PromiseData,
+} from "./components/feedback/Toast";
+
+export { Modal } from "./components/feedback/Modal";
+
+export type {
+  ModalProps,
+  ModalSize,
+  ModalVariant,
+} from "./components/feedback/Modal";
 
 // ── Forms ────────────────────────────────────────────────────────────────────
 
@@ -226,3 +246,11 @@ export type { TabsProps, Tab } from "./components/navigation/Tabs";
 export { CopyButton } from "./components/utility/copytoclipboard";
 
 export type { CopyButtonProps } from "./components/utility/copytoclipboard";
+
+export { CommandPalette } from "./components/utility/CommandPalette";
+
+export type {
+  CommandPaletteProps,
+  CommandItem,
+  CommandGroup,
+} from "./components/utility/CommandPalette";
