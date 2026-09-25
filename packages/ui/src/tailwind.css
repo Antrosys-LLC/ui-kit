@@ -94,6 +94,14 @@
 :root.dark,
 :root[data-theme="dark"],
 .dark {
+  /* Core Surface Tokens (Dark Mode Overrides) */
+  --ant-color-surface-bg: var(--ant-color-neutral-900);
+  --ant-color-surface-bg-card: var(--ant-color-neutral-800);
+  --ant-color-surface-border: var(--ant-color-neutral-700);
+  --ant-color-surface-text: var(--ant-color-neutral-50);
+  --ant-color-surface-text-sub: var(--ant-color-neutral-400);
+
+  /* Sidebar Tokens */
   --ant-sidebar-bg: var(--ant-sidebar-dark-bg);
   --ant-sidebar-text: var(--ant-sidebar-dark-text);
   --ant-sidebar-text-secondary: var(--ant-sidebar-dark-text-secondary);

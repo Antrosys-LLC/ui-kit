@@ -21,50 +21,52 @@ export interface ThemeToggleProps {
 }
 
 export function ThemeToggle({
-  defaultTheme = "light",
-  storageKey = "antrosys-ui-theme",
+  defaultTheme,
+  storageKey = "ant-theme",
   transition = true,
   showLabel = true,
   className,
 }: ThemeToggleProps) {
   const context = useContext(ThemeContext);
   
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    // Prioritize explicit defaultTheme prop if provided, else check storage
+  const [localTheme, setLocalTheme] = useState<"light" | "dark">(() => {
     if (defaultTheme) return defaultTheme;
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(storageKey);
       if (saved === "light" || saved === "dark") return saved;
       if (window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
     }
-    return context?.theme === "dark" ? "dark" : "light";
+    return "light";
   });
 
-  useEffect(() => {
-    if (defaultTheme) {
-      setTheme(defaultTheme);
-    }
-  }, [defaultTheme]);
+  const activeTheme = context ? context.theme : localTheme;
 
   useEffect(() => {
+    // If ThemeProvider is present, it handles DOM updates!
+    if (context) return; 
+
     const root = document.documentElement;
     if (transition) {
       root.style.setProperty("transition", "background-color 0.3s ease, color 0.3s ease");
     }
-    root.setAttribute("data-theme", theme);
-    if (theme === "dark") {
+    root.setAttribute("data-theme", activeTheme);
+    if (activeTheme === "dark") {
       root.classList.add("dark");
     } else {
       root.classList.remove("dark");
     }
-    localStorage.setItem(storageKey, theme);
-  }, [theme, storageKey, transition]);
+    localStorage.setItem(storageKey, activeTheme);
+  }, [activeTheme, storageKey, transition, context]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    if (context) {
+      context.toggleTheme();
+    } else {
+      setLocalTheme((prev) => (prev === "light" ? "dark" : "light"));
+    }
   };
 
-  const isDark = theme === "dark";
+  const isDark = activeTheme === "dark";
 
   return (
     <button
