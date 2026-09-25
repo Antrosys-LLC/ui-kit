@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback, useContext } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { clsx } from "clsx";
-import { ThemeContext } from "../../../providers/ThemeProvider";
 
 export interface InfiniteScrollListProps<T = any> extends React.ComponentPropsWithoutRef<"div"> {
   /** Function to fetch pages indefinitely */
@@ -41,8 +40,6 @@ export function InfiniteScrollList<T = any>({
   const [showTopBtn, setShowTopBtn] = useState(false);
 
   const parentRef = useRef<HTMLDivElement>(null);
-  const themeCtx = useContext(ThemeContext);
-  const isDark = themeCtx?.theme === "dark";
 
   const loadMoreData = useCallback(async () => {
     if (loading || !hasMore) return;
@@ -92,36 +89,20 @@ export function InfiniteScrollList<T = any>({
     parentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const borderColor = isDark ? "var(--ant-color-neutral-700)" : "var(--ant-color-neutral-300)";
-  const bgColor = isDark ? "var(--ant-color-neutral-900)" : "var(--ant-color-neutral-0)";
-  const textColor = isDark ? "var(--ant-color-neutral-100)" : "var(--ant-color-neutral-900)";
-  const rowBorderColor = isDark ? "var(--ant-color-neutral-800)" : "var(--ant-color-neutral-200)";
-  const loaderColor = isDark ? "var(--ant-color-neutral-400)" : "var(--ant-color-neutral-500)";
-
   return (
     <div
-      className={clsx("ant-infinite-scroll-list", className)}
-      style={{
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        border: `1px solid ${borderColor}`,
-        backgroundColor: bgColor,
-        color: textColor,
-        borderRadius: "0px",
-        width: "100%",
-      }}
+      className={clsx(
+        "ant-infinite-scroll-list relative flex flex-col w-full overflow-hidden",
+        "border border-[var(--ant-color-surface-border)] bg-[var(--ant-color-surface-bg-card)] text-[var(--ant-color-surface-text)] rounded-[var(--ant-radius-xl)]",
+        className
+      )}
       {...props}
     >
       <div
         ref={parentRef}
         onScroll={handleScroll}
-        style={{
-          height,
-          overflow: "auto",
-          position: "relative",
-          borderRadius: "0px",
-        }}
+        className="relative overflow-auto w-full"
+        style={{ height }}
       >
         <div style={{ height: `${totalSize}px`, width: "100%", position: "relative" }}>
           {virtualRows.map((virtualRow) => {
@@ -133,40 +114,34 @@ export function InfiniteScrollList<T = any>({
                 key={virtualRow.key}
                 data-index={virtualRow.index}
                 ref={rowVirtualizer.measureElement}
+                className="absolute top-0 left-0 w-full border-b border-[var(--ant-color-surface-border)] box-border"
                 style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
                   transform: `translateY(${virtualRow.start}px)`,
-                  borderBottom: `1px solid ${rowBorderColor}`,
-                  boxSizing: "border-box",
                 }}
               >
                 {isLoaderRow ? (
                   loadingWidget || (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        padding: "var(--ant-spacing-3)",
-                        fontSize: "var(--ant-typography-fontsize-sm)",
-                        color: loaderColor,
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: "inline-block",
-                          width: "16px",
-                          height: "16px",
-                          border: "2px solid currentColor",
-                          borderTopColor: "transparent",
-                          borderRadius: "50%",
-                          animation: "spin 0.8s linear infinite",
-                          marginRight: "var(--ant-spacing-2)",
-                        }}
-                      />
+                    <div className="flex items-center justify-center p-[var(--ant-spacing-4)] text-[var(--ant-typography-fontSize-sm)] text-[var(--ant-color-surface-text-sub)]">
+                      <svg
+                        className="animate-spin -ml-1 mr-[var(--ant-spacing-2)] h-[var(--ant-spacing-4)] w-[var(--ant-spacing-4)] text-[var(--ant-color-brand-primary)]"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
                       Loading infinite items...
                     </div>
                   )
@@ -184,21 +159,13 @@ export function InfiniteScrollList<T = any>({
           type="button"
           onClick={scrollToTopFn}
           aria-label="Scroll to top"
-          style={{
-            position: "absolute",
-            bottom: "var(--ant-spacing-4)",
-            right: "var(--ant-spacing-4)",
-            backgroundColor: "var(--ant-color-brand-primary)",
-            color: "var(--ant-color-neutral-0)",
-            padding: "var(--ant-spacing-2) var(--ant-spacing-3)",
-            borderRadius: "0px",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "var(--ant-typography-fontsize-xs, 12px)",
-            fontWeight: 500,
-            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-            zIndex: 10,
-          }}
+          className={clsx(
+            "absolute bottom-[var(--ant-spacing-4)] right-[var(--ant-spacing-4)] z-10",
+            "bg-[var(--ant-color-brand-primary)] text-white shadow-[var(--ant-shadow-lg)]",
+            "px-[var(--ant-spacing-3)] py-[var(--ant-spacing-2)] rounded-[var(--ant-radius-full)]",
+            "text-[var(--ant-typography-fontSize-xs)] font-[var(--ant-typography-fontWeight-medium)] cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ant-color-brand-primary)] focus-visible:ring-offset-2",
+            "hover:bg-[var(--ant-color-brand-primary-dk)]"
+          )}
         >
           ↑ Top
         </button>
