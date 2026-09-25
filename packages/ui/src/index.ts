@@ -6,7 +6,7 @@ export { ThemeProvider, ThemeContext } from "./providers/ThemeProvider";
 
 export { ToastProvider, ToastContext, useToast } from "./providers/ToastProvider";
 
-export type { Toast, ToastType } from "./providers/ToastProvider";
+export type { Toast as ToastItem, ToastType } from "./providers/ToastProvider";
 
 // ── Hooks ────────────────────────────────────────────────────────────────────
 
@@ -43,6 +43,18 @@ export type {
   ButtonVariant,
   ButtonSize,
 } from "./components/feedback/Button";
+
+export { Toast, Toaster, toast } from "./components/feedback/Toast";
+
+export type {
+  ToastProps,
+  ToasterProps,
+  ToastPosition,
+  ToastVariant,
+  ToastAction,
+  ToastOptions,
+  PromiseData,
+} from "./components/feedback/Toast";
 
 // ── Forms ────────────────────────────────────────────────────────────────────
 
