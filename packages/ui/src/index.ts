@@ -235,6 +235,9 @@ export type { TabsProps, Tab } from "./components/navigation/Tabs";
 
 // ── Utility ──────────────────────────────────────────────────────────────────
 
+export { ThemeToggle } from "./components/utility/ThemeToggle";
+
+export type { ThemeToggleProps } from "./components/utility/ThemeToggle";
 export { CopyButton } from "./components/utility/copytoclipboard";
 
 export type { CopyButtonProps } from "./components/utility/copytoclipboard";
