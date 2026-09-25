@@ -4,14 +4,10 @@ import React, {
   useRef,
   forwardRef,
   useImperativeHandle,
-  useContext,
-  useState,
-  useCallback,
   HTMLAttributes,
 } from "react";
 import { clsx } from "clsx";
 import { CountUp, type CountUpOptions } from "countup.js";
-import { ThemeContext } from "../../../providers/ThemeProvider";
 
 export type AnimatedCounterSize =
   | "sm"
@@ -184,49 +180,13 @@ const sizeClasses: Record<AnimatedCounterSize, string> = {
 };
 
 const colorClasses: Record<AnimatedCounterColor, string> = {
-  default:
-    "text-[var(--ant-color-surface-text)] [[data-theme=dark]_&]:text-[var(--ant-color-neutral-0)] [.dark_&]:text-[var(--ant-color-neutral-0)]",
+  default: "text-[var(--ant-color-surface-text)]",
   brand: "text-[var(--ant-color-brand-primary)]",
   success: "text-[var(--ant-color-semantic-success)]",
   warning: "text-[var(--ant-color-semantic-warning)]",
   error: "text-[var(--ant-color-semantic-error)]",
   info: "text-[var(--ant-color-semantic-info)]",
-  muted:
-    "text-[var(--ant-color-surface-text-sub)] [[data-theme=dark]_&]:text-[var(--ant-color-neutral-400)] [.dark_&]:text-[var(--ant-color-neutral-400)]",
-};
-
-const colorTokens: Record<
-  AnimatedCounterColor,
-  { light: string; dark: string }
-> = {
-  default: {
-    light: "var(--ant-color-surface-text)",
-    dark: "var(--ant-color-neutral-0)",
-  },
-  brand: {
-    light: "var(--ant-color-brand-primary)",
-    dark: "var(--ant-color-brand-primary)",
-  },
-  success: {
-    light: "var(--ant-color-semantic-success)",
-    dark: "var(--ant-color-semantic-success)",
-  },
-  warning: {
-    light: "var(--ant-color-semantic-warning)",
-    dark: "var(--ant-color-semantic-warning)",
-  },
-  error: {
-    light: "var(--ant-color-semantic-error)",
-    dark: "var(--ant-color-semantic-error)",
-  },
-  info: {
-    light: "var(--ant-color-semantic-info)",
-    dark: "var(--ant-color-semantic-info)",
-  },
-  muted: {
-    light: "var(--ant-color-surface-text-sub)",
-    dark: "var(--ant-color-neutral-400)",
-  },
+  muted: "text-[var(--ant-color-surface-text-sub)]",
 };
 
 /**
@@ -265,77 +225,6 @@ export const AnimatedCounter = forwardRef<HTMLSpanElement, AnimatedCounterProps>
     const spanRef = useRef<HTMLSpanElement | null>(null);
     const countUpRef = useRef<CountUp | null>(null);
     const prevEndRef = useRef<number>(end);
-
-    const themeCtx = useContext(ThemeContext);
-    const checkDomTheme = useCallback((): "light" | "dark" => {
-      if (typeof document === "undefined") return "light";
-      const themedAncestor = spanRef.current?.closest(
-        "[data-theme], .dark"
-      );
-      if (themedAncestor) {
-        if (
-          themedAncestor.classList.contains("dark") ||
-          themedAncestor.getAttribute("data-theme") === "dark"
-        ) {
-          return "dark";
-        }
-        if (themedAncestor.getAttribute("data-theme") === "light") {
-          return "light";
-        }
-      }
-      if (themeCtx?.theme) {
-        return themeCtx.theme;
-      }
-      const isDocDark =
-        document.documentElement.getAttribute("data-theme") === "dark" ||
-        document.documentElement.classList.contains("dark");
-      return isDocDark ? "dark" : "light";
-    }, [themeCtx?.theme]);
-
-    const [domTheme, setDomTheme] = useState<"light" | "dark">(() => {
-      if (typeof document === "undefined") return "light";
-      if (themeCtx?.theme) return themeCtx.theme;
-      const isDocDark =
-        document.documentElement.getAttribute("data-theme") === "dark" ||
-        document.documentElement.classList.contains("dark");
-      return isDocDark ? "dark" : "light";
-    });
-
-    const useIsomorphicLayoutEffect =
-      typeof window !== "undefined" ? useLayoutEffect : useEffect;
-
-    useIsomorphicLayoutEffect(() => {
-      setDomTheme(checkDomTheme());
-    }, [checkDomTheme]);
-
-    useEffect(() => {
-      setDomTheme(checkDomTheme());
-
-      if (typeof document !== "undefined") {
-        const observer = new MutationObserver(() => {
-          setDomTheme(checkDomTheme());
-        });
-        observer.observe(document.documentElement, {
-          attributes: true,
-          attributeFilter: ["data-theme", "class"],
-        });
-        if (spanRef.current) {
-          let current: HTMLElement | null = spanRef.current.parentElement;
-          while (current && current !== document.body) {
-            observer.observe(current, {
-              attributes: true,
-              attributeFilter: ["data-theme", "class"],
-            });
-            current = current.parentElement;
-          }
-        }
-        return () => observer.disconnect();
-      }
-    }, [checkDomTheme]);
-
-    const isDark =
-      theme === "dark" ||
-      (theme !== "light" && domTheme === "dark");
 
     // Keep callbacks current without breaking useEffect dependencies
     const onStartRef = useRef(onStart);
@@ -467,32 +356,13 @@ export const AnimatedCounter = forwardRef<HTMLSpanElement, AnimatedCounterProps>
       }
     }, [end, finalText]);
 
-    const activeColorClass =
-      color === "default"
-        ? isDark
-          ? "text-[var(--ant-color-neutral-0)]"
-          : "text-[var(--ant-color-surface-text)]"
-        : color === "muted"
-        ? isDark
-          ? "text-[var(--ant-color-neutral-400)]"
-          : "text-[var(--ant-color-surface-text-sub)]"
-        : colorClasses[color];
-
-    const resolvedColor =
-      colorTokens[color]
-        ? isDark
-          ? colorTokens[color].dark
-          : colorTokens[color].light
-        : undefined;
+    const activeColorClass = colorClasses[color] || colorClasses.default;
 
     const frameClasses = frame
-      ? isDark
-        ? "bg-[var(--ant-color-neutral-800)] border border-[var(--ant-color-neutral-700)] rounded-[var(--ant-radius-md)] px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] shadow-[var(--ant-shadow-sm)]"
-        : "bg-[var(--ant-color-neutral-100)] border border-[var(--ant-color-surface-border)] rounded-[var(--ant-radius-md)] px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] shadow-[var(--ant-shadow-sm)]"
+      ? "bg-[var(--ant-color-surface-bg-card)] border border-[var(--ant-color-surface-border)] rounded-[var(--ant-radius-md)] px-[var(--ant-spacing-2)] py-[var(--ant-spacing-1)] shadow-[var(--ant-shadow-sm)]"
       : "";
 
     const resolvedStyle: React.CSSProperties = {
-      ...(resolvedColor ? { color: resolvedColor } : {}),
       ...restProps.style,
     };
 
