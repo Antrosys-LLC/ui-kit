@@ -257,3 +257,7 @@ export type {
   CommandItem,
   CommandGroup,
 } from "./components/utility/CommandPalette";
+
+export { CodeBlock } from "./components/utility/Codeblockwithsyntax";
+
+export type { CodeBlockProps } from "./components/utility/Codeblockwithsyntax";
