@@ -50,6 +50,13 @@ export type {
   TypewriterColor,
 } from "./components/animation/Typewriter";
 
+export { ParallaxSection } from "./components/animation/ParallaxSection";
+
+export type {
+  ParallaxSectionProps,
+  ParallaxLayer,
+} from "./components/animation/ParallaxSection";
+
 // ── Feedback ─────────────────────────────────────────────────────────────────
 
 export { Button } from "./components/feedback/Button";
