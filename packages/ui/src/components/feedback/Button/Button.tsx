@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, ReactNode } from "react";
+import React, { ButtonHTMLAttributes, ReactNode, forwardRef } from "react";
 import { clsx } from "clsx";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
@@ -40,12 +40,23 @@ const sizes: Record<ButtonSize, string> = {
   lg: "h-11 px-6 text-base",
 };
 
-export function Button({
-  variant = "primary", size = "md", loading, iconLeft, iconRight,
-  fullWidth, className, children, ...props
-}: ButtonProps) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    variant = "primary",
+    size = "md",
+    loading,
+    iconLeft,
+    iconRight,
+    fullWidth,
+    className,
+    children,
+    ...props
+  },
+  ref
+) {
   return (
     <button
+      ref={ref}
       className={clsx(base, variants[variant], sizes[size], fullWidth && "w-full", className)}
       disabled={loading || props.disabled}
       {...props}
@@ -60,4 +71,6 @@ export function Button({
       {!loading && iconRight}
     </button>
   );
-}
+});
+
+Button.displayName = "Button";

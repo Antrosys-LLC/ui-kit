@@ -57,6 +57,20 @@ export type {
   ParallaxLayer,
 } from "./components/animation/ParallaxSection";
 
+export { GradientMesh, GradientBackground } from "./components/animation/GradientMesh";
+
+export type {
+  GradientMeshProps,
+  GradientType,
+} from "./components/animation/GradientMesh";
+
+export { ScrollReveal, withScrollReveal } from "./components/animation/ScrollReveal";
+
+export type {
+  ScrollRevealProps,
+  ScrollRevealAnimation,
+} from "./components/animation/ScrollReveal";
+
 // ── Feedback ─────────────────────────────────────────────────────────────────
 
 export { Button } from "./components/feedback/Button";
@@ -86,6 +100,30 @@ export type {
   ModalSize,
   ModalVariant,
 } from "./components/feedback/Modal";
+
+export { Skeleton } from "./components/feedback/Skeleton";
+
+export type {
+  SkeletonProps,
+  SkeletonVariant,
+  SkeletonRadius,
+} from "./components/feedback/Skeleton";
+
+export { Tooltip } from "./components/feedback/Tooltip";
+
+export type {
+  TooltipProps,
+  TooltipPlacement,
+  TooltipTrigger,
+} from "./components/feedback/Tooltip";
+
+export { Popover } from "./components/feedback/Popover";
+
+export type {
+  PopoverProps,
+  PopoverPlacement,
+  PopoverTrigger,
+} from "./components/feedback/Popover";
 
 // ── Forms ────────────────────────────────────────────────────────────────────
 
