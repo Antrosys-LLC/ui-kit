@@ -42,6 +42,14 @@ export type {
   AnimatedCounterColor,
 } from "./components/animation/AnimatedCounter";
 
+export { Typewriter } from "./components/animation/Typewriter";
+
+export type {
+  TypewriterProps,
+  TypewriterSize,
+  TypewriterColor,
+} from "./components/animation/Typewriter";
+
 // ── Feedback ─────────────────────────────────────────────────────────────────
 
 export { Button } from "./components/feedback/Button";
