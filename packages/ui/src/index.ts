@@ -125,6 +125,8 @@ export type {
   PopoverTrigger,
 } from "./components/feedback/Popover";
 
+export * from "./components/feedback/EmptyState";
+
 // ── Forms ────────────────────────────────────────────────────────────────────
 
 export { Combobox } from "./components/forms/ComboBox";
