@@ -69,17 +69,14 @@ export { ScrollReveal, withScrollReveal } from "./components/animation/ScrollRev
 export type {
   ScrollRevealProps,
   ScrollRevealAnimation,
+  ScrollRevealHocOptions,
 } from "./components/animation/ScrollReveal";
 
 // ── Feedback ─────────────────────────────────────────────────────────────────
 
 export { Button } from "./components/feedback/Button";
 
-export type {
-  ButtonProps,
-  ButtonVariant,
-  ButtonSize,
-} from "./components/feedback/Button";
+export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/feedback/Button";
 
 export { Toast, Toaster, toast } from "./components/feedback/Toast";
 
@@ -177,10 +174,7 @@ export type {
 
 export { ImageCarousel } from "./components/media/ImageCarousel";
 
-export type {
-  CarouselImage,
-  ImageCarouselProps,
-} from "./components/media/ImageCarousel";
+export type { CarouselImage, ImageCarouselProps } from "./components/media/ImageCarousel";
 
 export { Lightbox } from "./components/media/Lightbox";
 
@@ -188,12 +182,7 @@ export type { LightboxProps } from "./components/media/Lightbox";
 
 export { Video } from "./components/media/Video";
 
-export type {
-  VideoProps,
-  CaptionTrack,
-  VideoVariant,
-  VideoSize,
-} from "./components/media/Video";
+export type { VideoProps, CaptionTrack, VideoVariant, VideoSize } from "./components/media/Video";
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
@@ -265,18 +254,11 @@ export type {
 
 export { Breadcrumb } from "./components/navigation/Breadcrumb";
 
-export type {
-  BreadcrumbProps,
-  BreadcrumbItem,
-} from "./components/navigation/Breadcrumb";
+export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
 
 export { Navbar } from "./components/navigation/Navbar";
 
-export type {
-  NavbarCtaButton,
-  NavbarLink,
-  NavbarProps,
-} from "./components/navigation/Navbar";
+export type { NavbarCtaButton, NavbarLink, NavbarProps } from "./components/navigation/Navbar";
 
 export { Pagination } from "./components/navigation/Pagination";
 
@@ -293,24 +275,3 @@ export type {
 export { Tabs } from "./components/navigation/Tabs";
 
 export type { TabsProps, Tab } from "./components/navigation/Tabs";
-
-// ── Utility ──────────────────────────────────────────────────────────────────
-
-export { ThemeToggle } from "./components/utility/ThemeToggle";
-
-export type { ThemeToggleProps } from "./components/utility/ThemeToggle";
-export { CopyButton } from "./components/utility/copytoclipboard";
-
-export type { CopyButtonProps } from "./components/utility/copytoclipboard";
-
-export { CommandPalette } from "./components/utility/CommandPalette";
-
-export type {
-  CommandPaletteProps,
-  CommandItem,
-  CommandGroup,
-} from "./components/utility/CommandPalette";
-
-export { CodeBlock } from "./components/utility/Codeblockwithsyntax";
-
-export type { CodeBlockProps } from "./components/utility/Codeblockwithsyntax";
