@@ -1,253 +1,409 @@
-import React, { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+  ElementType,
+  ReactNode,
+  HTMLAttributes,
+  forwardRef,
+} from "react";
 import { clsx } from "clsx";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ThemeContext } from "../../../providers/ThemeProvider";
 
+// Ensure GSAP plugins are registered safely in browser environments
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+/**
+ * Supported animation presets for scroll reveal.
+ */
 export type ScrollRevealAnimation =
-  | "fade-up"
-  | "fade-down"
-  | "fade-left"
-  | "fade-right"
-  | "zoom-in"
-  | "zoom-out"
-  | "flip"
-  | "flip-x"
-  | "flip-y"
-  | "blur-in"
-  | "rotate";
+  "fade-up" | "fade-down" | "fade-left" | "fade-right" | "zoom-in" | "zoom-out" | "flip" | "fade";
 
-export interface ScrollRevealProps extends React.HTMLAttributes<HTMLElement> {
+/**
+ * Props for the ScrollReveal component.
+ */
+export interface ScrollRevealProps extends HTMLAttributes<HTMLElement> {
   /**
-   * Animation preset:
-   * - `fade-up`: translates up and fades in
-   * - `fade-down`: translates down and fades in
-   * - `fade-left`: translates from right to left and fades in
-   * - `fade-right`: translates from left to right and fades in
-   * - `zoom-in`: scales up from 0.85 and fades in
-   * - `zoom-out`: scales down from 1.15 and fades in
-   * - `flip`: 3D perspective flip
-   * - `flip-x`: 3D rotation flip on horizontal axis
-   * - `flip-y`: 3D rotation flip on vertical axis
-   * - `blur-in`: unblurs and fades in
-   * - `rotate`: rotates slightly and fades in
+   * Animation preset to trigger when the element scrolls into view.
+   * @default "fade-up"
    */
   animation?: ScrollRevealAnimation;
 
   /**
-   * Initial delay in seconds before animation begins (default: 0)
+   * Delay before the animation begins, in seconds.
+   * @default 0
    */
   delay?: number;
 
   /**
-   * Stagger delay in seconds between child elements (default: 0.1)
-   */
-  stagger?: number;
-
-  /**
-   * Viewport trigger threshold: number between 0 and 1, or ScrollTrigger position string like "top 85%" (default: "top 85%")
-   */
-  threshold?: number | string;
-
-  /**
-   * Play animation only once (true) or re-trigger whenever entering viewport (false). Default: true
-   */
-  once?: boolean;
-
-  /**
-   * Duration of the animation in seconds (default: 0.8)
+   * Duration of the reveal animation, in seconds.
+   * @default 0.7
    */
   duration?: number;
 
   /**
-   * Translation distance in pixels for fade/slide presets (default: 40)
+   * Stagger delay between sequential child elements in seconds.
+   * When greater than 0, targets direct children or items matching `childSelector`.
+   * @default 0
    */
-  distance?: number | string;
+  stagger?: number;
 
   /**
-   * GSAP easing curve name (default: "power2.out")
+   * ScrollTrigger threshold defining when the animation begins.
+   * Accepts a number between 0 and 1 (ratio of element into viewport, e.g., 0.2 = top 80%)
+   * or a custom ScrollTrigger start position string (e.g. "top 85%", "top center").
+   * @default 0.2
+   */
+  threshold?: number | string;
+
+  /**
+   * If true, the animation plays once and remains visible.
+   * If false, the animation resets/reverses when scrolled out of view.
+   * @default true
+   */
+  once?: boolean;
+
+  /**
+   * Movement offset distance in pixels for directional presets (fade-up, fade-down, fade-left, fade-right).
+   * @default 32
+   */
+  distance?: number;
+
+  /**
+   * GSAP easing equation.
+   * @default "power2.out"
    */
   ease?: string;
 
   /**
-   * When true, applies the animation and stagger to all direct child elements instead of the container itself
+   * When true, renders an accessible skeleton loading placeholder state.
+   * @default false
    */
-  cascade?: boolean;
+  loading?: boolean;
 
   /**
-   * HTML tag to render for the wrapper container (default: 'div')
+   * When true, disables animations and renders children in their visible state immediately.
+   * @default false
    */
-  as?: React.ElementType;
+  disabled?: boolean;
 
   /**
-   * Children elements to animate
+   * The underlying HTML element or React component to render as the container.
+   * @default "div"
    */
-  children?: React.ReactNode;
+  as?: ElementType;
 
   /**
-   * Additional CSS class name
+   * Optional CSS selector to target specific descendant elements for staggered animations.
+   * When omitted and `stagger` > 0, targets direct children.
+   */
+  childSelector?: string;
+
+  /**
+   * Callback fired immediately when the reveal trigger is entered.
+   */
+  onReveal?: () => void;
+
+  /**
+   * Child elements or content to reveal.
+   */
+  children?: ReactNode;
+
+  /**
+   * Additional CSS classes.
    */
   className?: string;
-
-  /**
-   * Custom inline styles
-   */
-  style?: React.CSSProperties;
 }
 
-function getInitialProperties(animation: ScrollRevealAnimation, distNum: number): gsap.TweenVars {
-  switch (animation) {
-    case "fade-up":
-      return { opacity: 0, y: distNum };
-    case "fade-down":
-      return { opacity: 0, y: -distNum };
-    case "fade-left":
-      return { opacity: 0, x: distNum };
-    case "fade-right":
-      return { opacity: 0, x: -distNum };
-    case "zoom-in":
-      return { opacity: 0, scale: 0.82 };
-    case "zoom-out":
-      return { opacity: 0, scale: 1.18 };
-    case "flip":
-    case "flip-x":
-      return { opacity: 0, rotateX: 65, transformPerspective: 800, transformOrigin: "50% 50%" };
-    case "flip-y":
-      return { opacity: 0, rotateY: 65, transformPerspective: 800, transformOrigin: "50% 50%" };
-    case "blur-in":
-      return { opacity: 0, filter: "blur(16px)" };
-    case "rotate":
-      return { opacity: 0, rotate: -12, scale: 0.9 };
-    default:
-      return { opacity: 0, y: distNum };
+/**
+ * Converts numeric threshold (0..1) or custom string into a GSAP ScrollTrigger `start` value.
+ */
+function resolveStartThreshold(threshold: number | string): string {
+  if (typeof threshold === "string") {
+    return threshold;
   }
+  const clamped = Math.max(0, Math.min(1, threshold));
+  const percentage = Math.round((1 - clamped) * 100);
+  return `top ${percentage}%`;
 }
 
-function getTargetProperties(animation: ScrollRevealAnimation): gsap.TweenVars {
-  switch (animation) {
+/**
+ * Returns the GSAP from/to property objects based on the chosen animation preset.
+ */
+function getAnimationVars(
+  preset: ScrollRevealAnimation,
+  distance: number
+): { from: gsap.TweenVars; to: gsap.TweenVars } {
+  switch (preset) {
     case "fade-up":
+      return {
+        from: { opacity: 0, y: distance },
+        to: { opacity: 1, y: 0 },
+      };
     case "fade-down":
-      return { opacity: 1, y: 0 };
+      return {
+        from: { opacity: 0, y: -distance },
+        to: { opacity: 1, y: 0 },
+      };
     case "fade-left":
+      return {
+        from: { opacity: 0, x: distance },
+        to: { opacity: 1, x: 0 },
+      };
     case "fade-right":
-      return { opacity: 1, x: 0 };
+      return {
+        from: { opacity: 0, x: -distance },
+        to: { opacity: 1, x: 0 },
+      };
     case "zoom-in":
+      return {
+        from: { opacity: 0, scale: 0.85 },
+        to: { opacity: 1, scale: 1 },
+      };
     case "zoom-out":
-      return { opacity: 1, scale: 1 };
+      return {
+        from: { opacity: 0, scale: 1.15 },
+        to: { opacity: 1, scale: 1 },
+      };
     case "flip":
-    case "flip-x":
-      return { opacity: 1, rotateX: 0 };
-    case "flip-y":
-      return { opacity: 1, rotateY: 0 };
-    case "blur-in":
-      return { opacity: 1, filter: "blur(0px)" };
-    case "rotate":
-      return { opacity: 1, rotate: 0, scale: 1 };
+      return {
+        from: { opacity: 0, rotateX: 55, transformPerspective: 800 },
+        to: { opacity: 1, rotateX: 0 },
+      };
+    case "fade":
     default:
-      return { opacity: 1, y: 0 };
+      return {
+        from: { opacity: 0 },
+        to: { opacity: 1 },
+      };
   }
 }
 
 /**
- * ScrollReveal - Scroll-triggered entrance animation wrapper powered by GSAP ScrollTrigger
+ * ScrollReveal is a high-performance scroll-triggered animation wrapper powered by GSAP and ScrollTrigger.
+ * It animates content or staggered lists as they enter the viewport, with built-in accessibility
+ * motion preference detection, theme token compatibility, and accessible skeleton loading states.
  */
-export function ScrollReveal({
-  animation = "fade-up",
-  delay = 0,
-  stagger = 0.1,
-  threshold = "top 85%",
-  once = true,
-  duration = 0.8,
-  distance = 40,
-  ease = "power2.out",
-  cascade = false,
-  as: Component = "div",
-  children,
-  className,
-  style,
-  ...restProps
-}: ScrollRevealProps) {
-  const containerRef = useRef<HTMLElement>(null);
+export const ScrollReveal = forwardRef<HTMLElement, ScrollRevealProps>(function ScrollReveal(
+  {
+    animation = "fade-up",
+    delay = 0,
+    duration = 0.7,
+    stagger = 0,
+    threshold = 0.2,
+    once = true,
+    distance = 32,
+    ease = "power2.out",
+    loading = false,
+    disabled = false,
+    as: Component = "div",
+    childSelector,
+    onReveal,
+    children,
+    className,
+    style,
+    ...rest
+  },
+  forwardedRef
+) {
+  const containerRef = useRef<HTMLElement | null>(null);
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx?.theme === "dark";
+
+  // Merge forwarded ref and local ref
+  const setRef = useCallback(
+    (node: HTMLElement | null) => {
+      containerRef.current = node;
+      if (typeof forwardedRef === "function") {
+        forwardedRef(node);
+      } else if (forwardedRef) {
+        (forwardedRef as React.MutableRefObject<HTMLElement | null>).current = node;
+      }
+    },
+    [forwardedRef]
+  );
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el || typeof window === "undefined") return;
+    const container = containerRef.current;
+    if (!container || loading || disabled) return;
 
-    // Respect prefers-reduced-motion
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Check if user prefers reduced motion for accessibility
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     if (prefersReducedMotion) {
-      gsap.set(el, { opacity: 1, x: 0, y: 0, scale: 1, clearProps: "all" });
+      // Render final visible state immediately without animation
+      gsap.set(container, { opacity: 1, clearProps: "all" });
       return;
     }
 
-    const distNum = typeof distance === "number" ? distance : parseFloat(distance) || 40;
-    const startProp =
-      typeof threshold === "number" ? `top ${Math.round((1 - threshold) * 100)}%` : threshold;
+    // Create isolated GSAP context for automatic cleanup
+    const ctx = gsap.context(() => {
+      const { from, to } = getAnimationVars(animation, distance);
 
-    const targets = cascade && el.children.length > 0 ? Array.from(el.children) : el;
-    const fromVars = getInitialProperties(animation, distNum);
-    const toVars = getTargetProperties(animation);
+      let targets: Element[] | HTMLElement = container;
 
-    // Initial state setup
-    gsap.set(targets, fromVars);
+      if (stagger > 0) {
+        const elements = childSelector
+          ? container.querySelectorAll(childSelector)
+          : container.children;
 
-    const tween = gsap.to(targets, {
-      ...toVars,
-      duration,
-      delay,
-      ease,
-      stagger: cascade ? stagger : 0,
-      scrollTrigger: {
-        trigger: el,
-        start: startProp,
-        toggleActions: once ? "play none none none" : "play reverse play reverse",
-        invalidateOnRefresh: true,
-      },
-    });
+        if (elements.length > 0) {
+          targets = Array.from(elements);
+        }
+      }
+
+      const startThreshold = resolveStartThreshold(threshold);
+
+      gsap.fromTo(targets, from, {
+        ...to,
+        duration,
+        delay,
+        stagger: stagger > 0 ? stagger : undefined,
+        ease,
+        scrollTrigger: {
+          trigger: container,
+          start: startThreshold,
+          toggleActions: once ? "play none none none" : "play reverse play reverse",
+          onEnter: () => {
+            if (onReveal) {
+              onReveal();
+            }
+          },
+        },
+      });
+    }, container);
 
     return () => {
-      if (tween.scrollTrigger) {
-        tween.scrollTrigger.kill();
-      }
-      tween.kill();
+      ctx.revert();
     };
-  }, [animation, delay, stagger, threshold, once, duration, distance, ease, cascade]);
+  }, [
+    animation,
+    delay,
+    duration,
+    stagger,
+    threshold,
+    once,
+    distance,
+    ease,
+    loading,
+    disabled,
+    childSelector,
+    onReveal,
+  ]);
+
+  // Accessible loading skeleton state
+  if (loading) {
+    return (
+      <Component
+        ref={setRef}
+        role="status"
+        aria-label="Loading content"
+        className={clsx(
+          "rounded-[var(--ant-radius-lg)] p-[var(--ant-spacing-6)] border",
+          isDark
+            ? "bg-[var(--ant-color-neutral-800)] border-[var(--ant-color-neutral-700)] text-[var(--ant-color-neutral-100)]"
+            : "bg-[var(--ant-color-surface-bg-card)] border-[var(--ant-color-surface-border)] text-[var(--ant-color-surface-text)]",
+          "shadow-[var(--ant-shadow-sm)] font-[family-name:var(--ant-typography-fontFamily-sans)]",
+          className
+        )}
+        style={style}
+        {...rest}
+      >
+        <div className="space-y-[var(--ant-spacing-4)] animate-pulse" aria-hidden="true">
+          <div
+            className={clsx(
+              "h-[var(--ant-spacing-6)] w-1/3 rounded-[var(--ant-radius-md)]",
+              isDark ? "bg-[var(--ant-color-neutral-700)]" : "bg-[var(--ant-color-neutral-200)]"
+            )}
+          />
+          <div className="space-y-[var(--ant-spacing-2)]">
+            <div
+              className={clsx(
+                "h-[var(--ant-spacing-4)] w-full rounded-[var(--ant-radius-sm)]",
+                isDark ? "bg-[var(--ant-color-neutral-700)]" : "bg-[var(--ant-color-neutral-200)]"
+              )}
+            />
+            <div
+              className={clsx(
+                "h-[var(--ant-spacing-4)] w-5/6 rounded-[var(--ant-radius-sm)]",
+                isDark ? "bg-[var(--ant-color-neutral-700)]" : "bg-[var(--ant-color-neutral-200)]"
+              )}
+            />
+            <div
+              className={clsx(
+                "h-[var(--ant-spacing-4)] w-2/3 rounded-[var(--ant-radius-sm)]",
+                isDark ? "bg-[var(--ant-color-neutral-700)]" : "bg-[var(--ant-color-neutral-200)]"
+              )}
+            />
+          </div>
+        </div>
+        <span className="sr-only">Loading content...</span>
+      </Component>
+    );
+  }
 
   return (
     <Component
-      ref={containerRef}
-      className={clsx("scroll-reveal-container", className)}
+      ref={setRef}
+      aria-disabled={disabled ? "true" : undefined}
+      className={clsx(
+        "font-[family-name:var(--ant-typography-fontFamily-sans)]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ant-color-brand-primary)] focus-visible:ring-offset-2",
+        isDark
+          ? "focus-visible:ring-offset-[var(--ant-color-neutral-900)]"
+          : "focus-visible:ring-offset-[var(--ant-color-neutral-0)]",
+        disabled && "opacity-100 transform-none",
+        className
+      )}
       style={style}
-      {...restProps}
+      {...rest}
     >
       {children}
     </Component>
   );
-}
+});
 
 /**
- * Higher-Order Component (HOC) wrapper for applying scroll-reveal animations to any component
+ * Options accepted when using the withScrollReveal HOC.
+ */
+export type ScrollRevealHocOptions = Omit<ScrollRevealProps, "children">;
+
+/**
+ * Higher-Order Component (HOC) that wraps any React component with scroll-reveal animation capability.
+ *
+ * @example
+ * ```tsx
+ * const AnimatedCard = withScrollReveal(Card, { animation: "fade-up", delay: 0.1 });
+ * <AnimatedCard title="Hello" />
+ * ```
  */
 export function withScrollReveal<P extends object>(
   WrappedComponent: React.ComponentType<P>,
-  defaultRevealProps?: Omit<ScrollRevealProps, "children">
+  defaultOptions: ScrollRevealHocOptions = {}
 ) {
-  const displayName = WrappedComponent.displayName || WrappedComponent.name || "Component";
-
-  const WithScrollRevealComponent = (props: P & { reveal?: ScrollRevealProps }) => {
-    const { reveal, ...componentProps } = props;
-    const revealOptions = { ...defaultRevealProps, ...reveal };
+  const ComponentWithReveal = forwardRef<
+    HTMLElement,
+    P & { scrollReveal?: ScrollRevealHocOptions }
+  >((props, ref) => {
+    const { scrollReveal, ...rest } = props;
+    const combinedOptions = { ...defaultOptions, ...scrollReveal };
 
     return (
-      <ScrollReveal {...revealOptions}>
-        <WrappedComponent {...(componentProps as P)} />
+      <ScrollReveal {...combinedOptions} ref={ref}>
+        <WrappedComponent {...(rest as P)} />
       </ScrollReveal>
     );
-  };
+  });
 
-  WithScrollRevealComponent.displayName = `withScrollReveal(${displayName})`;
-  return WithScrollRevealComponent;
+  const displayName = WrappedComponent.displayName || WrappedComponent.name || "Component";
+  ComponentWithReveal.displayName = `withScrollReveal(${displayName})`;
+
+  return ComponentWithReveal;
 }
