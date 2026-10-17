@@ -69,6 +69,7 @@ export { ScrollReveal, withScrollReveal } from "./components/animation/ScrollRev
 export type {
   ScrollRevealProps,
   ScrollRevealAnimation,
+  ScrollRevealHocOptions,
 } from "./components/animation/ScrollReveal";
 
 // ── Feedback ─────────────────────────────────────────────────────────────────
@@ -274,13 +275,3 @@ export type {
 export { Tabs } from "./components/navigation/Tabs";
 
 export type { TabsProps, Tab } from "./components/navigation/Tabs";
-
-// ── Animation ────────────────────────────────────────────────────────────────
-
-export { ScrollReveal, withScrollReveal } from "./components/animation/ScrollReveal";
-
-export type {
-  ScrollRevealProps,
-  ScrollRevealAnimation,
-  ScrollRevealHocOptions,
-} from "./components/animation/ScrollReveal";
