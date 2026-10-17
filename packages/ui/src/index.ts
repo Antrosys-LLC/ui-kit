@@ -6,7 +6,7 @@ export { ThemeProvider, ThemeContext } from "./providers/ThemeProvider";
 
 export { ToastProvider, ToastContext, useToast } from "./providers/ToastProvider";
 
-export type { Toast, ToastType } from "./providers/ToastProvider";
+export type { Toast as ToastItem, ToastType } from "./providers/ToastProvider";
 
 // ── Hooks ────────────────────────────────────────────────────────────────────
 
@@ -24,17 +24,117 @@ export { Grid } from "./primitives/Grid";
 
 export { Cluster } from "./primitives/Cluster";
 
+// ── Animation ────────────────────────────────────────────────────────────────
+
+export { Slideshow } from "./components/animation/Slideshow";
+
+export type {
+  SlideshowProps,
+  SlideData,
+  SlideshowTransition,
+} from "./components/animation/Slideshow";
+
+export { AnimatedCounter } from "./components/animation/AnimatedCounter";
+
+export type {
+  AnimatedCounterProps,
+  AnimatedCounterSize,
+  AnimatedCounterColor,
+} from "./components/animation/AnimatedCounter";
+
+export { Typewriter } from "./components/animation/Typewriter";
+
+export type {
+  TypewriterProps,
+  TypewriterSize,
+  TypewriterColor,
+} from "./components/animation/Typewriter";
+
+export { ParallaxSection } from "./components/animation/ParallaxSection";
+
+export type {
+  ParallaxSectionProps,
+  ParallaxLayer,
+} from "./components/animation/ParallaxSection";
+
+export { GradientMesh, GradientBackground } from "./components/animation/GradientMesh";
+
+export type {
+  GradientMeshProps,
+  GradientType,
+} from "./components/animation/GradientMesh";
+
+export { ScrollReveal, withScrollReveal } from "./components/animation/ScrollReveal";
+
+export type {
+  ScrollRevealProps,
+  ScrollRevealAnimation,
+} from "./components/animation/ScrollReveal";
+
 // ── Feedback ─────────────────────────────────────────────────────────────────
 
 export { Button } from "./components/feedback/Button";
 
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/feedback/Button";
 
+export { Toast, Toaster, toast } from "./components/feedback/Toast";
+
+export type {
+  ToastProps,
+  ToasterProps,
+  ToastPosition,
+  ToastVariant,
+  ToastAction,
+  ToastOptions,
+  PromiseData,
+} from "./components/feedback/Toast";
+
+export { Modal } from "./components/feedback/Modal";
+
+export type {
+  ModalProps,
+  ModalSize,
+  ModalVariant,
+} from "./components/feedback/Modal";
+
+export { Skeleton } from "./components/feedback/Skeleton";
+
+export type {
+  SkeletonProps,
+  SkeletonVariant,
+  SkeletonRadius,
+} from "./components/feedback/Skeleton";
+
+export { Tooltip } from "./components/feedback/Tooltip";
+
+export type {
+  TooltipProps,
+  TooltipPlacement,
+  TooltipTrigger,
+} from "./components/feedback/Tooltip";
+
+export { Popover } from "./components/feedback/Popover";
+
+export type {
+  PopoverProps,
+  PopoverPlacement,
+  PopoverTrigger,
+} from "./components/feedback/Popover";
+
 // ── Forms ────────────────────────────────────────────────────────────────────
 
 export { Combobox } from "./components/forms/ComboBox";
 
 export type { ComboboxProps, ComboboxOption } from "./components/forms/ComboBox";
+
+export { DatePicker } from "./components/forms/DatePicker";
+
+export type {
+  DatePickerProps,
+  DatePickerMode,
+  DateRange,
+  DisabledDateRule,
+} from "./components/forms/DatePicker";
 
 export { MultiStepWizard } from "./components/forms/MultistepWizard";
 
@@ -51,6 +151,23 @@ export type {
   ToolbarItem,
   OutputFormat,
 } from "./components/forms/RichTextEditor";
+
+export {
+  FileUploader,
+  FilePreviewItem,
+  formatBytes,
+  getFileIcon,
+} from "./components/forms/FileUploader";
+
+export type {
+  UploadFile,
+  FileStatus,
+  FileUploaderVariant,
+  FilePreviewLayout,
+  FilePreviewItemProps,
+  DropzoneRenderProps,
+  FileUploaderProps,
+} from "./components/forms/FileUploader";
 
 // ── Media ────────────────────────────────────────────────────────────────────
 
@@ -91,6 +208,46 @@ export { StatCard } from "./components/data/StatCard";
 export type { StatCardProps } from "./components/data/StatCard";
 
 export * from "./components/data/Timeline";
+
+export {
+  DataTable,
+  DataTableToolbar,
+  DataTablePagination,
+  DataTableCellEditor,
+  DataCardView,
+  exportToCSV,
+  exportToExcel,
+  extractTableData,
+} from "./components/data/DataTable";
+
+export type {
+  DataTableProps,
+  DataTableColumnDef,
+  DataTableColumnMeta,
+  TableDensity,
+  TableExportOptions,
+} from "./components/data/DataTable";
+
+export {
+  KanbanBoard,
+  KanbanColumn,
+  KanbanCard,
+  KanbanToolbar,
+  KanbanCardModal,
+  KanbanCardQuickAdd,
+} from "./components/data/KanbanBoard";
+
+export type {
+  KanbanBoardProps,
+  KanbanColumnType,
+  KanbanCardType,
+  KanbanLabel,
+  KanbanAssignee,
+  KanbanPriority,
+  KanbanChecklistItem,
+  CardMoveEvent,
+  CardTemplateProps,
+} from "./components/data/KanbanBoard";
 
 // ── Navigation ───────────────────────────────────────────────────────────────
 
