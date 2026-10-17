@@ -52,17 +52,18 @@ export type {
 
 export { ParallaxSection } from "./components/animation/ParallaxSection";
 
-export type {
-  ParallaxSectionProps,
-  ParallaxLayer,
-} from "./components/animation/ParallaxSection";
+export type { ParallaxSectionProps, ParallaxLayer } from "./components/animation/ParallaxSection";
 
 export { GradientMesh, GradientBackground } from "./components/animation/GradientMesh";
 
+export type { GradientMeshProps, GradientType } from "./components/animation/GradientMesh";
+
+export { GradientMeshBackground } from "./components/animation/GradientMeshBackground";
+
 export type {
-  GradientMeshProps,
-  GradientType,
-} from "./components/animation/GradientMesh";
+  GradientMeshBackgroundProps,
+  GradientMeshBackgroundType,
+} from "./components/animation/GradientMeshBackground";
 
 export { ScrollReveal, withScrollReveal } from "./components/animation/ScrollReveal";
 
@@ -92,11 +93,7 @@ export type {
 
 export { Modal } from "./components/feedback/Modal";
 
-export type {
-  ModalProps,
-  ModalSize,
-  ModalVariant,
-} from "./components/feedback/Modal";
+export type { ModalProps, ModalSize, ModalVariant } from "./components/feedback/Modal";
 
 export { Skeleton } from "./components/feedback/Skeleton";
 
@@ -108,19 +105,11 @@ export type {
 
 export { Tooltip } from "./components/feedback/Tooltip";
 
-export type {
-  TooltipProps,
-  TooltipPlacement,
-  TooltipTrigger,
-} from "./components/feedback/Tooltip";
+export type { TooltipProps, TooltipPlacement, TooltipTrigger } from "./components/feedback/Tooltip";
 
 export { Popover } from "./components/feedback/Popover";
 
-export type {
-  PopoverProps,
-  PopoverPlacement,
-  PopoverTrigger,
-} from "./components/feedback/Popover";
+export type { PopoverProps, PopoverPlacement, PopoverTrigger } from "./components/feedback/Popover";
 
 // ── Forms ────────────────────────────────────────────────────────────────────
 
